@@ -1,0 +1,9 @@
+{
+  "name": "lake-george-703-plan",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-19",
+  "assets": { "directory": "./site", "binding": "ASSETS", "run_worker_first": true },
+  "kv_namespaces": [{ "binding": "KV", "id": "41c9045d67fa4dc2927f1244acf77bb8" }],
+  "triggers": { "crons": ["*/20 * * * *"] },
+  "vars": { "ATHLETE_ID": "i761867" }
+}

@@ -1,0 +1,7 @@
+# build output (contains personal Garmin history copy)
+site/
+.wrangler/
+node_modules/
+log-backup-*.json
+.DS_Store
+.dev.vars
