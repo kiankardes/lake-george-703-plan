@@ -88,6 +88,10 @@ export default {
     }
     if (p === "/logout") return new Response(null, { status: 303, headers: { location: "/", "set-cookie": "lg703=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax" } });
     if (getCookie(req, "lg703") !== token) return p.startsWith("/api/") ? json({ error: "locked" }, 401) : html(LOGIN(""), 401);
+    if (p === "/history.html") {
+      const h = await env.KV.get("history");
+      return h ? html(h) : html("<p style='font:15px sans-serif;padding:16px'>No history uploaded yet. Run deploy.sh on your Mac to upload it.</p>", 404);
+    }
     if (!p.startsWith("/api/")) return env.ASSETS.fetch(req);
 
     try {
