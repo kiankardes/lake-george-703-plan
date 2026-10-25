@@ -150,6 +150,14 @@ th { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform
 .badge.extra { background: var(--warn-soft); color: var(--warn); }
 .review { display: flex; flex-direction: column; gap: 3px; font-size: 13.5px; border-radius: 5px; padding: 8px 10px; background: var(--soft); }
 .review .ok { color: var(--good); } .review .bad { color: var(--warn); }
+.lifts { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.lifts td, .lifts th { padding: 5px 4px; vertical-align: middle; }
+.lifts input { width: 100%; min-width: 48px; box-sizing: border-box; background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 5px 6px; color: var(--fg); font: inherit; }
+.lifts .grp { font-family: var(--mono); color: var(--lift); font-weight: 600; }
+.lifts .tgt { color: var(--muted); font-size: 12.5px; }
+.cchange { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; border-top: 1px dashed var(--line); padding-top: 8px; }
+.cchange > div { flex: 1 1 260px; min-width: 0; }
+.coachnote { background: var(--accent-soft); border-radius: 5px; padding: 6px 10px; }
 .goals { display: flex; flex-direction: column; gap: 6px; }
 .goal { display: flex; gap: 10px; align-items: baseline; }
 .goal .mk { font-family: var(--mono); width: 18px; flex: none; }
@@ -224,6 +232,13 @@ th { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform
       </div>
       <div class="gchips" id="gchips" hidden></div>
       <div class="advice" id="advice"></div>
+    </div>
+
+    <div class="card" id="coachCard" hidden>
+      <div class="formrow"><h3>Coach</h3><button class="btn" id="coachAsk">Review again</button></div>
+      <p class="small">Claude reads your last 7 days (Garmin, check-ins, lift logs, notes) and suggests changes to the next few days. Nothing changes until you accept.</p>
+      <p class="small" id="coachStat"></p>
+      <div id="coachBody"></div>
     </div>
 
     <div class="grid2" id="sessions"></div>
@@ -437,11 +452,9 @@ th { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform
 const START = new Date(2026, 9, 19), RACE = new Date(2027, 5, 13);
 const DEF = { ftp: 266, css: 150, gp: 525, rhr: 52, tests: [] };
 const LIFTS = {
-  fA: { name: "Lift A · full body", m: 35, items: ["Goblet squat 3×10", "Romanian deadlift 3×8", "Pull-up or pulldown 3×8", "Push-up 3×12", "Dead bug 2×10/side"] },
-  fB: { name: "Lift B · single leg", m: 35, items: ["Split squat 3×8/leg", "Step-up 3×8/leg", "Single-arm row 3×10", "Hip thrust 3×10", "Side plank 2×30 s/side"] },
-  fC: { name: "Lift C · calves + core", m: 25, items: ["Single-leg calf raise 3×15 (straight knee + bent knee)", "Copenhagen plank 2×20 s/side", "Tibialis raise 2×15", "Hip mobility 10 min"] },
-  bA: { name: "Lift A · heavy", m: 40, items: ["Trap-bar deadlift 4×5", "Bulgarian split squat 3×6/leg", "Single-arm row 3×8", "Pogo hops 3×20", "Core 2 rounds"] },
-  bB: { name: "Lift B · heavy", m: 40, items: ["Back squat 4×5", "Romanian deadlift 3×6", "Weighted calf raise 3×10", "Pull-up 3×6", "Core 2 rounds"] },
+  fA: { name: "Lift A · pull + legs", m: 45, items: ["A: RDL ↔ Pull-ups", "B: Reverse lunge ↔ Cable row", "C: Quad extension ↔ Rear delt fly", "D: DB curl ↔ Hanging leg raise ↔ Wall angels"] },
+  fB: { name: "Lift B · push + legs", m: 45, items: ["A: Front squat ↔ Flat DB bench", "B: Bulgarian split squat ↔ DB shoulder press", "C: Hamstring curl ↔ Lateral raise", "D: Diamond push-ups ↔ Ab roller ↔ Dead bugs"] },
+  fC: { name: "Lift C · upper", m: 45, items: ["A: Incline DB bench ↔ Lat pulldown", "B: Cable fly ↔ Cable row", "C: Lateral raise ↔ Rear delt fly", "D: Biceps curl ↔ OH triceps extension", "E: Pallof press ↔ Bear hold"] },
   bu: { name: "Lift · maintenance", m: 30, items: ["Deadlift or squat 3×4 (heavy, crisp)", "Calf raise 3×10", "Pogo hops 2×20", "Core 2 rounds"] },
   pk: { name: "Lift · short", m: 20, items: ["Main lift 2×3", "Calf raise 2×10", "Core 1 round"] }
 };
@@ -571,7 +584,7 @@ function weekPlan(r) {
   const [n, ph, k, s0, s1, s2, bq, be, lr, br, rn, lrun, note, x] = r;
   if (k === "c") return CUSTOM[n];
   if (k === "r" || k === "t") {
-    const t = TESTS[n], lk = ph === "Foundation" ? "fA" : ph === "Base" ? "bA" : "bu", big = ph !== "Foundation";
+    const t = TESTS[n], lk = ph === "Foundation" || ph === "Base" ? "fA" : "bu", big = ph !== "Foundation";
     return [
       [S("30 min: easy drills · 6×50 smooth"), big ? B("45 min easy spin {Z2}") : OFF()],
       [B("60 min easy {Z2} with 3×1 min openers"), LF(lk, true)],
@@ -586,7 +599,7 @@ function weekPlan(r) {
     [S(s0), LF("fA")], [R(runTxt(rn, true)), B(bq)], [S(s1), LF("fB")], [R(runTxt(rn)), B(be)], [S(s2), LF("fC")],
     [br ? BR(lr, br) : B("Long ride " + lr), null], [R(`Long run ${lrun} min easy ≤144 bpm`), null]];
   if (ph === "Base") return [
-    [S(s0), B("Spin 45 min easy {Z2}, or off")], [B(bq), LF("bA")], [R(runTxt(rn, true)), S(s1)], [B(be), LF("bB")],
+    [S(s0), B("Spin 45 min easy {Z2}, or off")], [B(bq), LF("fA")], [R(runTxt(rn, true)), S(s1)], [B(be), LF("fB")],
     [S(s2), R("30 min easy ≤144 bpm, or off if tired")],
     [br ? BR(lr, br) : B("Long ride " + lr), null], [R(`Long run ${lrun} min easy ≤144 bpm`), x ? S(x) : SUNSWIM.has(n) ? S("30 min: easy drills · sighting 6×25") : null]];
   return [
@@ -702,6 +715,8 @@ const sessions = d => [d.am, d.pm].map((s, i) => s && s.s !== "rest" ? { s, slot
 // A manual tick/untick wins; otherwise a matching Garmin activity counts as done.
 const isDone = (k, slot) => { const L = logs[k] && logs[k][slot]; if (L && typeof L.done === "boolean") return L.done; return !!(AUTO[k] && AUTO[k][slot]); };
 const doneMin = (k, slot, s) => { if (!isDone(k, slot)) return 0; const L = logs[k] && logs[k][slot], a = AUTO[k] && AUTO[k][slot]; return +(L && L.min) || (a ? a.mins : 0) || s.m; };
+// A ride done in place of a run counts toward bike hours (and the session counts as done).
+const doneSport = (k, slot, planned) => { const a = AUTO[k] && AUTO[k][slot]; return a && a.sub ? a.sport : planned; };
 async function putJSON(path, body) {
   const r = await fetch(path, { method: "PUT", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
   if (!r.ok) throw new Error(String(r.status));
@@ -709,16 +724,25 @@ async function putJSON(path, body) {
 
 // ---------- Garmin via intervals.icu (Cloudflare site only) ----------
 const sportOf = t => /swim/i.test(t) ? "swim" : /ride|cycl/i.test(t) ? "bike" : /run/i.test(t) ? "run" : /weight|strength/i.test(t) ? "lift" : "other";
+// Same-sport matches first; then a ride can stand in for a missed run (and a run for a missed ride).
+const SUBS = { run: ["bike"], bike: ["run"] };
 function computeAuto() {
   AUTO = {};
   if (!GA) return;
   for (const d of DAYS) {
     const acts = (GA.acts[d.key] || []).slice(), out = {};
+    for (const a of acts) { delete a.matched; delete a.sub; }
+    const take = (slot, i, sub) => { out[slot] = acts[i]; acts[i].matched = slot; if (sub) acts[i].sub = sub; acts.splice(i, 1); };
     for (const slot of ["am", "pm"]) {
       const s = d[slot]; if (!s || s.s === "rest") continue;
       const want = s.s === "brick" ? "bike" : s.s;
       const i = acts.findIndex(a => s.s === "key" ? ["swim", "bike", "run"].includes(a.sport) : a.sport === want);
-      if (i >= 0) { out[slot] = acts[i]; acts[i].matched = slot; acts.splice(i, 1); }
+      if (i >= 0) take(slot, i);
+    }
+    for (const slot of ["am", "pm"]) {
+      const s = d[slot]; if (!s || out[slot] || !SUBS[s.s]) continue;
+      const i = acts.findIndex(a => SUBS[s.s].includes(a.sport));
+      if (i >= 0) take(slot, i, `${ST[acts[i].sport]} instead of ${ST[s.s].toLowerCase()}`);
     }
     out.extra = acts;
     AUTO[d.key] = out;
@@ -777,6 +801,7 @@ async function loadGarmin(force) {
     g.textContent = (j.error ? `Last sync hit a problem (${j.error}). ` : "") + `Garmin data as of ${when} · ${(j.activities || []).length} activities · refreshes automatically every 20 min` + (j.stravaHidden && !(j.activities || []).length ? ` · ${j.stravaHidden} Strava-only activities have no details (Strava blocks sharing them); import your Garmin history in intervals.icu to fill these in.` : "");
     render();
   } catch (e) { g.textContent = "Garmin sync failed. Check your connection and try again."; }
+  finally { if (!coachStarted) { coachStarted = true; loadCoach(); } }
 }
 const PCT = { Z2T: "72-77%", TEMPO: "77-86%", SS: "88-94%", SSH: "85-90%", RP: "76-81%", RP10: "80-85%" };
 function bikeDoc(t, m) {
@@ -830,6 +855,131 @@ async function pushWorkouts() {
     g.textContent = r.ok ? `Sent ${evs.length} workouts for the next 14 days to intervals.icu. They reach your watch on its next Garmin sync.` : "Couldn't send workouts: " + (j.detail || j.error || r.status);
   } catch (e) { g.textContent = "Couldn't send workouts. Check your connection."; }
 }
+
+// ---------- strength log + progression ----------
+// Supersets are written "A: RDL ↔ Pull-ups". Each exercise gets a weight + reps log; the next target comes from the last log.
+const BW = /pull-up|push-up|leg raise|dead bug|wall angel|bear hold|ab roller/i;
+const exOf = s => s && s.s === "lift" ? (s.items || []).flatMap(it => { const m = it.match(/^([A-Z]):\s*(.+)$/); return m && m[2].includes("↔") ? m[2].split("↔").map(n => ({ g: m[1], n: n.trim() })) : []; }) : [];
+const repsOf = r => String(r || "").split(/\D+/).filter(Boolean).map(Number);
+function lastLift(name, before) {
+  for (const k of Object.keys(logs).filter(k => k < before).sort().reverse())
+    for (const slot of ["am", "pm"]) {
+      const x = logs[k][slot] && logs[k][slot].lifts && logs[k][slot].lifts[name];
+      if (x && repsOf(x.r).length) return { k, w: +x.w || 0, r: repsOf(x.r) };
+    }
+  return null;
+}
+function liftTarget(name, before, half) {
+  const p = lastLift(name, before), sets = half ? 2 : 3;
+  if (!p) return BW.test(name) ? `${sets} sets · as many clean reps as you can, 2 left in the tank` : `${sets}×8–12 · pick a weight you could do ~12 times`;
+  const lo = Math.min(...p.r), hi = Math.max(...p.r), last = `last ${p.w ? p.w + " lb × " : ""}${p.r.join("/")}`;
+  if (half) return `${sets}×${lo}${p.w ? " @ " + p.w + " lb" : ""} · recovery week, no increase (${last})`;
+  if (!p.w) return `${sets}×${hi + 1}${lo >= 15 ? " · or add weight / slow the tempo" : ""} (${last})`;
+  if (lo >= 12) return `${sets}×8–10 @ ${p.w + 5} lb · +5, you hit 12s (${last})`;
+  if (lo < 8) return `${sets}×8–12 @ ${Math.max(0, p.w - 5)} lb · −5, under 8 reps (${last})`;
+  return `${sets}×${Math.min(12, lo + 1)}+ @ ${p.w} lb · beat ${p.r.join("/")} (${last})`;
+}
+function liftTable(slot, s) {
+  const ex = exOf(s);
+  return `<table class="lifts"><tr><th></th><th>Exercise · target</th><th>lb</th><th>Reps per set</th></tr>` + ex.map((x, i) => `<tr>
+    <td class="grp">${x.g}</td><td>${esc(x.n)}<br><span class="tgt" id="${slot}-lt-${i}"></span></td>
+    <td style="width:70px"><input id="${slot}-lw-${i}" type="number" min="0" max="999" step="2.5" inputmode="decimal" placeholder="${BW.test(x.n) ? "BW" : ""}" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="w"></td>
+    <td style="width:110px"><input id="${slot}-lr-${i}" type="text" inputmode="numeric" placeholder="10,10,9" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="r"></td></tr>`).join("") + `</table>`;
+}
+function fillLifts(slot, s, L) {
+  const half = /half the sets/.test(s.t), act = document.activeElement;
+  exOf(s).forEach((x, i) => {
+    const v = (L.lifts || {})[x.n] || {};
+    for (const [f, id] of [["w", `${slot}-lw-${i}`], ["r", `${slot}-lr-${i}`]]) { const e = document.getElementById(id); if (e && e !== act) e.value = v[f] ?? ""; }
+    const t = document.getElementById(`${slot}-lt-${i}`); if (t) t.textContent = liftTarget(x.n, sel, half);
+  });
+}
+
+// ---------- AI coach ----------
+// The Worker asks Claude to review the last 7 days and propose changes to the next few. Nothing changes until you tap Accept.
+let COACH = null, coachBusy = false, coachStarted = false, coachMsg = "", ovrSig = "";
+function fromCoach(c) {
+  if (c.sport === "rest") return Object.assign(OFF(c.details || "Off"), { coach: c });
+  if (c.sport === "lift") {
+    const k = Object.keys(LIFTS).find(k => c.details.toLowerCase().includes(LIFTS[k].name.toLowerCase()));
+    return k ? Object.assign(LF(k, /half/i.test(c.details)), { m: c.minutes || LIFTS[k].m, coach: c })
+      : mk("lift", "Lift · coach", c.minutes, { items: c.details.split(/\s*·\s*|\n/).filter(Boolean), coach: c });
+  }
+  return mk(c.sport, c.details, c.minutes || undefined, { coach: c });
+}
+function applyOverrides() {
+  const o = settings.ovr || {}, sig = JSON.stringify(o);
+  if (sig === ovrSig) return;
+  ovrSig = sig;
+  for (const d of DAYS) {
+    if (!d.base) d.base = { am: d.am, pm: d.pm };
+    for (const slot of ["am", "pm"]) { const c = o[d.key + "|" + slot]; d[slot] = c ? fromCoach(c) : d.base[slot]; }
+  }
+  computeAuto(); builtFor = null;
+}
+function coachCtx() {
+  const i0 = Math.max(0, DAYS.findIndex(d => d.key >= TODAY));
+  const plan = s => !s || s.s === "rest" ? null : { sport: s.s, minutes: s.m, plan: s.s === "lift" ? s.t + ": " + (s.items || []).join(" | ") : X(s.t), coachChanged: !!s.coach };
+  const act = a => a && { sport: a.sport, type: a.type, name: a.name, minutes: a.mins, avgHR: a.hr && Math.round(a.hr), avgW: a.w && Math.round(a.w), normW: a.np && Math.round(a.np), load: a.load != null ? Math.round(a.load) : null, km: +a.km.toFixed(1), substitute: a.sub || undefined };
+  const past = DAYS.slice(Math.max(0, i0 - 7), i0 + 1).map(d => {
+    const L = logs[d.key] || {}, w = wellOn(d.key) || {};
+    const slot = k => { const p = plan(d[k]); if (!p) return null; const v = L[k] || {}; return Object.assign(p, { done: isDone(d.key, k), rpe: v.rpe || null, actualMin: v.min || null, garmin: act(AUTO[d.key] && AUTO[d.key][k]), lifts: v.lifts || undefined }); };
+    return { date: d.key, day: DAYNAMES[d.i], week: d.wk, phase: d.ph, am: slot("am"), pm: slot("pm"), extras: extrasOf(d.key).map(act), checkin: ckEff(d.key),
+      wellness: { sleepH: w.sleepSecs ? +(w.sleepSecs / 3600).toFixed(1) : null, hrv: w.hrv ?? null, restingHR: w.restingHR ?? null, readiness: w.readiness ?? null, fitnessCTL: w.ctl != null ? Math.round(w.ctl) : null, fatigueATL: w.atl != null ? Math.round(w.atl) : null },
+      notes: (L.notes || "").slice(0, 400) || undefined };
+  });
+  const next = DAYS.slice(i0, i0 + 4).map(d => ({ date: d.key, day: DAYNAMES[d.i], week: d.wk, phase: d.ph, am: plan(d.am), pm: plan(d.pm), done: { am: isDone(d.key, "am"), pm: isDone(d.key, "pm") } }));
+  const H = weekHours(WEEKS[curWk]);
+  return { today: TODAY, athlete: { ftpW: settings.ftp, cssPer100m: pace(settings.css), goalRunPacePerMi: pace(settings.gp), restingHR: settings.rhr, zones: toks() },
+    thisWeek: { week: curWk, phase: WEEKS[curWk].ph, plannedH: +hh(H.plan), doneH: +hh(H.done), plannedToDateH: +hh(H.planTo) },
+    liftSessions: Object.values(LIFTS).map(l => l.name), past, next,
+    instructions: "Changes may target only the dates in next. Don't change a slot already done." };
+}
+async function loadCoach(force) {
+  if (mode !== "worker") return;
+  try {
+    if (!force) { const r = await fetch("/api/coach", { credentials: "same-origin" }); if (r.ok) COACH = await r.json(); }
+    if (force || !COACH || COACH.forDate !== TODAY) {
+      if (coachBusy) return;
+      coachBusy = true; coachMsg = "Coach is reviewing your last 7 days…"; renderCoach();
+      const r = await fetch("/api/coach", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify(coachCtx()) });
+      const j = await r.json();
+      coachMsg = r.ok ? "" : j.error === "no_ai_key" ? "Coach is off: add your Claude key with  npx wrangler secret put ANTHROPIC_API_KEY" : j.error === "daily_limit" ? "Coach limit reached for today (8 reviews)." : "Coach couldn't run: " + (j.detail || j.error || r.status);
+      if (r.ok) COACH = j;
+    }
+  } catch (e) { coachMsg = "Coach couldn't run. Check your connection."; }
+  coachBusy = false; renderCoach();
+}
+function renderCoach() {
+  const card = document.getElementById("coachCard"); card.hidden = mode !== "worker";
+  if (card.hidden) return;
+  document.getElementById("coachAsk").disabled = coachBusy;
+  const c = COACH && COACH.createdAt ? COACH : null, ovr = settings.ovr || {};
+  document.getElementById("coachStat").textContent = coachMsg || (c ? `Reviewed ${new Date(c.createdAt).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })}${c.forDate !== TODAY ? " (not today's review yet)" : ""}` : "No review yet.");
+  if (!c) { document.getElementById("coachBody").innerHTML = ""; return; }
+  const live = c.changes.map((x, i) => ({ x, i })).filter(({ x }) => x.date >= TODAY && BYKEY[x.date]);
+  const isOn = x => { const o = ovr[x.date + "|" + x.slot]; return o && o.createdAt === c.createdAt && o.details === x.details; };
+  const pend = live.filter(({ x }) => !isOn(x));
+  document.getElementById("coachBody").innerHTML = `<p>${esc(c.summary)}</p>${c.lifts ? `<p class="small"><strong class="lf">Strength:</strong> ${esc(c.lifts)}</p>` : ""}` +
+    (live.length ? live.map(({ x, i }) => { const d = BYKEY[x.date], on = isOn(x); return `<div class="cchange"><div><strong>${DAYNAMES[d.i]} ${fmt(d.date)} · ${x.slot.toUpperCase()}</strong> → <span class="${tagCls[x.sport]}">${ST[x.sport]}</span>${x.minutes ? " · " + durTxt(x.minutes) : ""}: ${esc(X(x.details))}<br><span class="small">${esc(x.reason)}</span></div>` +
+      (on ? `<span><span class="badge plan">Accepted</span> <button class="btn" data-cundo="${x.date}|${x.slot}">Undo</button></span>` : `<button class="btn primary" data-cacc="${i}">Accept</button>`) + `</div>`; }).join("") +
+      (pend.length > 1 ? `<div class="formrow"><button class="btn primary" data-caccall="1">Accept all ${pend.length}</button></div>` : "")
+      : `<p class="small">No changes: train as planned.</p>`);
+}
+function acceptCoach(list) {
+  const o = Object.assign({}, settings.ovr || {}), cut = keyOf(new Date(today.getTime() - 30 * 864e5));
+  for (const k of Object.keys(o)) if (k < cut) delete o[k];
+  for (const x of list) o[x.date + "|" + x.slot] = Object.assign({}, x, { createdAt: COACH.createdAt });
+  settings.ovr = o; saveSettings(); render();
+}
+function undoCoach(k) { const o = Object.assign({}, settings.ovr || {}); delete o[k]; settings.ovr = o; saveSettings(); render(); }
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-cacc],[data-caccall],[data-cundo],#coachAsk"); if (!b) return;
+  if (b.id === "coachAsk") return loadCoach(true);
+  if (b.dataset.cundo) return undoCoach(b.dataset.cundo);
+  const live = COACH.changes.filter(x => x.date >= TODAY && BYKEY[x.date]);
+  acceptCoach(b.dataset.caccall ? live : [COACH.changes[+b.dataset.cacc]]);
+});
 function dayStatus(d) {
   const ss = sessions(d), done = ss.filter(x => isDone(d.key, x.slot)).length;
   return { total: ss.length, done, past: d.key < TODAY };
@@ -908,7 +1058,8 @@ function buildToday() {
     el.className = "card sess " + s.s; el.id = "sess-" + slot;
     const title = s.s === "lift" ? esc(s.t) : s.s === "rest" ? "Rest" : `${ST[s.s]} · ${durTxt(s.m)}`;
     el.innerHTML = `<div class="sesshead"><span class="slot">${slot.toUpperCase()}</span><span class="chip">${ST[s.s]}</span><h3>${title}</h3>${hard ? '<span class="hard">HARD</span>' : ""}</div>
-      <ol class="steps">${steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+      ${s.coach ? `<p class="small coachnote"><strong>Coach change:</strong> ${esc(s.coach.reason)} <button class="btn" data-cundo="${sel}|${slot}">Undo</button></p>` : ""}
+      ${exOf(s).length ? liftTable(slot, s) : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
       ${feelOf(s) ? `<p class="why"><strong>${esc(feelOf(s))}</strong></p>` : ""}
       <p class="why">${esc(whyOf(s, hard))}</p>${fuel ? `<p class="fuel">${esc(fuel)}</p>` : ""}
       <p class="small" id="g-${slot}" hidden></p>
@@ -933,11 +1084,12 @@ function fillToday() {
   for (const slot of ["am", "pm"]) {
     const v = L[slot] || {}, dn = isDone(sel, slot), au = AUTO[sel] && AUTO[sel][slot];
     setV(slot + "-done", dn); setV(slot + "-rpe", v.rpe); setV(slot + "-min", v.min);
+    if (d[slot] && d[slot].s === "lift") fillLifts(slot, d[slot], v);
     const card = document.getElementById("sess-" + slot); if (card) card.classList.toggle("is-done", dn);
     const gl = document.getElementById("g-" + slot);
     const rv = document.getElementById("rv-" + slot);
-    if (rv) { const g = au && d[slot] ? grade(d[slot], au) : []; rv.hidden = !g.length; rv.innerHTML = g.length ? "<strong>Review</strong>" + g.map(([ok, t]) => `<span class="${ok === 1 ? "ok" : ok === 0 ? "bad" : ""}">${ok === 1 ? "✓" : ok === 0 ? "⚠" : "•"} ${esc(t)}</span>`).join("") : ""; }
-    if (gl) { gl.hidden = !au; if (au) gl.textContent = "Garmin: " + [au.name, au.mins + " min", au.hr ? Math.round(au.hr) + " bpm avg" : "", au.w ? Math.round(au.w) + " W avg" : "", au.np ? Math.round(au.np) + " W normalized" : ""].filter(Boolean).join(" · "); }
+    if (rv) { const g = au && !au.sub && d[slot] ? grade(d[slot], au) : []; rv.hidden = !g.length; rv.innerHTML = g.length ? "<strong>Review</strong>" + g.map(([ok, t]) => `<span class="${ok === 1 ? "ok" : ok === 0 ? "bad" : ""}">${ok === 1 ? "✓" : ok === 0 ? "⚠" : "•"} ${esc(t)}</span>`).join("") : ""; }
+    if (gl) { gl.hidden = !au; if (au) gl.textContent = "Garmin: " + [au.sub ? au.sub + " (counts as done)" : "", au.name, au.mins + " min", au.hr ? Math.round(au.hr) + " bpm avg" : "", au.w ? Math.round(au.w) + " W avg" : "", au.np ? Math.round(au.np) + " W normalized" : ""].filter(Boolean).join(" · "); }
   }
   // routes from your own ride history
   for (const slot of ["am", "pm"]) {
@@ -961,7 +1113,7 @@ function fillToday() {
   const all = GA ? (GA.acts[sel] || []) : [], ac2 = document.getElementById("actsCard");
   ac2.hidden = !all.length;
   if (all.length) document.getElementById("actsList").innerHTML = `<tr><th>Time</th><th>Activity</th><th>Time</th><th>Avg HR</th><th>Load</th><th></th></tr>` + all.map(a =>
-    `<tr><td class="num">${esc(a.time)}</td><td>${esc(a.name)} <span class="small">${esc(a.type)}${a.km ? " · " + (a.km / 1.609).toFixed(1) + " mi" : ""}</span></td><td class="num">${durTxt(a.mins)}</td><td class="num">${a.hr ? Math.round(a.hr) : "—"}</td><td class="num">${a.load != null ? Math.round(a.load) : "—"}</td><td>${a.matched ? `<span class="badge plan">plan · ${a.matched.toUpperCase()}</span>` : '<span class="badge extra">extra</span>'}</td></tr>`).join("");
+    `<tr><td class="num">${esc(a.time)}</td><td>${esc(a.name)} <span class="small">${esc(a.type)}${a.km ? " · " + (a.km / 1.609).toFixed(1) + " mi" : ""}</span></td><td class="num">${durTxt(a.mins)}</td><td class="num">${a.hr ? Math.round(a.hr) : "—"}</td><td class="num">${a.load != null ? Math.round(a.load) : "—"}</td><td>${a.matched ? `<span class="badge plan">plan · ${a.matched.toUpperCase()}${a.sub ? " · " + esc(a.sub.toLowerCase()) : ""}</span>` : '<span class="badge extra">extra</span>'}</td></tr>`).join("");
   // adaptive context: yesterday's extras, week over plan
   const yExtra = extrasOf(prevKey(sel)).reduce((t, a) => t + (a.load || a.mins * .6), 0);
   let plannedTo = 0, doneTo = 0;
@@ -997,9 +1149,9 @@ function renderWeek() {
   document.getElementById("weekBody").innerHTML = wk.days.map(d => `<tr class="${d.key === TODAY ? "today" : ""}"><td><a href="#today" data-open="${d.key}">${DAYNAMES[d.i]} ${fmt(d.date)}</a>${extrasOf(d.key).map(a => `<span class="xtra">+ ${esc(a.name)} · ${durTxt(a.mins)}</span>`).join("")}</td><td>${cell(d, "am")}</td><td>${cell(d, "pm")}</td></tr>`).join("");
   const by = {}; let pl = 0, dn = 0, cnt = 0, cdn = 0;
   for (const d of wk.days) for (const o of sessions(d)) {
-    const k = o.s.s === "brick" ? "bike" : o.s.s; by[k] = by[k] || { p: 0, d: 0 };
+    const k = o.s.s === "brick" ? "bike" : o.s.s, kd = doneSport(d.key, o.slot, k); by[k] = by[k] || { p: 0, d: 0 }; by[kd] = by[kd] || { p: 0, d: 0 };
     by[k].p += o.s.m; pl += o.s.m; cnt++;
-    const m = doneMin(d.key, o.slot, o.s); by[k].d += m; dn += m; if (isDone(d.key, o.slot)) cdn++;
+    const m = doneMin(d.key, o.slot, o.s); by[kd].d += m; dn += m; if (isDone(d.key, o.slot)) cdn++;
   }
   let xm = 0, xn = 0, load = 0;
   for (const d of wk.days) { for (const a of extrasOf(d.key)) { xm += a.mins; xn++; } for (const a of (GA && GA.acts[d.key]) || []) load += a.load || 0; }
@@ -1084,7 +1236,7 @@ function renderGuide() {
     <tr><td>Run easy</td><td class="num">≤144 bpm</td><td>Most running</td></tr>
     <tr><td>Goal 70.3 run pace</td><td class="num">${T.GP}</td><td>Pace blocks and bricks; settles at 150–160 bpm</td></tr>`;
   document.getElementById("raceRp").textContent = `Hold ${T.RP}, set from your week 28 FTP.`;
-  const rows = [["Foundation · wk 1–8", "3×", ["fA", "fB", "fC"]], ["Base · wk 9–20", "2×", ["bA", "bB"]], ["Build · wk 21–28", "1–2×", ["bu"]], ["Peak / Taper", "1×", ["pk"]]];
+  const rows = [["Foundation · wk 1–8", "3×", ["fA", "fB", "fC"]], ["Base · wk 9–20", "2×", ["fA", "fB"]], ["Build · wk 21–28", "1–2×", ["bu"]], ["Peak / Taper", "1×", ["pk"]]];
   document.getElementById("liftTable").innerHTML = `<tr><th>Phase</th><th>Per week</th><th>Sessions</th></tr>` + rows.map(r => `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td>${r[2].map(k => `<strong>${LIFTS[k].name}:</strong> ${LIFTS[k].items.join(" · ")}`).join("<br>")}</td></tr>`).join("");
 }
 
@@ -1224,7 +1376,7 @@ function weekHours(w) {
     for (const o of sessions(d)) {
       plan += o.s.m; if (d.key <= TODAY) planTo += o.s.m;
       const k = o.s.s === "brick" || o.s.s === "key" ? "bike" : o.s.s;
-      by[k] += doneMin(d.key, o.slot, o.s);
+      by[doneSport(d.key, o.slot, k)] += doneMin(d.key, o.slot, o.s);
     }
     by.extra += extraMin(d.key);
   }
@@ -1274,8 +1426,9 @@ function renderHeader() {
 }
 function render() {
   const a = document.activeElement && document.activeElement.id;
+  applyOverrides();
   if (builtFor !== sel + "|" + settings.ftp + "|" + settings.css + "|" + settings.gp) buildToday();
-  fillToday(); renderWeek(); renderSeason(); renderProgress(); renderGuide(); renderHeader(); renderHourbar();
+  fillToday(); renderWeek(); renderSeason(); renderProgress(); renderGuide(); renderHeader(); renderHourbar(); renderCoach();
   if (a) { const e = document.getElementById(a); if (e && document.activeElement !== e) e.focus(); }
 }
 
@@ -1292,6 +1445,13 @@ document.addEventListener("change", e => {
   if (!t.dataset || !t.dataset.slot) return;
   const key = t.dataset.day || sel;
   setField(key, t.dataset.slot, t.dataset.f, t.type === "checkbox" ? t.checked : t.value);
+});
+document.addEventListener("input", e => {
+  const t = e.target; if (!t.dataset || !t.dataset.lift) return;
+  const L = logs[sel] = logs[sel] ? structuredClone(logs[sel]) : {}, S = L[t.dataset.lslot] = L[t.dataset.lslot] || {};
+  S.lifts = S.lifts || {}; S.lifts[t.dataset.lift] = Object.assign({}, S.lifts[t.dataset.lift], { [t.dataset.lf]: t.value });
+  if (t.dataset.lf === "r" && repsOf(t.value).length && typeof S.done !== "boolean") S.done = true;
+  save(sel); fillToday();
 });
 document.addEventListener("input", e => {
   const t = e.target; if (!t.dataset || !t.dataset.slot || t.type === "checkbox" || t.tagName === "SELECT") return;

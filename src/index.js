@@ -71,6 +71,74 @@ async function refresh(env) {
   }
 }
 
+// ---------- AI coach (Claude) ----------
+const SPORTS = ["swim", "bike", "run", "lift", "rest"];
+const COACH_TOOL = {
+  name: "suggest",
+  description: "Return the coaching review and any changes to the next 3 days of the plan.",
+  input_schema: {
+    type: "object",
+    properties: {
+      summary: { type: "string", description: "2-4 sentences: how the last days went and what matters next. Plain, direct." },
+      lifts: { type: "string", description: "One or two sentences on strength progress from the lift logs, or empty." },
+      changes: {
+        type: "array", maxItems: 6,
+        items: {
+          type: "object",
+          properties: {
+            date: { type: "string", description: "YYYY-MM-DD, one of the upcoming days given" },
+            slot: { type: "string", enum: ["am", "pm"] },
+            sport: { type: "string", enum: SPORTS },
+            minutes: { type: "integer", minimum: 0, maximum: 400 },
+            details: { type: "string", description: "The new session, written like the plan: e.g. '45 min easy ≤144 bpm' or '60 min Z2 {Z2}'. Use · between parts. For lifts, list exercises separated by ·" },
+            reason: { type: "string", description: "One sentence: why this change, citing the data." }
+          },
+          required: ["date", "slot", "sport", "minutes", "details", "reason"]
+        }
+      }
+    },
+    required: ["summary", "changes"]
+  }
+};
+const COACH_SYSTEM = `You are the endurance coach behind a 34-week IRONMAN 70.3 Lake George plan (race June 13, 2027). The athlete is a busy student.
+Each day you get: athlete settings, the last 7 days (planned sessions, what was actually done from Garmin, RPE, check-ins, wellness, lift logs, notes), and the next 3 days as planned.
+Decide whether the next 3 days should change. Default to NO changes: only adjust when the data clearly calls for it (missed or swapped key sessions, poor sleep/HRV/readiness, high fatigue or extra load, soreness, lifts stalling or jumping, illness noted).
+Rules: one hard session per day at most; never put a leg-heavy lift the day before the long ride; keep the long ride and long run unless fatigue is severe; keep weekly hours within about 15% of plan; a ride done instead of a run counts as aerobic work, so don't make the athlete repeat it.
+Keep the plan's notation: {Z2} {TEMPO} {SS} {RP} {CSS} {GP} tokens are filled with the athlete's zones; easy runs are "≤144 bpm". Only change sessions on the upcoming dates given. Each change replaces that whole slot. Use sport "rest" to remove a session.
+Always answer by calling the suggest tool exactly once (with an empty changes list when the plan should stand). Do not reply with plain text.`;
+
+async function anthropic(env, model, body) {
+  return fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+    body: JSON.stringify({ model, ...body })
+  });
+}
+async function coach(env, ctx) {
+  const body = { max_tokens: 4000, system: COACH_SYSTEM, tools: [COACH_TOOL], tool_choice: { type: "auto" },
+    messages: [{ role: "user", content: JSON.stringify(ctx) }] };
+  let model = env.COACH_MODEL || "claude-sonnet-5-5", r = await anthropic(env, model, body);
+  if (r.status === 404) { // model retired: fall back to the newest Sonnet the key can use
+    const list = await (await fetch("https://api.anthropic.com/v1/models?limit=50", { headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" } })).json();
+    const alt = (list.data || []).find(m => /sonnet/.test(m.id));
+    if (alt) { model = alt.id; r = await anthropic(env, model, body); }
+  }
+  const j = await r.json();
+  if (!r.ok) throw new Error(`Claude ${r.status}: ${(j.error && j.error.message) || ""}`.slice(0, 240));
+  const tool = (j.content || []).find(c => c.type === "tool_use");
+  let out = tool ? tool.input : null;
+  if (!out) { // model answered in text: take the JSON object from it
+    const text = (j.content || []).filter(c => c.type === "text").map(c => c.text).join("\n"), m = text.match(/\{[\s\S]*\}/);
+    try { out = m ? JSON.parse(m[0]) : null; } catch (e) { out = null; }
+    if (!out) throw new Error("Claude didn't return a review. Try again.");
+  }
+  const dates = new Set((ctx.next || []).map(d => d.date));
+  const changes = (Array.isArray(out.changes) ? out.changes : []).filter(c => c && dates.has(c.date) && ["am", "pm"].includes(c.slot) && SPORTS.includes(c.sport))
+    .slice(0, 6).map(c => ({ date: c.date, slot: c.slot, sport: c.sport, minutes: Math.max(0, Math.min(400, Math.round(+c.minutes || 0))),
+      details: String(c.details || "").slice(0, 400), reason: String(c.reason || "").slice(0, 300) }));
+  return { forDate: ctx.today, createdAt: Date.now(), model, summary: String(out.summary || "").slice(0, 1200), lifts: String(out.lifts || "").slice(0, 600), changes };
+}
+
 export default {
   async scheduled(event, env, ctx) { if (env.INTERVALS_API_KEY) ctx.waitUntil(refresh(env)); },
 
@@ -120,6 +188,22 @@ export default {
         let g = await env.KV.get("garmin", "json");
         if (!g || url.searchParams.get("refresh") === "1" || Date.now() - (g.fetchedAt || 0) > 15 * 60e3) g = await refresh(env);
         return json(g);
+      }
+
+      if (p === "/api/coach" && req.method === "GET") return json((await env.KV.get("coach", "json")) || {});
+      if (p === "/api/coach" && req.method === "POST") {
+        if (!env.ANTHROPIC_API_KEY) return json({ error: "no_ai_key" }, 503);
+        const raw = await req.text();
+        if (raw.length > 80000) return json({ error: "bad_body" }, 400);
+        const ctx = JSON.parse(raw);
+        if (!ctx || !/^\d{4}-\d{2}-\d{2}$/.test(ctx.today) || !Array.isArray(ctx.next)) return json({ error: "bad_body" }, 400);
+        const n = (await env.KV.get("coachCount", "json")) || {};
+        const used = n.date === ctx.today ? n.count : 0;
+        if (used >= 8) return json({ error: "daily_limit" }, 429);
+        await env.KV.put("coachCount", JSON.stringify({ date: ctx.today, count: used + 1 }));
+        const c = await coach(env, ctx);
+        await env.KV.put("coach", JSON.stringify(c));
+        return json(c);
       }
 
       if (p === "/api/push" && req.method === "POST") {
