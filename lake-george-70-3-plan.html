@@ -600,11 +600,11 @@ function weekPlan(r) {
     [br ? BR(lr, br) : B("Long ride " + lr), null], [R(`Long run ${lrun} min easy ≤144 bpm`), null]];
   if (ph === "Base") return [
     [S(s0), B("Spin 45 min easy {Z2}, or off")], [B(bq), LF("fA")], [R(runTxt(rn, true)), S(s1)], [B(be), LF("fB")],
-    [S(s2), R("30 min easy ≤144 bpm, or off if tired")],
+    [S(s2), n >= 13 ? R("40 min easy ≤144 bpm") : R("30 min easy ≤144 bpm, or off if tired")],
     [br ? BR(lr, br) : B("Long ride " + lr), null], [R(`Long run ${lrun} min easy ≤144 bpm`), x ? S(x) : SUNSWIM.has(n) ? S("30 min: easy drills · sighting 6×25") : null]];
   return [
     [S(s0), OFF("Off · mobility 15 min")], [B(bq), LF(ph === "Peak" ? "pk" : "bu")], [R(rn), S(s1)],
-    [B(be), R("30 min easy ≤144 bpm" + (ph === "Build" ? " (optional 2nd lift after)" : ""), 30)], [S(s2), OFF()],
+    [B(be), R("30 min easy ≤144 bpm" + (ph === "Build" ? " (optional 2nd lift after)" : ""), 30)], [S(s2), ph === "Build" ? R("40 min easy ≤144 bpm") : OFF()],
     [BR(lr, br), null], [R(typeof lrun === "number" ? `Long run ${lrun} min easy ≤144 bpm` : "Long run " + lrun, typeof lrun === "number" ? lrun : 105), SUNSWIM_B.has(n) ? S("30 min: easy recovery swim, loosen the legs") : null]];
 }
 const DAYNAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
