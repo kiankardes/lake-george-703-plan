@@ -451,7 +451,7 @@ th { font-size: 12.5px; font-weight: 650; }
 
     <div class="card">
       <h3>Strength</h3>
-      <p>3 lifts a week in Foundation, 2 heavy in Base, 1–2 in Build, 1 short in Peak, none in race week. Lift in the PM on hard days, never the day before the long ride, and stop 2–3 reps short of failure.</p>
+      <p>3 lifts a week in Foundation, 2 heavy in Base, 1–2 in Build, 1 short in Peak, none in race week. Lift in the AM, with the day's other session in the PM; never the day before the long ride, and stop 2–3 reps short of failure.</p>
       <div class="scroll"><table id="liftTable"></table></div>
     </div>
 
@@ -706,6 +706,7 @@ const DAYNAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const pad = v => String(v).padStart(2, "0");
 const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const fmt = d => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+const LIFT_AM_FROM = "2026-11-04";
 const DAYS = [], WEEKS = {};
 for (const r of D) {
   const plan = weekPlan(r);
@@ -713,6 +714,8 @@ for (const r of D) {
   plan.forEach((pair, i) => {
     const d = new Date(START); d.setDate(d.getDate() + 7 * (r[0] - 1) + i);
     const day = { key: keyOf(d), date: d, i, wk: r[0], ph: r[1], am: pair[0], pm: pair[1] };
+    // Lifts go in the morning from Nov 4, 2026 on (earlier days keep their logged AM/PM slots).
+    if (day.key >= LIFT_AM_FROM && day.pm && day.pm.s === "lift") [day.am, day.pm] = [day.pm, day.am];
     DAYS.push(day); WEEKS[r[0]].days.push(day);
   });
 }
