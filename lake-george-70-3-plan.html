@@ -168,11 +168,21 @@ th { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform
 .goal.ok .mk { color: var(--good); } .goal.bad .mk { color: var(--bad); } .goal.wait .mk { color: var(--muted); }
 .xtra { display: block; font-size: 12px; color: var(--warn); margin-top: 3px; }
 .note { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 10px 14px; border-radius: 0 6px 6px 0; }
-.habits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.habits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .habits { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.habits .hhead { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--display); font-weight: 700; font-size: 17px; font-stretch: 75%; }
+.habits .hhead span { font-family: var(--body); font-weight: 400; font-size: 13px; color: var(--muted); font-stretch: 100%; }
+.prio { margin: 0; padding: 9px 12px; border-radius: 6px; border-left: 4px solid var(--pc, var(--accent)); background: var(--pcs, var(--soft)); font-size: 14px; line-height: 1.4; }
+.prio b { font-weight: 700; }
+.prio.top { --pc: var(--bad); --pcs: var(--bad-soft); }
+.prio.cap { --pc: var(--warn); --pcs: var(--warn-soft); }
+.verdict { text-decoration: none; color: inherit; }
+.verdict .vlink { margin-left: auto; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.card.sess.priority { box-shadow: 0 0 0 2px var(--bad); }
 .habit { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--hc, var(--line)); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .habit.ok { --hc: var(--good); } .habit.warn { --hc: var(--warn); } .habit.bad { --hc: var(--bad); }
 .habit .hl { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.habit .hv { font-family: var(--display); font-size: 26px; font-weight: 700; line-height: 1.05; }
+.habit .hv { font-family: var(--display); font-size: 24px; font-weight: 700; line-height: 1.05; }
 .habit .hv small { font-family: var(--body); font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 4px; }
 .habit .hf { font-size: 12.5px; color: var(--muted); }
 .habit .meter { height: 6px; border-radius: 3px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; position: relative; }
@@ -199,6 +209,7 @@ nav.tabs button { text-transform: none; font-size: 18px; font-weight: 680; paddi
 .hard { font-size: 12px; font-weight: 650; border-radius: 999px; padding: 1px 8px; }
 th { font-size: 12.5px; font-weight: 650; }
 .advice b { text-transform: none; font-size: 19px; letter-spacing: 0; }
+.verdict { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
 .habit .hl { font-size: 13px; font-weight: 600; }
 .strip .d { font-size: 13px; }
 .card { border-radius: 10px; }
@@ -321,33 +332,6 @@ th { font-size: 12.5px; font-weight: 650; }
       <span class="count" id="count"></span>
     </div>
     <div class="dist"><span>1.2 mi swim</span><span>56 mi bike</span><span>13.1 mi run</span><span>Sunday, June 13, 2027</span><span id="phase"></span></div>
-    <div class="goal5" id="goal5" aria-label="Road to a 5-hour finish">
-      <div class="g5-head">
-        <div class="g5-target"><span class="g5-eye">The goal</span><span class="g5-big">5:00</span></div>
-        <div class="g5-now"><span class="g5-eye">Projected today</span><span class="g5-big num" id="g5Now">–</span></div>
-        <div class="g5-gap" id="g5Gap"></div>
-      </div>
-      <div class="g5-rows" id="g5Rows"></div>
-      <p class="g5-foot" id="g5Foot"></p>
-    </div>
-    <div class="consist" id="consist" aria-label="Consistency">
-      <div class="cs-head"><span class="hb-title">Consistency</span><span class="hb-num" id="csNum"></span></div>
-      <div class="cs-weeks" id="csWeeks" role="img" aria-label="Share of planned sessions done each week"></div>
-      <div class="hb-foot"><span id="csNote"></span><span class="cs-key"><i class="ok"></i>≥85% <i class="mid"></i>60–84% <i class="low"></i>&lt;60%</span></div>
-    </div>
-    <div class="hourbar">
-      <div class="hb-block">
-        <div class="hb-head"><span class="hb-title">This week</span><span class="hb-num num" id="hbWeekNum"></span></div>
-        <div class="hb-track" id="hbWeekTrack" role="img" aria-label="Hours done this week by sport"></div>
-        <div class="hb-foot"><span class="hb-legend" id="hbWeekLeg"></span><span id="hbWeekNote"></span></div>
-      </div>
-      <div class="hb-block">
-        <div class="hb-head"><span class="hb-title">Road to Lake George</span><span class="hb-num num" id="hbSeasonNum"></span></div>
-        <svg class="hb-profile" id="hbProfile" viewBox="0 0 680 84" preserveAspectRatio="none" role="img" aria-label="Season course profile: weekly planned hours with completed hours filled in"></svg>
-        <div class="hb-foot"><span id="hbSeasonNote"></span></div>
-      </div>
-    </div>
-    <div class="habits" id="habits" hidden aria-label="Habit scorecard"></div>
     <div hidden><div id="seasonbar"></div></div>
     <span class="sync" id="sync">Loading your log…</span>
   </header>
@@ -362,6 +346,7 @@ th { font-size: 12.5px; font-weight: 650; }
 
   <!-- TODAY -->
   <section class="panel" id="p-today" role="tabpanel">
+    <div class="habits" id="habits" hidden aria-label="This week's fixes"></div>
     <div class="daynav">
       <button class="btn" id="prevDay" aria-label="Previous day">‹</button>
       <h2 id="dayTitle"></h2>
@@ -369,9 +354,10 @@ th { font-size: 12.5px; font-weight: 650; }
       <button class="btn" id="nextDay" aria-label="Next day">›</button>
     </div>
     <div class="strip" id="strip"></div>
+    <a class="advice verdict" id="verdict" href="#ckcard" hidden></a>
     <div class="grid2" id="sessions"></div>
 
-    <div class="card">
+    <div class="card" id="ckcard">
       <h3>Morning check-in</h3>
       <p class="small">Enter these from your Garmin when you wake up. The dashboard tells you whether to train as written, trim it, or back off.</p>
       <div class="checkin">
@@ -433,12 +419,33 @@ th { font-size: 12.5px; font-weight: 650; }
 
   <!-- SEASON -->
   <section class="panel" id="p-season" role="tabpanel" hidden>
-    <div class="card">
-      <h3>Projected race time</h3>
-      <p class="small">From your current CSS, FTP and goal pace. The bike split is a rough physics estimate for a hilly course; it gets faster once you tick off aero bars below. Updates every time you log a test.</p>
-      <div class="stats" id="projection"></div>
+    <div class="goal5" id="goal5" aria-label="Road to a 5-hour finish">
+      <div class="g5-head">
+        <div class="g5-target"><span class="g5-eye">The goal</span><span class="g5-big">5:00</span></div>
+        <div class="g5-now"><span class="g5-eye">Projected today</span><span class="g5-big num" id="g5Now">–</span></div>
+        <div class="g5-gap" id="g5Gap"></div>
+      </div>
+      <div class="g5-rows" id="g5Rows"></div>
+      <p class="g5-foot" id="g5Foot"></p>
     </div>
-    <div class="stats" id="seasonStats"></div>
+    <div class="consist" id="consist" aria-label="Consistency">
+      <div class="cs-head"><span class="hb-title">Consistency</span><span class="hb-num" id="csNum"></span></div>
+      <div class="cs-weeks" id="csWeeks" role="img" aria-label="Share of planned sessions done each week"></div>
+      <div class="hb-foot"><span id="csNote"></span><span class="cs-key"><i class="ok"></i>≥85% <i class="mid"></i>60–84% <i class="low"></i>&lt;60%</span></div>
+    </div>
+    <div class="hourbar">
+      <div class="hb-block">
+        <div class="hb-head"><span class="hb-title">This week</span><span class="hb-num num" id="hbWeekNum"></span></div>
+        <div class="hb-track" id="hbWeekTrack" role="img" aria-label="Hours done this week by sport"></div>
+        <div class="hb-foot"><span class="hb-legend" id="hbWeekLeg"></span><span id="hbWeekNote"></span></div>
+      </div>
+      <div class="hb-block">
+        <div class="hb-head"><span class="hb-title">Road to Lake George</span><span class="hb-num num" id="hbSeasonNum"></span></div>
+        <svg class="hb-profile" id="hbProfile" viewBox="0 0 680 84" preserveAspectRatio="none" role="img" aria-label="Season course profile: weekly planned hours with completed hours filled in"></svg>
+        <div class="hb-foot"><span id="hbSeasonNote"></span></div>
+      </div>
+    </div>
+    <div hidden><div class="stats" id="projection"></div><div class="stats" id="seasonStats"></div></div>
     <div class="card">
       <h3>Fitness, fatigue, form</h3>
       <div class="legend"><span><i style="background:var(--accent)"></i>Fitness (42-day load)</span><span><i style="background:var(--bike)"></i>Fatigue (7-day load)</span></div>
@@ -707,6 +714,9 @@ const WHY = {
   key: "Dress rehearsal. Practice everything you'll do on race day."
 };
 const HARD = /tempo|sweet spot|race power|goal pace|time trial|test|threshold|rehearsal|tune-up|half-marathon effort|@ \{|fast|race effort|race pace|pickups|openers/i;
+// "no tempo", "no strides", "without pickups" describe what to skip, so they must not make a session hard
+const unNeg = t => String(t || "").replace(/\b(no|not|skip|without|instead of)\s+[^·,.;)]*/gi, "");
+const isHard = t => HARD.test(unNeg(t));
 function durOf(t, s) {
   const h = t.match(/(\d+):(\d\d)(?!\/)/), m = t.match(/(?<![×\d])(\d+)\s?min/);
   if (h && (!m || t.indexOf(h[0]) < t.indexOf(m[0]))) return +h[1] * 60 + +h[2];
@@ -782,8 +792,8 @@ function classLayout(plan) {
   const of = t => wk.filter(s => s.s === t);
   const L = of("lift"), Sw = of("swim"), Bk = of("bike"), Rn = of("run"), other = wk.filter(s => !["lift", "swim", "bike", "run"].includes(s.s));
   const ti = Sw.findIndex(s => /^Test:/.test(s.t)); const test = ti >= 0 ? Sw.splice(ti, 1)[0] : null;
-  const hb = Bk.findIndex(s => HARD.test(s.t)), bHard = Bk.splice(hb >= 0 ? hb : 0, 1)[0] || null, bEasy = Bk.length ? Bk.pop() : null;
-  const hr = Rn.findIndex(s => HARD.test(s.t)), rHard = hr >= 0 ? Rn.splice(hr, 1)[0] : null;
+  const hb = Bk.findIndex(s => isHard(s.t)), bHard = Bk.splice(hb >= 0 ? hb : 0, 1)[0] || null, bEasy = Bk.length ? Bk.pop() : null;
+  const hr = Rn.findIndex(s => isHard(s.t)), rHard = hr >= 0 ? Rn.splice(hr, 1)[0] : null;
   const rMon = Rn.shift() || null, rWed = rHard || Rn.shift() || null;
   const out = [[L.shift() || null, rMon], [Sw.shift() || null, bHard], [L.shift() || null, rWed], [test || Sw.shift() || null, bEasy], [L.shift() || null, null]];
   const put = (s, slots) => { for (const [d, k] of slots) if (!out[d][k]) { out[d][k] = s; return; } };
@@ -1071,18 +1081,22 @@ function liftTarget(name, before, half) {
 }
 function liftTable(slot, s) {
   const ex = exOf(s);
-  return `<table class="lifts"><tr><th></th><th>Exercise · target</th><th>lb</th><th>Reps per set</th></tr>` + ex.map((x, i) => `<tr>
+  return `<p class="small" id="${slot}-lgen" hidden></p><table class="lifts"><tr><th></th><th>Exercise · target</th><th>lb</th><th>Reps per set</th></tr>` + ex.map((x, i) => `<tr>
     <td class="grp">${x.g}</td><td>${esc(x.n)}<br><span class="tgt" id="${slot}-lt-${i}"></span></td>
     <td style="width:70px"><input id="${slot}-lw-${i}" type="number" min="0" max="999" step="2.5" inputmode="decimal" placeholder="${BW.test(x.n) ? "BW" : ""}" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="w"></td>
     <td style="width:110px"><input id="${slot}-lr-${i}" type="text" inputmode="numeric" placeholder="10,10,9" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="r"></td></tr>`).join("") + `</table>`;
 }
 function fillLifts(slot, s, L) {
-  const half = /half the sets/.test(s.t), act = document.activeElement;
+  const half = /half the sets/.test(s.t), act = document.activeElement, generic = [];
   exOf(s).forEach((x, i) => {
     const v = (L.lifts || {})[x.n] || {};
     for (const [f, id] of [["w", `${slot}-lw-${i}`], ["r", `${slot}-lr-${i}`]]) { const e = document.getElementById(id); if (e && e !== act) e.value = v[f] ?? ""; }
-    const t = document.getElementById(`${slot}-lt-${i}`); if (t) t.textContent = liftTarget(x.n, sel, half);
+    const t = document.getElementById(`${slot}-lt-${i}`), tg = liftTarget(x.n, sel, half);
+    if (t) { t.textContent = /last /.test(tg) ? tg : ""; t.hidden = !t.textContent; }
+    if (!/last /.test(tg)) generic.push(BW.test(x.n) ? "bw" : "w");
   });
+  const g = document.getElementById(`${slot}-lgen`), sets = half ? 2 : 3;
+  if (g) { g.hidden = !generic.length; g.innerHTML = generic.length ? `<strong>First time through:</strong> ${sets}×8–12 with a weight you could lift ~12 times${generic.includes("bw") ? "; bodyweight moves, as many clean reps as you can with 2 left in the tank" : ""}. Targets appear once you log a set.` : ""; }
 }
 
 // ---------- AI coach ----------
@@ -1179,7 +1193,7 @@ function hotEasy(k) {
   const d = BYKEY[k]; if (!d || !AUTO[k]) return "";
   for (const o of sessions(d)) {
     const a = AUTO[k][o.slot]; if (a && a.sport === "squash") return "slot became squash (squash is intervals)";
-    if (!a || a.sub || HARD.test(o.s.t)) continue;
+    if (!a || a.sub || isHard(o.s.t)) continue;
     const np = a.np || a.w;
     if ((o.s.s === "bike" || o.s.s === "brick") && np && np > .80 * settings.ftp) return `ride (${Math.round(np)} W normalized)`;
     if (o.s.s === "run" && a.hr && a.hr > 150) return `run (${Math.round(a.hr)} bpm)`;
@@ -1210,7 +1224,7 @@ function advice(ck, hard, ctx) {
 }
 function stepsOf(s) {
   const body = X(s.t).replace(/^\s*(\d+:\d\d|\d+ min)\s*:\s*/, "");
-  const hard = HARD.test(s.t);
+  const hard = isHard(s.t);
   if (s.s === "lift") return { steps: s.items, hard: false };
   if (s.s === "rest") return { steps: [body], hard: false };
   if (s.s === "brick") return { steps: ["Ride: " + X(s.ride), "Transition fast, then run: " + X(s.run)], hard };
@@ -1220,7 +1234,7 @@ function stepsOf(s) {
   return { steps: parts, hard };
 }
 function feelOf(s) {
-  const t = s.t;
+  const t = unNeg(s.t);
   if (s.s === "lift") return "Feel: stop every set with 2–3 reps left in the tank.";
   if (/test|time trial/i.test(t)) return "Feel: all-out but evenly paced; don't start too fast.";
   if (/\{(SS|SSH)\}/.test(t)) return "Feel: RPE 7/10. Hard but controlled; you could do one more rep.";
@@ -1264,6 +1278,7 @@ function buildToday() {
     el.className = "card sess " + s.s; el.id = "sess-" + slot;
     const title = s.s === "lift" ? esc(s.t) : s.s === "rest" ? "Rest" : `${ST[s.s]} · ${durTxt(s.m)}`;
     el.innerHTML = `<div class="sesshead"><span class="slot">${slot.toUpperCase()}</span><span class="chip">${ST[s.s]}</span><h3>${title}</h3>${hard ? '<span class="hard">Hard</span>' : ""}</div>
+      <p class="prio" id="pr-${slot}" hidden></p>
       ${s.coach ? `<p class="small coachnote"><strong>Coach change:</strong> ${esc(s.coach.reason)} <button class="btn" data-cundo="${sel}|${slot}">Undo</button></p>` : ""}
       ${exOf(s).length ? liftTable(slot, s) : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
       ${feelOf(s) ? `<p class="why"><strong>${esc(feelOf(s))}</strong></p>` : ""}
@@ -1279,6 +1294,22 @@ function buildToday() {
     box.appendChild(el);
   });
   builtFor = sel + "|" + settings.ftp + "|" + settings.css + "|" + settings.gp;
+}
+function fillPriority() {
+  const d = BYKEY[sel], h = habitStats();
+  for (const slot of ["am", "pm"]) {
+    const el = document.getElementById("pr-" + slot), card = document.getElementById("sess-" + slot), s = d[slot];
+    if (!el) continue;
+    let cls = "", msg = "";
+    if (h && s && sel >= TODAY) {
+      const hard = stepsOf(s).hard, es = h.easyShareThisWeek;
+      if (s.s === "swim" && h.daysSinceSwim >= 3) { cls = "top"; msg = `<b>Top priority.</b> ${h.lastSwim ? h.daysSinceSwim : h.daysSinceSwim + "+"} days since your last swim, and the swim is your biggest limiter. If the day gets squeezed, cut something else.`; }
+      else if (s.s === "run" && !hard) { cls = "cap"; msg = `<b>Hard cap: 144 bpm.</b>${h.recentRunAvgHR.length ? ` Your last runs averaged ${h.recentRunAvgHR.slice(-3).join(", ")} bpm.` : ""} Walk the moment you pass 144. Slow is the point.`; }
+      else if (s.s === "bike" && !hard && es && es.pct < 75) { cls = "cap"; msg = `<b>Ceiling: ${Math.round(.75 * settings.ftp)} W.</b> Easy share is ${es.pct}% this week against a 75% target. Smooth pedaling, no surges on climbs.`; }
+    }
+    el.hidden = !msg; el.className = "prio " + cls; el.innerHTML = msg;
+    if (card) card.classList.toggle("priority", cls === "top");
+  }
 }
 function fillToday() {
   const d = BYKEY[sel], L = logs[sel] || {}, act = document.activeElement;
@@ -1324,7 +1355,7 @@ function fillToday() {
   const yExtra = extrasOf(prevKey(sel)).reduce((t, a) => t + (a.load || a.mins * .6), 0);
   let plannedTo = 0, doneTo = 0;
   for (const x of WEEKS[d.wk].days) { if (x.key > sel) break; for (const o of sessions(x)) { plannedTo += o.s.m; doneTo += doneMin(x.key, o.slot, o.s); } doneTo += extraMin(x.key); }
-  const hard = [d.am, d.pm].some(s => s && HARD.test(s.t));
+  const hard = [d.am, d.pm].some(s => s && isHard(s.t));
   const yHot = hotEasy(prevKey(sel));
   const a = advice(ckEff(sel), hard, { form, yExtra, over: doneTo - plannedTo, yHot }), ad = document.getElementById("advice");
   // swim count: the #1 limiter gets a running tally on every day of the week
@@ -1336,6 +1367,7 @@ function fillToday() {
     sc.innerHTML = `<b>Swims this week: ${done} of ${sw.length}</b> · ${done >= sw.length ? "all done." : left ? `${left} still on the calendar. Swimming is your biggest limiter, so these come first.` : "none left this week. Make the first one next week non-negotiable."}`;
   }
   ad.className = "advice " + a.c; ad.innerHTML = `<b>${esc(a.h)}</b>${esc(a.t)}`;
+  const vd = document.getElementById("verdict"); vd.hidden = sel !== TODAY; vd.className = "advice verdict " + a.c; vd.innerHTML = `<b>${esc(a.h)}</b>${esc(a.t)}<span class="vlink">Check-in ↓</span>`;
   // strip
   const wk = WEEKS[d.wk], strip = document.getElementById("strip");
   strip.innerHTML = wk.days.map(x => {
@@ -1457,7 +1489,7 @@ function renderGuide() {
 
 // ---------- session grading ----------
 function grade(s, a) {
-  const out = [], f = settings.ftp, hard = HARD.test(s.t);
+  const out = [], f = settings.ftp, hard = isHard(s.t);
   const plan = s.s === "brick" ? durOf(s.ride, "bike") : s.m;
   const r = a.mins / (plan || 1);
   if (r < .7) out.push([0, `Short: ${a.mins} of ${plan} min. Don't make it up tomorrow; just hit the next one.`]);
@@ -1485,7 +1517,7 @@ function weekGoals(n) {
     tot++; if (isDone(d.key, o.slot)) dn++;
     if (o.s.s === "swim") { sw++; if (isDone(d.key, o.slot)) swd++; }
     const a = AUTO[d.key] && AUTO[d.key][o.slot];
-    if (o.s.s === "run" && !HARD.test(o.s.t) && a && a.hr) { er++; if (a.hr <= 144) erOk++; }
+    if (o.s.s === "run" && !isHard(o.s.t) && a && a.hr) { er++; if (a.hr <= 144) erOk++; }
   }
   mark(dn >= tot * .9, `Hit 90% of sessions: ${dn} of ${tot}`, !ended && dn < tot * .9);
   if (sw) mark(swd >= sw, `All ${sw} swims done: ${swd} so far (swim is your biggest limiter)`, !ended && swd < sw);
@@ -1668,12 +1700,12 @@ function renderHabits() {
   const rnCls = !h.runsThisWeek ? "" : h.easyRunsUnderCap === h.runsThisWeek ? "ok" : h.easyRunsUnderCap ? "warn" : "bad";
   const rnFoot = !h.runsThisWeek ? (h.recentRunAvgHR.length ? `Recent runs: ${h.recentRunAvgHR.join(", ")} bpm. Use run-walk to stay ≤144.` : "No runs synced yet.") : h.easyRunsUnderCap === h.runsThisWeek ? "Every run at or under 144. Keep it." : "Walk 1 min every 4, and any time HR passes 144.";
   const rp = h.ctlRamp7d, rpCls = rp == null ? "" : rp <= 5 ? "ok" : rp <= 7 ? "warn" : "bad";
-  const rpFoot = rp == null ? "Needs a week of Garmin data." : rp <= 5 ? `Fitness ${h.ctl}. Sustainable build.` : `Fitness ${h.ctl}, rising too fast. Make the next easy day truly easy.`;
-  box.innerHTML =
-    tile(swCls, "Days since last swim", h.lastSwim ? sw : sw + "+", sw === 1 ? "day" : "days", swFoot) +
-    tile(esCls, "Easy share this week", es ? es.pct + "%" : "—", "target ≥75%", esFoot, es ? meter(es.pct, 75) : "") +
-    tile(rnCls, "Easy runs ≤144 bpm", h.runsThisWeek ? `${h.easyRunsUnderCap}/${h.runsThisWeek}` : "—", "this week", rnFoot) +
-    tile(rpCls, "Fitness ramp, 7 days", rp == null ? "—" : (rp > 0 ? "+" : "") + rp, "target ≤5", rpFoot);
+  const rpFoot = rp == null ? "Needs a week of data." : rp <= 5 ? `Fitness ${h.ctl}. Sustainable.` : `Fitness ${h.ctl}. Too fast, ease off.`;
+  box.innerHTML = `<div class="hhead">This week's fixes<span>Week ${curWk} · from Garmin</span></div>` +
+    tile(swCls, "Days since swim", h.lastSwim ? sw : sw + "+", sw === 1 ? "day" : "days", sw <= 3 ? "On rhythm. Every 3 days max." : "Biggest limiter. Swim next.") +
+    tile(esCls, "Easy share", es ? es.pct + "%" : "—", "≥75%", !es ? "Nothing synced yet this week." : es.pct >= 75 ? "Good balance." : `Easy rides under ${Math.round(.75 * settings.ftp)} W.`, es ? meter(es.pct, 75) : "") +
+    tile(rnCls, "Runs ≤144 bpm", h.runsThisWeek ? `${h.easyRunsUnderCap}/${h.runsThisWeek}` : "—", "this week", !h.runsThisWeek ? (h.recentRunAvgHR.length ? `Last runs ${h.recentRunAvgHR.slice(-3).join(", ")}.` : "No runs synced yet.") : h.easyRunsUnderCap === h.runsThisWeek ? "All under the cap." : "Run-walk: walk at 144.") +
+    tile(rpCls, "Fitness ramp", rp == null ? "—" : (rp > 0 ? "+" : "") + rp, "≤5 / wk", rpFoot);
 }
 
 // ---------- Road to 5:00: projected splits (same model as Progress) vs a 5-hour budget ----------
@@ -1710,7 +1742,7 @@ function renderGoal() {
     requestAnimationFrame(tick);
   } else show(tot);
   document.getElementById("g5Gap").innerHTML = gap > 30 ? `<b>${Math.round(gap / 60)} min to find</b>Solid line = where you'd finish today. Black tick = the 5:00 budget. Shaded part = time to cut.` : `<b>On pace for sub-5</b>Every split is at or under budget. Hold it.`;
-  document.getElementById("g5Foot").textContent = "Uses your latest tests (log them on the Progress tab). The bike is a physics estimate for a hilly course, and the 2027 course isn't published yet. The 34-week plan closes most of this gap. The rest comes from showing up every week.";
+  document.getElementById("g5Foot").textContent = "Uses your latest tests (log them below). The bike is a physics estimate for a hilly course, and the 2027 course isn't published yet. The 34-week plan closes most of this gap. The rest comes from showing up every week.";
   if (!goalEntered) { const box = document.getElementById("goal5"); box.classList.add("enter"); setTimeout(() => box.classList.remove("enter"), 2200); goalEntered = matchMedia("(prefers-reduced-motion: no-preference)").matches ? "running" : true; }
 }
 function renderConsistency() {
@@ -1751,7 +1783,7 @@ function render() {
   const a = document.activeElement && document.activeElement.id;
   applyOverrides();
   if (builtFor !== sel + "|" + settings.ftp + "|" + settings.css + "|" + settings.gp) buildToday();
-  fillToday(); renderWeek(); renderSeason(); renderProgress(); renderGuide(); renderHeader(); renderHourbar(); renderHabits(); renderCoach(); renderGoal(); renderConsistency();
+  fillToday(); fillPriority(); renderWeek(); renderSeason(); renderProgress(); renderGuide(); renderHeader(); renderHourbar(); renderHabits(); renderCoach(); renderGoal(); renderConsistency();
   if (a) { const e = document.getElementById(a); if (e && document.activeElement !== e) e.focus(); }
 }
 
