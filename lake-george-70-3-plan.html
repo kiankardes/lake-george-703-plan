@@ -699,7 +699,7 @@ function weekPlan(r) {
     [br ? BR(lr, br) : B("Long ride " + lr), null], [R(`Long run ${lrun} min easy ≤144 bpm`), x ? S(x) : SUNSWIM.has(n) ? S("30 min: easy drills · sighting 6×25") : null]];
   return [
     [S(s0), OFF("Off · mobility 15 min")], [B(bq), LF(ph === "Peak" ? "pk" : "bu")], [R(rn), S(s1)],
-    [B(be), R("30 min easy ≤144 bpm" + (ph === "Build" ? " (optional 2nd lift after)" : ""), 30)], [S(s2), ph === "Build" ? R("40 min easy ≤144 bpm") : OFF()],
+    [B(be), R("30 min easy ≤144 bpm" + (ph === "Build" ? " (optional 2nd lift Wed AM)" : ""), 30)], [S(s2), ph === "Build" ? R("40 min easy ≤144 bpm") : OFF()],
     [BR(lr, br), null], [R(typeof lrun === "number" ? `Long run ${lrun} min easy ≤144 bpm` : "Long run " + lrun, typeof lrun === "number" ? lrun : 105), SUNSWIM_B.has(n) ? S("30 min: easy recovery swim, loosen the legs") : null]];
 }
 const DAYNAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -707,9 +707,26 @@ const pad = v => String(v).padStart(2, "0");
 const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const fmt = d => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 const LIFT_AM_FROM = "2026-11-04";
+// From week 4 (Nov 9, 2026), weekday layout fits the class schedule: AM = lift Mon/Wed/Fri, swim Tue/Thu; PM = everything else.
+const TT_FROM_WK = 4;
+function classLayout(plan) {
+  const wk = plan.slice(0, 5).flat().filter(s => s && s.s !== "rest");
+  const of = t => wk.filter(s => s.s === t);
+  const L = of("lift"), Sw = of("swim"), Bk = of("bike"), Rn = of("run"), other = wk.filter(s => !["lift", "swim", "bike", "run"].includes(s.s));
+  const ti = Sw.findIndex(s => /^Test:/.test(s.t)); const test = ti >= 0 ? Sw.splice(ti, 1)[0] : null;
+  const hb = Bk.findIndex(s => HARD.test(s.t)), bHard = Bk.splice(hb >= 0 ? hb : 0, 1)[0] || null, bEasy = Bk.length ? Bk.pop() : null;
+  const hr = Rn.findIndex(s => HARD.test(s.t)), rHard = hr >= 0 ? Rn.splice(hr, 1)[0] : null;
+  const rMon = Rn.shift() || null, rWed = rHard || Rn.shift() || null;
+  const out = [[L.shift() || null, rMon], [Sw.shift() || null, bHard], [L.shift() || null, rWed], [test || Sw.shift() || null, bEasy], [L.shift() || null, null]];
+  const put = (s, slots) => { for (const [d, k] of slots) if (!out[d][k]) { out[d][k] = s; return; } };
+  for (const s of Sw) put(s, [[4, 1], [2, 1], [0, 1], [4, 0]]);
+  for (const s of [...L, ...Bk, ...Rn, ...other]) put(s, [[4, 0], [2, 1], [2, 0], [0, 0], [0, 1], [4, 1]]);
+  return out.map(([am, pm]) => [am || OFF(), pm]).concat(plan.slice(5));
+}
 const DAYS = [], WEEKS = {};
 for (const r of D) {
-  const plan = weekPlan(r);
+  let plan = weekPlan(r);
+  if (r[0] >= TT_FROM_WK && r[2] !== "c") plan = classLayout(plan);
   WEEKS[r[0]] = { n: r[0], ph: r[1], kind: r[2], note: r[12] || "", days: [] };
   plan.forEach((pair, i) => {
     const d = new Date(START); d.setDate(d.getDate() + 7 * (r[0] - 1) + i);
@@ -719,6 +736,8 @@ for (const r of D) {
     DAYS.push(day); WEEKS[r[0]].days.push(day);
   });
 }
+// Session start times (watch push + calendar): weekday AM 6:30, PM 4:00 after classes; weekend AM 9:00, PM 4:00.
+const slotTime = (d, slot) => slot === "pm" ? "16:00" : d.i >= 5 ? "09:00" : "06:30";
 const BYKEY = Object.fromEntries(DAYS.map(d => [d.key, d]));
 const today = new Date(); today.setHours(0, 0, 0, 0);
 const TODAY = keyOf(today);
@@ -934,7 +953,7 @@ function eventsFor(fromKey, n) {
   const out = [], i0 = Math.max(0, DAYS.findIndex(d => d.key >= fromKey));
   for (const d of DAYS.slice(i0, i0 + n)) for (const slot of ["am", "pm"]) {
     const s = d[slot]; if (!s || s.s === "rest") continue;
-    const at = d.key + (slot === "am" ? "T06:30:00" : "T17:00:00");
+    const at = d.key + "T" + slotTime(d, slot) + ":00";
     const ev = (type, name, desc, m, suf) => out.push({ category: "WORKOUT", start_date_local: at, type, name, description: desc, moving_time: m * 60, external_id: `lg703-${d.key}-${slot}${suf || ""}` });
     const plain = X(s.t);
     if (s.s === "bike") ev("Ride", "Bike · " + durTxt(s.m), plain + "\n\n" + bikeDoc(s.t, s.m), s.m);

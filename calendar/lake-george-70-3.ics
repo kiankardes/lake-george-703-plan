@@ -1,0 +1,3914 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Noah//Lake George 70.3//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Lake George 70.3
+X-WR-TIMEZONE:America/New_York
+BEGIN:VTIMEZONE
+TZID:America/New_York
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:19700308T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:19701101T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:lg703-2026-11-05-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261105T063000
+DTEND;TZID=America/New_York:20261105T070000
+SUMMARY:Run: 30 min easy ≤144 bpm · run-walk 4 min run / 1 min walk\, w
+ alk as …
+DESCRIPTION:30 min easy ≤144 bpm · run-walk 4 min run / 1 min walk\, wa
+ lk as soon as HR passes 144 · no strides\nWeek 3 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-05-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261105T160000
+DTEND;TZID=America/New_York:20261105T170000
+SUMMARY:Bike: 60 min easy\, stay under the 149–200 W ceiling\, lower hal
+ f of th…
+DESCRIPTION:60 min easy\, stay under the 149–200 W ceiling\, lower half 
+ of the range · no tempo\, no squash\nWeek 3 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-06-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261106T063000
+DTEND;TZID=America/New_York:20261106T071500
+SUMMARY:Lift C · upper
+DESCRIPTION:Lift C · upper\nA: Incline DB bench ↔ Lat pulldown\nB: Cabl
+ e fly ↔ Cable row\nC: Lateral raise ↔ Rear delt fly\nD: Biceps curl 
+ ↔ OH triceps extension\nE: Pallof press ↔ Bear hold\nWeek 3 · Founda
+ tion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-06-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261106T160000
+DTEND;TZID=America/New_York:20261106T164000
+SUMMARY:Swim: 40 min: 300 easy · 6×100 steady · 200 pull
+DESCRIPTION:40 min: 300 easy · 6×100 steady · 200 pull\nWeek 3 · Found
+ ation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-07-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261107T090000
+DTEND;TZID=America/New_York:20261107T104000
+SUMMARY:Brick: Long ride 1:30 Z2 149–200 W → brick run 10 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 1:30 Z2 149–200 W → brick run 10 min easy ≤144
+  bpm\nWeek 3 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-08-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261108T090000
+DTEND;TZID=America/New_York:20261108T093500
+SUMMARY:Run: Long run 35 min easy ≤144 bpm · run-walk: 4 min run / 1 mi
+ n walk…
+DESCRIPTION:Long run 35 min easy ≤144 bpm · run-walk: 4 min run / 1 min
+  walk\, and walk any time HR passes 144\nWeek 3 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-09-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261109T063000
+DTEND;TZID=America/New_York:20261109T065300
+SUMMARY:Lift A · pull + legs (half the sets)
+DESCRIPTION:Lift A · pull + legs (half the sets)\nA: RDL ↔ Pull-ups\nB:
+  Reverse lunge ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB 
+ curl ↔ Hanging leg raise ↔ Wall angels\nWeek 4 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-09-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261109T160000
+DTEND;TZID=America/New_York:20261109T163000
+SUMMARY:Run: 30 min easy ≤144 bpm + 4×20 s strides
+DESCRIPTION:30 min easy ≤144 bpm + 4×20 s strides\nWeek 4 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-10-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261110T063000
+DTEND;TZID=America/New_York:20261110T070000
+SUMMARY:Swim: 30 min: easy drills · 6×50 smooth
+DESCRIPTION:30 min: easy drills · 6×50 smooth\nWeek 4 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-10-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261110T160000
+DTEND;TZID=America/New_York:20261110T170000
+SUMMARY:Bike: 60 min easy 149–200 W with 3×1 min openers
+DESCRIPTION:60 min easy 149–200 W with 3×1 min openers\nWeek 4 · Found
+ ation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-11-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261111T063000
+DTEND;TZID=America/New_York:20261111T071500
+SUMMARY:Lift C · upper
+DESCRIPTION:Lift C · upper\nA: Incline DB bench ↔ Lat pulldown\nB: Cabl
+ e fly ↔ Cable row\nC: Lateral raise ↔ Rear delt fly\nD: Biceps curl 
+ ↔ OH triceps extension\nE: Pallof press ↔ Bear hold\nWeek 4 · Founda
+ tion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-12-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261112T063000
+DTEND;TZID=America/New_York:20261112T071000
+SUMMARY:Swim: Test: 400 easy warm-up · 400 m time trial · 5 min easy · 
+ 200 m …
+DESCRIPTION:Test: 400 easy warm-up · 400 m time trial · 5 min easy · 20
+ 0 m time trial · CSS = (400 time − 200 time) ÷ 2 (first CSS). Log it 
+ on the Progress tab.\nWeek 4 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-12-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261112T160000
+DTEND;TZID=America/New_York:20261112T164500
+SUMMARY:Bike: 45 min easy 149–200 W
+DESCRIPTION:45 min easy 149–200 W\nWeek 4 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-13-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261113T160000
+DTEND;TZID=America/New_York:20261113T163500
+SUMMARY:Swim: 35 min: easy aerobic · 6×50 smooth
+DESCRIPTION:35 min: easy aerobic · 6×50 smooth\nWeek 4 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-14-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261114T090000
+DTEND;TZID=America/New_York:20261114T100000
+SUMMARY:Bike: FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 
+ min al…
+DESCRIPTION:FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 mi
+ n all-out · 10 min cool-down. FTP = 95% of 20-min power. Log it on the P
+ rogress tab.\nWeek 4 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-15-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261115T090000
+DTEND;TZID=America/New_York:20261115T094000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 4 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-16-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261116T063000
+DTEND;TZID=America/New_York:20261116T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-16-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261116T160000
+DTEND;TZID=America/New_York:20261116T163000
+SUMMARY:Run: 30 min easy ≤144 bpm + 6×20 s strides · run-walk: 4 min r
+ un / 1 …
+DESCRIPTION:30 min easy ≤144 bpm + 6×20 s strides · run-walk: 4 min ru
+ n / 1 min walk\, and walk any time HR passes 144\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-17-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261117T063000
+DTEND;TZID=America/New_York:20261117T071000
+SUMMARY:Swim: 40 min: 300 easy · 8×100 @ 2:30/100 m\, 15 s rest · 200 e
+ asy
+DESCRIPTION:40 min: 300 easy · 8×100 @ 2:30/100 m\, 15 s rest · 200 eas
+ y\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-17-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261117T160000
+DTEND;TZID=America/New_York:20261117T171000
+SUMMARY:Bike: 70 min: 3×10 min sweet spot 234–250 W\, 5 min easy betwee
+ n
+DESCRIPTION:70 min: 3×10 min sweet spot 234–250 W\, 5 min easy between\
+ nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-18-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261118T063000
+DTEND;TZID=America/New_York:20261118T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 5 · Foundat
+ ion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-18-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261118T160000
+DTEND;TZID=America/New_York:20261118T163000
+SUMMARY:Run: 30 min easy ≤144 bpm · run-walk: 4 min run / 1 min walk\, 
+ and wal…
+DESCRIPTION:30 min easy ≤144 bpm · run-walk: 4 min run / 1 min walk\, a
+ nd walk any time HR passes 144\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-19-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261119T063000
+DTEND;TZID=America/New_York:20261119T071000
+SUMMARY:Swim: 40 min: 8×25 drill · 4×200 steady
+DESCRIPTION:40 min: 8×25 drill · 4×200 steady\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-19-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261119T160000
+DTEND;TZID=America/New_York:20261119T170000
+SUMMARY:Bike: 60 min Z2 149–200 W\, or squash
+DESCRIPTION:60 min Z2 149–200 W\, or squash\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-20-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261120T063000
+DTEND;TZID=America/New_York:20261120T071500
+SUMMARY:Lift C · upper
+DESCRIPTION:Lift C · upper\nA: Incline DB bench ↔ Lat pulldown\nB: Cabl
+ e fly ↔ Cable row\nC: Lateral raise ↔ Rear delt fly\nD: Biceps curl 
+ ↔ OH triceps extension\nE: Pallof press ↔ Bear hold\nWeek 5 · Founda
+ tion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-20-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261120T160000
+DTEND;TZID=America/New_York:20261120T164000
+SUMMARY:Swim: 40 min: 1\,200 m continuous
+DESCRIPTION:40 min: 1\,200 m continuous\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-21-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261121T090000
+DTEND;TZID=America/New_York:20261121T111000
+SUMMARY:Brick: Long ride 2:00 Z2\, last 20 min at 192–205 W → brick ru
+ n 10 min…
+DESCRIPTION:Long ride 2:00 Z2\, last 20 min at 192–205 W → brick run 1
+ 0 min easy ≤144 bpm\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-22-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261122T090000
+DTEND;TZID=America/New_York:20261122T094500
+SUMMARY:Run: Long run 45 min easy ≤144 bpm · run-walk: 4 min run / 1 mi
+ n walk…
+DESCRIPTION:Long run 45 min easy ≤144 bpm · run-walk: 4 min run / 1 min
+  walk\, and walk any time HR passes 144\nWeek 5 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-23-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261123T063000
+DTEND;TZID=America/New_York:20261123T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 6 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-23-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261123T160000
+DTEND;TZID=America/New_York:20261123T163000
+SUMMARY:Run: 30 min easy ≤144 bpm + 6×20 s strides · run-walk: 4 min r
+ un / 1 …
+DESCRIPTION:30 min easy ≤144 bpm + 6×20 s strides · run-walk: 4 min ru
+ n / 1 min walk\, and walk any time HR passes 144\nWeek 6 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-24-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261124T063000
+DTEND;TZID=America/New_York:20261124T070500
+SUMMARY:Swim: 35 min easy\, if the pool is open
+DESCRIPTION:35 min easy\, if the pool is open\nWeek 6 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-24-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261124T160000
+DTEND;TZID=America/New_York:20261124T170000
+SUMMARY:Bike: 60 min: 3×10 min sweet spot 234–250 W
+DESCRIPTION:60 min: 3×10 min sweet spot 234–250 W\nWeek 6 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-25-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261125T063000
+DTEND;TZID=America/New_York:20261125T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 6 · Foundat
+ ion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-25-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261125T160000
+DTEND;TZID=America/New_York:20261125T163000
+SUMMARY:Run: 30 min easy ≤144 bpm · run-walk: 4 min run / 1 min walk\, 
+ and wal…
+DESCRIPTION:30 min easy ≤144 bpm · run-walk: 4 min run / 1 min walk\, a
+ nd walk any time HR passes 144\nWeek 6 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-26-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261126T063000
+DTEND;TZID=America/New_York:20261126T070500
+SUMMARY:Swim: 35 min: 300 easy · 6×100 @ 2:30/100 m · 200 easy
+DESCRIPTION:35 min: 300 easy · 6×100 @ 2:30/100 m · 200 easy\nWeek 6 ·
+  Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-26-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261126T160000
+DTEND;TZID=America/New_York:20261126T164500
+SUMMARY:Bike: 45 min easy 149–200 W\, or off for travel
+DESCRIPTION:45 min easy 149–200 W\, or off for travel\nWeek 6 · Foundat
+ ion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-27-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261127T063000
+DTEND;TZID=America/New_York:20261127T071500
+SUMMARY:Lift C · upper
+DESCRIPTION:Lift C · upper\nA: Incline DB bench ↔ Lat pulldown\nB: Cabl
+ e fly ↔ Cable row\nC: Lateral raise ↔ Rear delt fly\nD: Biceps curl 
+ ↔ OH triceps extension\nE: Pallof press ↔ Bear hold\nWeek 6 · Founda
+ tion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-27-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261127T160000
+DTEND;TZID=America/New_York:20261127T163000
+SUMMARY:Swim: Optional: 30 min easy
+DESCRIPTION:Optional: 30 min easy\nWeek 6 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-28-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261128T090000
+DTEND;TZID=America/New_York:20261128T110000
+SUMMARY:Bike: Long ride 2:00 Z2 149–200 W if home; trainer 75 min if not
+DESCRIPTION:Long ride 2:00 Z2 149–200 W if home; trainer 75 min if not\n
+ Week 6 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-29-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261129T090000
+DTEND;TZID=America/New_York:20261129T094500
+SUMMARY:Run: Long run 45 min easy ≤144 bpm · run-walk: 4 min run / 1 mi
+ n walk…
+DESCRIPTION:Long run 45 min easy ≤144 bpm · run-walk: 4 min run / 1 min
+  walk\, and walk any time HR passes 144\nWeek 6 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-30-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261130T063000
+DTEND;TZID=America/New_York:20261130T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-11-30-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261130T160000
+DTEND;TZID=America/New_York:20261130T163500
+SUMMARY:Run: 35 min easy ≤144 bpm + 6×20 s strides · run-walk: 4 min r
+ un / 1 …
+DESCRIPTION:35 min easy ≤144 bpm + 6×20 s strides · run-walk: 4 min ru
+ n / 1 min walk\, and walk any time HR passes 144\nWeek 7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-01-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261201T063000
+DTEND;TZID=America/New_York:20261201T071500
+SUMMARY:Swim: 45 min: 300 easy · 10×100 @ 2:30/100 m · 200 easy
+DESCRIPTION:45 min: 300 easy · 10×100 @ 2:30/100 m · 200 easy\nWeek 7 
+ · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-01-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261201T160000
+DTEND;TZID=America/New_York:20261201T171500
+SUMMARY:Bike: 75 min: 2×20 min tempo 205–229 W\, 5 min easy between
+DESCRIPTION:75 min: 2×20 min tempo 205–229 W\, 5 min easy between\nWeek
+  7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-02-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261202T063000
+DTEND;TZID=America/New_York:20261202T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 7 · Foundat
+ ion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-02-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261202T160000
+DTEND;TZID=America/New_York:20261202T163500
+SUMMARY:Run: 35 min easy ≤144 bpm · run-walk: 4 min run / 1 min walk\, 
+ and wal…
+DESCRIPTION:35 min easy ≤144 bpm · run-walk: 4 min run / 1 min walk\, a
+ nd walk any time HR passes 144\nWeek 7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-03-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261203T063000
+DTEND;TZID=America/New_York:20261203T071500
+SUMMARY:Swim: 45 min: 1\,500 m continuous
+DESCRIPTION:45 min: 1\,500 m continuous\nWeek 7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-03-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261203T160000
+DTEND;TZID=America/New_York:20261203T170000
+SUMMARY:Bike: 60 min Z2 149–200 W\, or squash
+DESCRIPTION:60 min Z2 149–200 W\, or squash\nWeek 7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-04-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261204T063000
+DTEND;TZID=America/New_York:20261204T071500
+SUMMARY:Lift C · upper
+DESCRIPTION:Lift C · upper\nA: Incline DB bench ↔ Lat pulldown\nB: Cabl
+ e fly ↔ Cable row\nC: Lateral raise ↔ Rear delt fly\nD: Biceps curl 
+ ↔ OH triceps extension\nE: Pallof press ↔ Bear hold\nWeek 7 · Founda
+ tion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-04-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261204T160000
+DTEND;TZID=America/New_York:20261204T164500
+SUMMARY:Swim: 45 min: drills · 5×200 pull steady
+DESCRIPTION:45 min: drills · 5×200 pull steady\nWeek 7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-05-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261205T090000
+DTEND;TZID=America/New_York:20261205T111000
+SUMMARY:Brick: Long ride 2:00 Z2 149–200 W → brick run 10 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 2:00 Z2 149–200 W → brick run 10 min easy ≤144
+  bpm\nWeek 7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-06-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261206T090000
+DTEND;TZID=America/New_York:20261206T095000
+SUMMARY:Run: Long run 50 min easy ≤144 bpm · run-walk: 4 min run / 1 mi
+ n walk…
+DESCRIPTION:Long run 50 min easy ≤144 bpm · run-walk: 4 min run / 1 min
+  walk\, and walk any time HR passes 144\nWeek 7 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-07-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261207T063000
+DTEND;TZID=America/New_York:20261207T065300
+SUMMARY:Lift A · pull + legs (half the sets)
+DESCRIPTION:Lift A · pull + legs (half the sets)\nA: RDL ↔ Pull-ups\nB:
+  Reverse lunge ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB 
+ curl ↔ Hanging leg raise ↔ Wall angels\nWeek 8 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-07-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261207T160000
+DTEND;TZID=America/New_York:20261207T163000
+SUMMARY:Run: 30 min easy ≤144 bpm + 4×20 s strides
+DESCRIPTION:30 min easy ≤144 bpm + 4×20 s strides\nWeek 8 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-08-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261208T063000
+DTEND;TZID=America/New_York:20261208T070000
+SUMMARY:Swim: 30 min: easy drills · 6×50 smooth
+DESCRIPTION:30 min: easy drills · 6×50 smooth\nWeek 8 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-08-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261208T160000
+DTEND;TZID=America/New_York:20261208T170000
+SUMMARY:Bike: 60 min easy 149–200 W with 3×1 min openers
+DESCRIPTION:60 min easy 149–200 W with 3×1 min openers\nWeek 8 · Found
+ ation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-09-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261209T063000
+DTEND;TZID=America/New_York:20261209T071500
+SUMMARY:Lift C · upper
+DESCRIPTION:Lift C · upper\nA: Incline DB bench ↔ Lat pulldown\nB: Cabl
+ e fly ↔ Cable row\nC: Lateral raise ↔ Rear delt fly\nD: Biceps curl 
+ ↔ OH triceps extension\nE: Pallof press ↔ Bear hold\nWeek 8 · Founda
+ tion
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-10-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261210T063000
+DTEND;TZID=America/New_York:20261210T070500
+SUMMARY:Swim: 35 min: easy aerobic · 6×50 smooth
+DESCRIPTION:35 min: easy aerobic · 6×50 smooth\nWeek 8 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-10-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261210T160000
+DTEND;TZID=America/New_York:20261210T164500
+SUMMARY:Bike: 45 min easy 149–200 W
+DESCRIPTION:45 min easy 149–200 W\nWeek 8 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-11-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261211T160000
+DTEND;TZID=America/New_York:20261211T164000
+SUMMARY:Swim: 40 min: steady 3×400 relaxed
+DESCRIPTION:40 min: steady 3×400 relaxed\nWeek 8 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-12-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261212T090000
+DTEND;TZID=America/New_York:20261212T103000
+SUMMARY:Bike: 1:30 Z2 149–200 W
+DESCRIPTION:1:30 Z2 149–200 W\nWeek 8 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-13-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261213T090000
+DTEND;TZID=America/New_York:20261213T094000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 8 · Foundation
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-14-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261214T063000
+DTEND;TZID=America/New_York:20261214T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-14-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261214T160000
+DTEND;TZID=America/New_York:20261214T163500
+SUMMARY:Run: 35 min easy ≤144 bpm + 6×20 s strides
+DESCRIPTION:35 min easy ≤144 bpm + 6×20 s strides\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-15-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261215T063000
+DTEND;TZID=America/New_York:20261215T071500
+SUMMARY:Swim: 45 min: 300 easy · 10×100 @ 2:30/100 m · 200 easy
+DESCRIPTION:45 min: 300 easy · 10×100 @ 2:30/100 m · 200 easy\nWeek 9 
+ · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-15-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261215T160000
+DTEND;TZID=America/New_York:20261215T170000
+SUMMARY:Bike: 60 min: 2×15 min sweet spot 234–250 W
+DESCRIPTION:60 min: 2×15 min sweet spot 234–250 W\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-16-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261216T063000
+DTEND;TZID=America/New_York:20261216T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-16-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261216T160000
+DTEND;TZID=America/New_York:20261216T163000
+SUMMARY:Run: 30 min easy ≤144 bpm\, or off if tired
+DESCRIPTION:30 min easy ≤144 bpm\, or off if tired\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-17-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261217T063000
+DTEND;TZID=America/New_York:20261217T071500
+SUMMARY:Swim: 45 min: 4×300 steady
+DESCRIPTION:45 min: 4×300 steady\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-17-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261217T160000
+DTEND;TZID=America/New_York:20261217T170000
+SUMMARY:Bike: 60 min Z2 149–200 W + 4×1 min high cadence
+DESCRIPTION:60 min Z2 149–200 W + 4×1 min high cadence\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-18-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261218T063000
+DTEND;TZID=America/New_York:20261218T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-18-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261218T160000
+DTEND;TZID=America/New_York:20261218T164000
+SUMMARY:Swim: 40 min: easy + drills
+DESCRIPTION:40 min: easy + drills\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-19-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261219T090000
+DTEND;TZID=America/New_York:20261219T104500
+SUMMARY:Bike: Long ride 1:45 Z2 149–200 W
+DESCRIPTION:Long ride 1:45 Z2 149–200 W\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-20-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261220T090000
+DTEND;TZID=America/New_York:20261220T095000
+SUMMARY:Run: Long run 50 min easy ≤144 bpm
+DESCRIPTION:Long run 50 min easy ≤144 bpm\nWeek 9 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-21-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261221T063000
+DTEND;TZID=America/New_York:20261221T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-21-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261221T160000
+DTEND;TZID=America/New_York:20261221T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 6×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 6×20 s strides\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-22-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261222T063000
+DTEND;TZID=America/New_York:20261222T072000
+SUMMARY:Swim: 50 min: 300 easy · 12×100 @ 2:30/100 m · 200 easy
+DESCRIPTION:50 min: 300 easy · 12×100 @ 2:30/100 m · 200 easy\nWeek 10 
+ · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-22-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261222T160000
+DTEND;TZID=America/New_York:20261222T171500
+SUMMARY:Bike: 75 min: 3×12 min sweet spot 234–250 W
+DESCRIPTION:75 min: 3×12 min sweet spot 234–250 W\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-23-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261223T063000
+DTEND;TZID=America/New_York:20261223T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-23-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261223T160000
+DTEND;TZID=America/New_York:20261223T163000
+SUMMARY:Run: 30 min easy ≤144 bpm\, or off if tired
+DESCRIPTION:30 min easy ≤144 bpm\, or off if tired\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-24-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261224T063000
+DTEND;TZID=America/New_York:20261224T071500
+SUMMARY:Swim: 45 min: 5×400 steady
+DESCRIPTION:45 min: 5×400 steady\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-24-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261224T160000
+DTEND;TZID=America/New_York:20261224T171500
+SUMMARY:Bike: 75 min: 2×15 min tempo 205–229 W
+DESCRIPTION:75 min: 2×15 min tempo 205–229 W\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-25-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261225T063000
+DTEND;TZID=America/New_York:20261225T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-25-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261225T160000
+DTEND;TZID=America/New_York:20261225T164500
+SUMMARY:Swim: 45 min: drills + 8×50 fast
+DESCRIPTION:45 min: drills + 8×50 fast\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-26-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261226T090000
+DTEND;TZID=America/New_York:20261226T112500
+SUMMARY:Brick: Long ride 2:15 Z2 149–200 W → brick run 10 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 2:15 Z2 149–200 W → brick run 10 min easy ≤144
+  bpm\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-27-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261227T090000
+DTEND;TZID=America/New_York:20261227T095500
+SUMMARY:Run: Long run 55 min easy ≤144 bpm
+DESCRIPTION:Long run 55 min easy ≤144 bpm\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-27-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261227T160000
+DTEND;TZID=America/New_York:20261227T163000
+SUMMARY:Swim: 30 min easy
+DESCRIPTION:30 min easy\nWeek 10 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-28-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261228T063000
+DTEND;TZID=America/New_York:20261228T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-28-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261228T160000
+DTEND;TZID=America/New_York:20261228T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 6×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 6×20 s strides\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-29-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261229T063000
+DTEND;TZID=America/New_York:20261229T072000
+SUMMARY:Swim: 50 min: 300 easy · 5×200 @ 2:33/100 m · 200 easy
+DESCRIPTION:50 min: 300 easy · 5×200 @ 2:33/100 m · 200 easy\nWeek 11 
+ · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-29-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261229T160000
+DTEND;TZID=America/New_York:20261229T171500
+SUMMARY:Bike: 75 min: 3×15 min sweet spot 234–250 W
+DESCRIPTION:75 min: 3×15 min sweet spot 234–250 W\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-30-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261230T063000
+DTEND;TZID=America/New_York:20261230T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-30-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261230T160000
+DTEND;TZID=America/New_York:20261230T163000
+SUMMARY:Run: 30 min easy ≤144 bpm\, or off if tired
+DESCRIPTION:30 min easy ≤144 bpm\, or off if tired\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-31-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261231T063000
+DTEND;TZID=America/New_York:20261231T072000
+SUMMARY:Swim: 50 min: 3×600 steady
+DESCRIPTION:50 min: 3×600 steady\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2026-12-31-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20261231T160000
+DTEND;TZID=America/New_York:20261231T171500
+SUMMARY:Bike: 75 min: 2×20 min tempo 205–229 W
+DESCRIPTION:75 min: 2×20 min tempo 205–229 W\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-01-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270101T063000
+DTEND;TZID=America/New_York:20270101T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-01-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270101T160000
+DTEND;TZID=America/New_York:20270101T164500
+SUMMARY:Swim: 45 min: 10×100 @ 2:30/100 m
+DESCRIPTION:45 min: 10×100 @ 2:30/100 m\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-02-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270102T090000
+DTEND;TZID=America/New_York:20270102T114000
+SUMMARY:Brick: Long ride 2:30 Z2 149–200 W → brick run 10 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 2:30 Z2 149–200 W → brick run 10 min easy ≤144
+  bpm\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-03-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270103T090000
+DTEND;TZID=America/New_York:20270103T100000
+SUMMARY:Run: Long run 60 min easy ≤144 bpm
+DESCRIPTION:Long run 60 min easy ≤144 bpm\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-03-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270103T160000
+DTEND;TZID=America/New_York:20270103T163000
+SUMMARY:Swim: 30 min easy
+DESCRIPTION:30 min easy\nWeek 11 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-04-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270104T063000
+DTEND;TZID=America/New_York:20270104T065300
+SUMMARY:Lift A · pull + legs (half the sets)
+DESCRIPTION:Lift A · pull + legs (half the sets)\nA: RDL ↔ Pull-ups\nB:
+  Reverse lunge ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB 
+ curl ↔ Hanging leg raise ↔ Wall angels\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-04-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270104T160000
+DTEND;TZID=America/New_York:20270104T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 4×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 4×20 s strides\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-05-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270105T063000
+DTEND;TZID=America/New_York:20270105T070000
+SUMMARY:Swim: 30 min: easy drills · 6×50 smooth
+DESCRIPTION:30 min: easy drills · 6×50 smooth\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-05-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270105T160000
+DTEND;TZID=America/New_York:20270105T170000
+SUMMARY:Bike: 60 min easy 149–200 W with 3×1 min openers
+DESCRIPTION:60 min easy 149–200 W with 3×1 min openers\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-06-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270106T160000
+DTEND;TZID=America/New_York:20270106T163000
+SUMMARY:Swim: 30 min: easy technique · sighting 6×25
+DESCRIPTION:30 min: easy technique · sighting 6×25\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-07-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270107T063000
+DTEND;TZID=America/New_York:20270107T071000
+SUMMARY:Swim: Test: 400 easy warm-up · 400 m time trial · 5 min easy · 
+ 200 m …
+DESCRIPTION:Test: 400 easy warm-up · 400 m time trial · 5 min easy · 20
+ 0 m time trial · CSS = (400 time − 200 time) ÷ 2 (target 2:15/100 m).
+  Log it on the Progress tab.\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-07-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270107T160000
+DTEND;TZID=America/New_York:20270107T170000
+SUMMARY:Bike: 60 min easy 149–200 W
+DESCRIPTION:60 min easy 149–200 W\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-08-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270108T063000
+DTEND;TZID=America/New_York:20270108T071500
+SUMMARY:Bike: 45 min easy spin 149–200 W
+DESCRIPTION:45 min easy spin 149–200 W\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-08-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270108T160000
+DTEND;TZID=America/New_York:20270108T163500
+SUMMARY:Swim: 35 min: easy aerobic · 6×50 smooth
+DESCRIPTION:35 min: easy aerobic · 6×50 smooth\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-09-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270109T090000
+DTEND;TZID=America/New_York:20270109T100000
+SUMMARY:Bike: FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 
+ min al…
+DESCRIPTION:FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 mi
+ n all-out · 10 min cool-down. FTP = 95% of 20-min power. Log it on the P
+ rogress tab.\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-10-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270110T090000
+DTEND;TZID=America/New_York:20270110T094500
+SUMMARY:Run: 45 min easy ≤144 bpm
+DESCRIPTION:45 min easy ≤144 bpm\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-10-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270110T160000
+DTEND;TZID=America/New_York:20270110T170000
+SUMMARY:Bike: 60 min easy spin 149–200 W
+DESCRIPTION:60 min easy spin 149–200 W\nWeek 12 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-11-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270111T063000
+DTEND;TZID=America/New_York:20270111T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-11-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270111T160000
+DTEND;TZID=America/New_York:20270111T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 6×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 6×20 s strides\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-12-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270112T063000
+DTEND;TZID=America/New_York:20270112T071500
+SUMMARY:Swim: 45 min: 300 easy · 10×100 @ 2:30/100 m · 200 easy
+DESCRIPTION:45 min: 300 easy · 10×100 @ 2:30/100 m · 200 easy\nWeek 13 
+ · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-12-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270112T160000
+DTEND;TZID=America/New_York:20270112T171500
+SUMMARY:Bike: 75 min: 3×15 min sweet spot 234–250 W
+DESCRIPTION:75 min: 3×15 min sweet spot 234–250 W\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-13-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270113T063000
+DTEND;TZID=America/New_York:20270113T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-13-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270113T160000
+DTEND;TZID=America/New_York:20270113T164000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-14-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270114T063000
+DTEND;TZID=America/New_York:20270114T071500
+SUMMARY:Swim: 45 min: 4×400 steady
+DESCRIPTION:45 min: 4×400 steady\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-14-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270114T160000
+DTEND;TZID=America/New_York:20270114T171500
+SUMMARY:Bike: 75 min: 2×20 min tempo 205–229 W\, 10 min in aero
+DESCRIPTION:75 min: 2×20 min tempo 205–229 W\, 10 min in aero\nWeek 13 
+ · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-15-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270115T063000
+DTEND;TZID=America/New_York:20270115T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-15-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270115T160000
+DTEND;TZID=America/New_York:20270115T164500
+SUMMARY:Swim: 45 min: drills · 6×150 pull
+DESCRIPTION:45 min: drills · 6×150 pull\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-16-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270116T090000
+DTEND;TZID=America/New_York:20270116T114000
+SUMMARY:Brick: Long ride 2:30 Z2 149–200 W → brick run 10 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 2:30 Z2 149–200 W → brick run 10 min easy ≤144
+  bpm\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-17-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270117T090000
+DTEND;TZID=America/New_York:20270117T100500
+SUMMARY:Run: Long run 65 min easy ≤144 bpm
+DESCRIPTION:Long run 65 min easy ≤144 bpm\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-17-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270117T160000
+DTEND;TZID=America/New_York:20270117T163000
+SUMMARY:Swim: 30 min: easy drills · sighting 6×25
+DESCRIPTION:30 min: easy drills · sighting 6×25\nWeek 13 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-18-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270118T063000
+DTEND;TZID=America/New_York:20270118T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-18-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270118T160000
+DTEND;TZID=America/New_York:20270118T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 6×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 6×20 s strides\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-19-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270119T063000
+DTEND;TZID=America/New_York:20270119T071500
+SUMMARY:Swim: 45 min: 12×100 @ 2:30/100 m
+DESCRIPTION:45 min: 12×100 @ 2:30/100 m\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-19-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270119T160000
+DTEND;TZID=America/New_York:20270119T172000
+SUMMARY:Bike: 80 min: 2×20 min sweet spot 234–250 W
+DESCRIPTION:80 min: 2×20 min sweet spot 234–250 W\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-20-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270120T063000
+DTEND;TZID=America/New_York:20270120T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-20-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270120T160000
+DTEND;TZID=America/New_York:20270120T164000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-21-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270121T063000
+DTEND;TZID=America/New_York:20270121T072000
+SUMMARY:Swim: 50 min: 2×800 steady · 6×100
+DESCRIPTION:50 min: 2×800 steady · 6×100\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-21-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270121T160000
+DTEND;TZID=America/New_York:20270121T171500
+SUMMARY:Bike: 75 min: 3×12 min tempo 205–229 W\, in aero
+DESCRIPTION:75 min: 3×12 min tempo 205–229 W\, in aero\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-22-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270122T063000
+DTEND;TZID=America/New_York:20270122T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-22-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270122T160000
+DTEND;TZID=America/New_York:20270122T164500
+SUMMARY:Swim: 45 min: 3×400 pull · sighting drill 6×25
+DESCRIPTION:45 min: 3×400 pull · sighting drill 6×25\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-23-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270123T090000
+DTEND;TZID=America/New_York:20270123T114500
+SUMMARY:Brick: Long ride 2:30 Z2 149–200 W → brick run 15 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 2:30 Z2 149–200 W → brick run 15 min easy ≤144
+  bpm\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-24-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270124T090000
+DTEND;TZID=America/New_York:20270124T101000
+SUMMARY:Run: Long run 70 min easy ≤144 bpm
+DESCRIPTION:Long run 70 min easy ≤144 bpm\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-24-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270124T160000
+DTEND;TZID=America/New_York:20270124T163000
+SUMMARY:Swim: 30 min: easy drills · sighting 6×25
+DESCRIPTION:30 min: easy drills · sighting 6×25\nWeek 14 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-25-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270125T063000
+DTEND;TZID=America/New_York:20270125T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-25-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270125T160000
+DTEND;TZID=America/New_York:20270125T164500
+SUMMARY:Run: 45 min easy ≤144 bpm + 6×20 s strides
+DESCRIPTION:45 min easy ≤144 bpm + 6×20 s strides\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-26-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270126T063000
+DTEND;TZID=America/New_York:20270126T072000
+SUMMARY:Swim: 50 min: 6×200 @ 2:33/100 m
+DESCRIPTION:50 min: 6×200 @ 2:33/100 m\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-26-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270126T160000
+DTEND;TZID=America/New_York:20270126T172000
+SUMMARY:Bike: 80 min: 3×15 min sweet spot 234–250 W
+DESCRIPTION:80 min: 3×15 min sweet spot 234–250 W\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-27-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270127T063000
+DTEND;TZID=America/New_York:20270127T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-27-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270127T160000
+DTEND;TZID=America/New_York:20270127T164000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-28-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270128T063000
+DTEND;TZID=America/New_York:20270128T072000
+SUMMARY:Swim: 50 min: 2×1\,200 steady
+DESCRIPTION:50 min: 2×1\,200 steady\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-28-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270128T160000
+DTEND;TZID=America/New_York:20270128T171500
+SUMMARY:Bike: 75 min: 2×20 min tempo 205–229 W\, in aero
+DESCRIPTION:75 min: 2×20 min tempo 205–229 W\, in aero\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-29-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270129T063000
+DTEND;TZID=America/New_York:20270129T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-29-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270129T160000
+DTEND;TZID=America/New_York:20270129T164500
+SUMMARY:Swim: 45 min: 10×100 · sighting drill 6×25
+DESCRIPTION:45 min: 10×100 · sighting drill 6×25\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-30-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270130T090000
+DTEND;TZID=America/New_York:20270130T120000
+SUMMARY:Brick: Long ride 2:45 Z2 149–200 W → brick run 15 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 2:45 Z2 149–200 W → brick run 15 min easy ≤144
+  bpm\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-31-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270131T090000
+DTEND;TZID=America/New_York:20270131T101500
+SUMMARY:Run: Long run 75 min easy ≤144 bpm
+DESCRIPTION:Long run 75 min easy ≤144 bpm\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-01-31-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270131T160000
+DTEND;TZID=America/New_York:20270131T163000
+SUMMARY:Swim: 30 min: easy drills · sighting 6×25
+DESCRIPTION:30 min: easy drills · sighting 6×25\nWeek 15 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-01-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270201T063000
+DTEND;TZID=America/New_York:20270201T065300
+SUMMARY:Lift A · pull + legs (half the sets)
+DESCRIPTION:Lift A · pull + legs (half the sets)\nA: RDL ↔ Pull-ups\nB:
+  Reverse lunge ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB 
+ curl ↔ Hanging leg raise ↔ Wall angels\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-01-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270201T160000
+DTEND;TZID=America/New_York:20270201T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 4×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 4×20 s strides\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-02-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270202T063000
+DTEND;TZID=America/New_York:20270202T070000
+SUMMARY:Swim: 30 min: easy drills · 6×50 smooth
+DESCRIPTION:30 min: easy drills · 6×50 smooth\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-02-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270202T160000
+DTEND;TZID=America/New_York:20270202T170000
+SUMMARY:Bike: 60 min easy 149–200 W with 3×1 min openers
+DESCRIPTION:60 min easy 149–200 W with 3×1 min openers\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-03-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270203T160000
+DTEND;TZID=America/New_York:20270203T164000
+SUMMARY:Swim: 40 min: steady 3×400 relaxed
+DESCRIPTION:40 min: steady 3×400 relaxed\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-04-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270204T063000
+DTEND;TZID=America/New_York:20270204T070500
+SUMMARY:Swim: 35 min: easy aerobic · 6×50 smooth
+DESCRIPTION:35 min: easy aerobic · 6×50 smooth\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-04-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270204T160000
+DTEND;TZID=America/New_York:20270204T170000
+SUMMARY:Bike: 60 min easy 149–200 W
+DESCRIPTION:60 min easy 149–200 W\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-05-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270205T063000
+DTEND;TZID=America/New_York:20270205T071500
+SUMMARY:Bike: 45 min easy spin 149–200 W
+DESCRIPTION:45 min easy spin 149–200 W\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-05-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270205T160000
+DTEND;TZID=America/New_York:20270205T163000
+SUMMARY:Swim: 30 min: easy technique · sighting 6×25
+DESCRIPTION:30 min: easy technique · sighting 6×25\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-06-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270206T090000
+DTEND;TZID=America/New_York:20270206T110000
+SUMMARY:Bike: 2:00 Z2 149–200 W
+DESCRIPTION:2:00 Z2 149–200 W\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-07-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270207T090000
+DTEND;TZID=America/New_York:20270207T095000
+SUMMARY:Run: 50 min easy ≤144 bpm
+DESCRIPTION:50 min easy ≤144 bpm\nWeek 16 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-08-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270208T063000
+DTEND;TZID=America/New_York:20270208T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-08-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270208T160000
+DTEND;TZID=America/New_York:20270208T164000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-09-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270209T063000
+DTEND;TZID=America/New_York:20270209T072000
+SUMMARY:Swim: 50 min: 3×500 @ 2:35/100 m
+DESCRIPTION:50 min: 3×500 @ 2:35/100 m\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-09-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270209T160000
+DTEND;TZID=America/New_York:20270209T173000
+SUMMARY:Bike: 90 min: 3×20 min @ 226–239 W
+DESCRIPTION:90 min: 3×20 min @ 226–239 W\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-10-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270210T063000
+DTEND;TZID=America/New_York:20270210T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-10-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270210T160000
+DTEND;TZID=America/New_York:20270210T164500
+SUMMARY:Run: 45 min with 3×8 min at half-marathon effort (~165 bpm)
+DESCRIPTION:45 min with 3×8 min at half-marathon effort (~165 bpm)\nWeek 
+ 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-11-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270211T063000
+DTEND;TZID=America/New_York:20270211T072000
+SUMMARY:Swim: 50 min: 16×100 @ 2:30/100 m
+DESCRIPTION:50 min: 16×100 @ 2:30/100 m\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-11-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270211T160000
+DTEND;TZID=America/New_York:20270211T171500
+SUMMARY:Bike: 75 min Z2 149–200 W\, 3×10 min in aero
+DESCRIPTION:75 min Z2 149–200 W\, 3×10 min in aero\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-12-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270212T063000
+DTEND;TZID=America/New_York:20270212T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-12-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270212T160000
+DTEND;TZID=America/New_York:20270212T164500
+SUMMARY:Swim: 45 min: easy · sighting drill 8×25
+DESCRIPTION:45 min: easy · sighting drill 8×25\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-13-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270213T090000
+DTEND;TZID=America/New_York:20270213T120000
+SUMMARY:Brick: Long ride 2:45 Z2 149–200 W → brick run 15 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 2:45 Z2 149–200 W → brick run 15 min easy ≤144
+  bpm\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-14-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270214T090000
+DTEND;TZID=America/New_York:20270214T102000
+SUMMARY:Run: Long run 80 min easy ≤144 bpm
+DESCRIPTION:Long run 80 min easy ≤144 bpm\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-14-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270214T160000
+DTEND;TZID=America/New_York:20270214T163000
+SUMMARY:Swim: 30 min: easy drills · sighting 6×25
+DESCRIPTION:30 min: easy drills · sighting 6×25\nWeek 17 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-15-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270215T063000
+DTEND;TZID=America/New_York:20270215T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-15-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270215T160000
+DTEND;TZID=America/New_York:20270215T164000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-16-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270216T063000
+DTEND;TZID=America/New_York:20270216T072000
+SUMMARY:Swim: 50 min: 4×400 @ 2:33/100 m
+DESCRIPTION:50 min: 4×400 @ 2:33/100 m\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-16-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270216T160000
+DTEND;TZID=America/New_York:20270216T173000
+SUMMARY:Bike: 90 min: 2×25 min sweet spot 234–250 W
+DESCRIPTION:90 min: 2×25 min sweet spot 234–250 W\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-17-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270217T063000
+DTEND;TZID=America/New_York:20270217T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-17-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270217T160000
+DTEND;TZID=America/New_York:20270217T164500
+SUMMARY:Run: 45 min with 3×10 min tempo (~165 bpm)
+DESCRIPTION:45 min with 3×10 min tempo (~165 bpm)\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-18-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270218T063000
+DTEND;TZID=America/New_York:20270218T072000
+SUMMARY:Swim: 50 min: 2\,400 m steady
+DESCRIPTION:50 min: 2\,400 m steady\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-18-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270218T160000
+DTEND;TZID=America/New_York:20270218T171500
+SUMMARY:Bike: 75 min Z2 149–200 W\, 2×15 min in aero
+DESCRIPTION:75 min Z2 149–200 W\, 2×15 min in aero\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-19-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270219T063000
+DTEND;TZID=America/New_York:20270219T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-19-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270219T160000
+DTEND;TZID=America/New_York:20270219T164500
+SUMMARY:Swim: 45 min: 10×100 fast
+DESCRIPTION:45 min: 10×100 fast\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-20-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270220T090000
+DTEND;TZID=America/New_York:20270220T122000
+SUMMARY:Brick: Long ride 3:00 Z2 149–200 W → brick run 20 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 3:00 Z2 149–200 W → brick run 20 min easy ≤144
+  bpm\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-21-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270221T090000
+DTEND;TZID=America/New_York:20270221T102500
+SUMMARY:Run: Long run 85 min easy ≤144 bpm
+DESCRIPTION:Long run 85 min easy ≤144 bpm\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-21-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270221T160000
+DTEND;TZID=America/New_York:20270221T163000
+SUMMARY:Swim: 30 min: easy drills · sighting 6×25
+DESCRIPTION:30 min: easy drills · sighting 6×25\nWeek 18 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-22-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270222T063000
+DTEND;TZID=America/New_York:20270222T071500
+SUMMARY:Lift A · pull + legs
+DESCRIPTION:Lift A · pull + legs\nA: RDL ↔ Pull-ups\nB: Reverse lunge 
+ ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB curl ↔ Hangin
+ g leg raise ↔ Wall angels\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-22-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270222T160000
+DTEND;TZID=America/New_York:20270222T164500
+SUMMARY:Run: 45 min easy ≤144 bpm + 6×20 s strides
+DESCRIPTION:45 min easy ≤144 bpm + 6×20 s strides\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-23-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270223T063000
+DTEND;TZID=America/New_York:20270223T072500
+SUMMARY:Swim: 55 min: 5×500 steady
+DESCRIPTION:55 min: 5×500 steady\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-23-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270223T160000
+DTEND;TZID=America/New_York:20270223T173000
+SUMMARY:Bike: 90 min: 3×20 min @ 226–239 W
+DESCRIPTION:90 min: 3×20 min @ 226–239 W\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-24-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270224T063000
+DTEND;TZID=America/New_York:20270224T071500
+SUMMARY:Lift B · push + legs
+DESCRIPTION:Lift B · push + legs\nA: Front squat ↔ Flat DB bench\nB: Bu
+ lgarian split squat ↔ DB shoulder press\nC: Hamstring curl ↔ Lateral 
+ raise\nD: Diamond push-ups ↔ Ab roller ↔ Dead bugs\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-24-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270224T160000
+DTEND;TZID=America/New_York:20270224T164000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-25-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270225T063000
+DTEND;TZID=America/New_York:20270225T072000
+SUMMARY:Swim: 50 min: 12×100 @ 2:30/100 m
+DESCRIPTION:50 min: 12×100 @ 2:30/100 m\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-25-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270225T160000
+DTEND;TZID=America/New_York:20270225T171500
+SUMMARY:Bike: 75 min Z2 149–200 W\, 20 min in aero
+DESCRIPTION:75 min Z2 149–200 W\, 20 min in aero\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-26-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270226T063000
+DTEND;TZID=America/New_York:20270226T071500
+SUMMARY:Bike: Spin 45 min easy 149–200 W\, or off
+DESCRIPTION:Spin 45 min easy 149–200 W\, or off\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-26-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270226T160000
+DTEND;TZID=America/New_York:20270226T164500
+SUMMARY:Swim: 45 min: easy · sighting drill 8×25
+DESCRIPTION:45 min: easy · sighting drill 8×25\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-27-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270227T090000
+DTEND;TZID=America/New_York:20270227T122000
+SUMMARY:Brick: Long ride 3:00 Z2 149–200 W → brick run 20 min easy ≤
+ 144 bpm
+DESCRIPTION:Long ride 3:00 Z2 149–200 W → brick run 20 min easy ≤144
+  bpm\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-28-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270228T090000
+DTEND;TZID=America/New_York:20270228T103000
+SUMMARY:Run: Long run 90 min easy ≤144 bpm
+DESCRIPTION:Long run 90 min easy ≤144 bpm\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-02-28-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270228T160000
+DTEND;TZID=America/New_York:20270228T163000
+SUMMARY:Swim: 30 min: easy drills · sighting 6×25
+DESCRIPTION:30 min: easy drills · sighting 6×25\nWeek 19 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-01-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270301T063000
+DTEND;TZID=America/New_York:20270301T065300
+SUMMARY:Lift A · pull + legs (half the sets)
+DESCRIPTION:Lift A · pull + legs (half the sets)\nA: RDL ↔ Pull-ups\nB:
+  Reverse lunge ↔ Cable row\nC: Quad extension ↔ Rear delt fly\nD: DB 
+ curl ↔ Hanging leg raise ↔ Wall angels\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-01-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270301T160000
+DTEND;TZID=America/New_York:20270301T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 4×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 4×20 s strides\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-02-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270302T063000
+DTEND;TZID=America/New_York:20270302T070000
+SUMMARY:Swim: 30 min: easy drills · 6×50 smooth
+DESCRIPTION:30 min: easy drills · 6×50 smooth\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-02-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270302T160000
+DTEND;TZID=America/New_York:20270302T170000
+SUMMARY:Bike: 60 min easy 149–200 W with 3×1 min openers
+DESCRIPTION:60 min easy 149–200 W with 3×1 min openers\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-03-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270303T160000
+DTEND;TZID=America/New_York:20270303T163000
+SUMMARY:Swim: 30 min: easy technique · sighting 6×25
+DESCRIPTION:30 min: easy technique · sighting 6×25\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-04-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270304T063000
+DTEND;TZID=America/New_York:20270304T071000
+SUMMARY:Swim: Test: 400 easy warm-up · 400 m time trial · 5 min easy · 
+ 200 m …
+DESCRIPTION:Test: 400 easy warm-up · 400 m time trial · 5 min easy · 20
+ 0 m time trial · CSS = (400 time − 200 time) ÷ 2 (target 2:08/100 m).
+  Log it on the Progress tab.\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-04-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270304T160000
+DTEND;TZID=America/New_York:20270304T170000
+SUMMARY:Bike: 60 min easy 149–200 W
+DESCRIPTION:60 min easy 149–200 W\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-05-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270305T063000
+DTEND;TZID=America/New_York:20270305T071500
+SUMMARY:Bike: 45 min easy spin 149–200 W
+DESCRIPTION:45 min easy spin 149–200 W\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-05-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270305T160000
+DTEND;TZID=America/New_York:20270305T163500
+SUMMARY:Swim: 35 min: easy aerobic · 6×50 smooth
+DESCRIPTION:35 min: easy aerobic · 6×50 smooth\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-06-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270306T090000
+DTEND;TZID=America/New_York:20270306T100000
+SUMMARY:Bike: FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 
+ min al…
+DESCRIPTION:FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 mi
+ n all-out · 10 min cool-down. FTP = 95% of 20-min power. Log it on the P
+ rogress tab.\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-07-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270307T090000
+DTEND;TZID=America/New_York:20270307T094500
+SUMMARY:Run: 5K time trial: 15 min warm-up\, 5K all-out\, 10 min cool-down
+ . Log…
+DESCRIPTION:5K time trial: 15 min warm-up\, 5K all-out\, 10 min cool-down.
+  Log it on the Season tab.\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-07-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270307T160000
+DTEND;TZID=America/New_York:20270307T170000
+SUMMARY:Bike: 60 min easy spin 149–200 W
+DESCRIPTION:60 min easy spin 149–200 W\nWeek 20 · Base
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-08-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270308T063000
+DTEND;TZID=America/New_York:20270308T070000
+SUMMARY:Lift · maintenance
+DESCRIPTION:Lift · maintenance\nDeadlift or squat 3×4 (heavy\, crisp)\nC
+ alf raise 3×10\nPogo hops 2×20\nCore 2 rounds\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-08-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270308T160000
+DTEND;TZID=America/New_York:20270308T163000
+SUMMARY:Run: 30 min easy ≤144 bpm (optional 2nd lift Wed AM)
+DESCRIPTION:30 min easy ≤144 bpm (optional 2nd lift Wed AM)\nWeek 21 · 
+ Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-09-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270309T063000
+DTEND;TZID=America/New_York:20270309T072000
+SUMMARY:Swim: 50 min: 10×150 @ 2:30/100 m
+DESCRIPTION:50 min: 10×150 @ 2:30/100 m\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-09-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270309T160000
+DTEND;TZID=America/New_York:20270309T173000
+SUMMARY:Bike: 90 min: 2×30 min @ race power 202–215 W
+DESCRIPTION:90 min: 2×30 min @ race power 202–215 W\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-10-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270310T160000
+DTEND;TZID=America/New_York:20270310T165000
+SUMMARY:Run: 50 min: 2×15 min at goal pace 8:45/mi
+DESCRIPTION:50 min: 2×15 min at goal pace 8:45/mi\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-11-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270311T063000
+DTEND;TZID=America/New_York:20270311T071500
+SUMMARY:Swim: 45 min easy: pull + drills
+DESCRIPTION:45 min easy: pull + drills\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-11-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270311T160000
+DTEND;TZID=America/New_York:20270311T171500
+SUMMARY:Bike: 75 min Z2 149–200 W in aero
+DESCRIPTION:75 min Z2 149–200 W in aero\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-12-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270312T063000
+DTEND;TZID=America/New_York:20270312T071000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-12-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270312T160000
+DTEND;TZID=America/New_York:20270312T165000
+SUMMARY:Swim: 50 min: 1\,900 m continuous at race effort
+DESCRIPTION:50 min: 1\,900 m continuous at race effort\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-13-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270313T090000
+DTEND;TZID=America/New_York:20270313T122000
+SUMMARY:Brick: Long ride 3:00 with 60 min at race power 202–215 W → br
+ ick run…
+DESCRIPTION:Long ride 3:00 with 60 min at race power 202–215 W → brick
+  run 20 min easy ≤144 bpm\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-14-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270314T090000
+DTEND;TZID=America/New_York:20270314T103000
+SUMMARY:Run: Long run 90 min easy ≤144 bpm
+DESCRIPTION:Long run 90 min easy ≤144 bpm\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-14-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270314T160000
+DTEND;TZID=America/New_York:20270314T163000
+SUMMARY:Swim: 30 min: easy recovery swim\, loosen the legs
+DESCRIPTION:30 min: easy recovery swim\, loosen the legs\nWeek 21 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-15-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270315T063000
+DTEND;TZID=America/New_York:20270315T070000
+SUMMARY:Lift · maintenance
+DESCRIPTION:Lift · maintenance\nDeadlift or squat 3×4 (heavy\, crisp)\nC
+ alf raise 3×10\nPogo hops 2×20\nCore 2 rounds\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-15-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270315T160000
+DTEND;TZID=America/New_York:20270315T163000
+SUMMARY:Run: 30 min easy ≤144 bpm (optional 2nd lift Wed AM)
+DESCRIPTION:30 min easy ≤144 bpm (optional 2nd lift Wed AM)\nWeek 22 · 
+ Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-16-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270316T063000
+DTEND;TZID=America/New_York:20270316T072000
+SUMMARY:Swim: 50 min: 4×400 @ 2:33/100 m
+DESCRIPTION:50 min: 4×400 @ 2:33/100 m\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-16-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270316T160000
+DTEND;TZID=America/New_York:20270316T173000
+SUMMARY:Bike: 90 min: 3×20 min @ 212–225 W
+DESCRIPTION:90 min: 3×20 min @ 212–225 W\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-17-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270317T160000
+DTEND;TZID=America/New_York:20270317T165000
+SUMMARY:Run: 50 min: 3×10 min at goal pace 8:45/mi
+DESCRIPTION:50 min: 3×10 min at goal pace 8:45/mi\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-18-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270318T063000
+DTEND;TZID=America/New_York:20270318T071500
+SUMMARY:Swim: 45 min easy
+DESCRIPTION:45 min easy\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-18-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270318T160000
+DTEND;TZID=America/New_York:20270318T171500
+SUMMARY:Bike: 75 min Z2 149–200 W in aero
+DESCRIPTION:75 min Z2 149–200 W in aero\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-19-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270319T063000
+DTEND;TZID=America/New_York:20270319T071000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-19-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270319T160000
+DTEND;TZID=America/New_York:20270319T165500
+SUMMARY:Swim: 55 min: 2\,500 m steady
+DESCRIPTION:55 min: 2\,500 m steady\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-20-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270320T090000
+DTEND;TZID=America/New_York:20270320T123000
+SUMMARY:Brick: Long ride 3:00\, mix of Z2 and race power 202–215 W → b
+ rick run…
+DESCRIPTION:Long ride 3:00\, mix of Z2 and race power 202–215 W → bric
+ k run 30 min at goal pace 8:45/mi\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-21-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270321T090000
+DTEND;TZID=America/New_York:20270321T103000
+SUMMARY:Run: Long run 90 min easy ≤144 bpm
+DESCRIPTION:Long run 90 min easy ≤144 bpm\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-21-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270321T160000
+DTEND;TZID=America/New_York:20270321T163000
+SUMMARY:Swim: 30 min: easy recovery swim\, loosen the legs
+DESCRIPTION:30 min: easy recovery swim\, loosen the legs\nWeek 22 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-22-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270322T063000
+DTEND;TZID=America/New_York:20270322T070000
+SUMMARY:Lift · maintenance
+DESCRIPTION:Lift · maintenance\nDeadlift or squat 3×4 (heavy\, crisp)\nC
+ alf raise 3×10\nPogo hops 2×20\nCore 2 rounds\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-22-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270322T160000
+DTEND;TZID=America/New_York:20270322T163000
+SUMMARY:Run: 30 min easy ≤144 bpm (optional 2nd lift Wed AM)
+DESCRIPTION:30 min easy ≤144 bpm (optional 2nd lift Wed AM)\nWeek 23 · 
+ Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-23-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270323T063000
+DTEND;TZID=America/New_York:20270323T072500
+SUMMARY:Swim: 55 min: 3×800 steady
+DESCRIPTION:55 min: 3×800 steady\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-23-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270323T160000
+DTEND;TZID=America/New_York:20270323T173000
+SUMMARY:Bike: 90 min: 2×30 min @ race power 202–215 W
+DESCRIPTION:90 min: 2×30 min @ race power 202–215 W\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-24-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270324T160000
+DTEND;TZID=America/New_York:20270324T165500
+SUMMARY:Run: 55 min with 20 min tempo (~165 bpm)
+DESCRIPTION:55 min with 20 min tempo (~165 bpm)\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-25-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270325T063000
+DTEND;TZID=America/New_York:20270325T071500
+SUMMARY:Swim: 45 min easy
+DESCRIPTION:45 min easy\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-25-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270325T160000
+DTEND;TZID=America/New_York:20270325T171500
+SUMMARY:Bike: 75 min Z2 149–200 W
+DESCRIPTION:75 min Z2 149–200 W\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-26-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270326T063000
+DTEND;TZID=America/New_York:20270326T071000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-26-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270326T160000
+DTEND;TZID=America/New_York:20270326T165000
+SUMMARY:Swim: 50 min: 1\,900 m continuous
+DESCRIPTION:50 min: 1\,900 m continuous\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-27-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270327T090000
+DTEND;TZID=America/New_York:20270327T123500
+SUMMARY:Brick: Long ride 3:15 hilly\, 2×30 min at race power 202–215 W 
+ → brick…
+DESCRIPTION:Long ride 3:15 hilly\, 2×30 min at race power 202–215 W →
+  brick run 20 min easy ≤144 bpm\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-28-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270328T090000
+DTEND;TZID=America/New_York:20270328T103500
+SUMMARY:Run: Long run 95 min easy ≤144 bpm
+DESCRIPTION:Long run 95 min easy ≤144 bpm\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-28-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270328T160000
+DTEND;TZID=America/New_York:20270328T163000
+SUMMARY:Swim: 30 min: easy recovery swim\, loosen the legs
+DESCRIPTION:30 min: easy recovery swim\, loosen the legs\nWeek 23 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-29-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270329T063000
+DTEND;TZID=America/New_York:20270329T065000
+SUMMARY:Lift · maintenance (half the sets)
+DESCRIPTION:Lift · maintenance (half the sets)\nDeadlift or squat 3×4 (h
+ eavy\, crisp)\nCalf raise 3×10\nPogo hops 2×20\nCore 2 rounds\nWeek 24 
+ · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-29-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270329T160000
+DTEND;TZID=America/New_York:20270329T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 4×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 4×20 s strides\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-30-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270330T063000
+DTEND;TZID=America/New_York:20270330T070000
+SUMMARY:Swim: 30 min: easy drills · 6×50 smooth
+DESCRIPTION:30 min: easy drills · 6×50 smooth\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-30-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270330T160000
+DTEND;TZID=America/New_York:20270330T170000
+SUMMARY:Bike: 60 min easy 149–200 W with 3×1 min openers
+DESCRIPTION:60 min easy 149–200 W with 3×1 min openers\nWeek 24 · Buil
+ d
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-03-31-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270331T160000
+DTEND;TZID=America/New_York:20270331T164000
+SUMMARY:Swim: 40 min: steady 3×400 relaxed
+DESCRIPTION:40 min: steady 3×400 relaxed\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-01-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270401T063000
+DTEND;TZID=America/New_York:20270401T070500
+SUMMARY:Swim: 35 min: easy aerobic · 6×50 smooth
+DESCRIPTION:35 min: easy aerobic · 6×50 smooth\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-01-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270401T160000
+DTEND;TZID=America/New_York:20270401T170000
+SUMMARY:Bike: 60 min easy 149–200 W
+DESCRIPTION:60 min easy 149–200 W\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-02-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270402T063000
+DTEND;TZID=America/New_York:20270402T071500
+SUMMARY:Bike: 45 min easy spin 149–200 W
+DESCRIPTION:45 min easy spin 149–200 W\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-02-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270402T160000
+DTEND;TZID=America/New_York:20270402T163000
+SUMMARY:Swim: 30 min: easy technique · sighting 6×25
+DESCRIPTION:30 min: easy technique · sighting 6×25\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-03-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270403T090000
+DTEND;TZID=America/New_York:20270403T110000
+SUMMARY:Bike: 2:00 Z2 149–200 W
+DESCRIPTION:2:00 Z2 149–200 W\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-04-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270404T090000
+DTEND;TZID=America/New_York:20270404T095000
+SUMMARY:Run: 50 min easy ≤144 bpm
+DESCRIPTION:50 min easy ≤144 bpm\nWeek 24 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-05-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270405T063000
+DTEND;TZID=America/New_York:20270405T070000
+SUMMARY:Lift · maintenance
+DESCRIPTION:Lift · maintenance\nDeadlift or squat 3×4 (heavy\, crisp)\nC
+ alf raise 3×10\nPogo hops 2×20\nCore 2 rounds\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-05-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270405T160000
+DTEND;TZID=America/New_York:20270405T163000
+SUMMARY:Run: 30 min easy ≤144 bpm (optional 2nd lift Wed AM)
+DESCRIPTION:30 min easy ≤144 bpm (optional 2nd lift Wed AM)\nWeek 25 · 
+ Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-06-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270406T063000
+DTEND;TZID=America/New_York:20270406T072000
+SUMMARY:Swim: 50 min: 3×600 @ 2:33/100 m
+DESCRIPTION:50 min: 3×600 @ 2:33/100 m\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-06-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270406T160000
+DTEND;TZID=America/New_York:20270406T173000
+SUMMARY:Bike: 90 min: 4×12 min sweet spot 234–250 W on a climb
+DESCRIPTION:90 min: 4×12 min sweet spot 234–250 W on a climb\nWeek 25 
+ · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-07-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270407T160000
+DTEND;TZID=America/New_York:20270407T165500
+SUMMARY:Run: 55 min: 4×1 mi at goal pace 8:45/mi
+DESCRIPTION:55 min: 4×1 mi at goal pace 8:45/mi\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-08-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270408T063000
+DTEND;TZID=America/New_York:20270408T071500
+SUMMARY:Swim: 45 min easy
+DESCRIPTION:45 min easy\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-08-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270408T160000
+DTEND;TZID=America/New_York:20270408T171500
+SUMMARY:Bike: 75 min Z2 149–200 W
+DESCRIPTION:75 min Z2 149–200 W\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-09-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270409T063000
+DTEND;TZID=America/New_York:20270409T071000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-09-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270409T160000
+DTEND;TZID=America/New_York:20270409T165500
+SUMMARY:Swim: 55 min: 2\,700 m
+DESCRIPTION:55 min: 2\,700 m\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-10-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270410T090000
+DTEND;TZID=America/New_York:20270410T123500
+SUMMARY:Brick: Long ride 3:15 with hills; steady power on climbs\, never o
+ ver …
+DESCRIPTION:Long ride 3:15 with hills; steady power on climbs\, never over
+  266 W → brick run 20 min easy ≤144 bpm\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-11-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270411T090000
+DTEND;TZID=America/New_York:20270411T104000
+SUMMARY:Run: Long run 100 min easy ≤144 bpm
+DESCRIPTION:Long run 100 min easy ≤144 bpm\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-11-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270411T160000
+DTEND;TZID=America/New_York:20270411T163000
+SUMMARY:Swim: 30 min: easy recovery swim\, loosen the legs
+DESCRIPTION:30 min: easy recovery swim\, loosen the legs\nWeek 25 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-12-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270412T063000
+DTEND;TZID=America/New_York:20270412T070000
+SUMMARY:Lift · maintenance
+DESCRIPTION:Lift · maintenance\nDeadlift or squat 3×4 (heavy\, crisp)\nC
+ alf raise 3×10\nPogo hops 2×20\nCore 2 rounds\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-12-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270412T160000
+DTEND;TZID=America/New_York:20270412T163000
+SUMMARY:Run: 30 min easy ≤144 bpm (optional 2nd lift Wed AM)
+DESCRIPTION:30 min easy ≤144 bpm (optional 2nd lift Wed AM)\nWeek 26 · 
+ Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-13-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270413T063000
+DTEND;TZID=America/New_York:20270413T072500
+SUMMARY:Swim: 55 min: 2\,800 m
+DESCRIPTION:55 min: 2\,800 m\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-13-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270413T160000
+DTEND;TZID=America/New_York:20270413T173000
+SUMMARY:Bike: 90 min: 2×30 min @ race power 202–215 W
+DESCRIPTION:90 min: 2×30 min @ race power 202–215 W\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-14-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270414T160000
+DTEND;TZID=America/New_York:20270414T165500
+SUMMARY:Run: 55 min: 3×1 mi at goal pace 8:45/mi + 15 min steady
+DESCRIPTION:55 min: 3×1 mi at goal pace 8:45/mi + 15 min steady\nWeek 26 
+ · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-15-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270415T063000
+DTEND;TZID=America/New_York:20270415T071500
+SUMMARY:Swim: 45 min easy
+DESCRIPTION:45 min easy\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-15-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270415T160000
+DTEND;TZID=America/New_York:20270415T171500
+SUMMARY:Bike: 75 min Z2 149–200 W
+DESCRIPTION:75 min Z2 149–200 W\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-16-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270416T063000
+DTEND;TZID=America/New_York:20270416T071000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-16-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270416T160000
+DTEND;TZID=America/New_York:20270416T165000
+SUMMARY:Swim: 50 min: 5×400 @ 2:30/100 m
+DESCRIPTION:50 min: 5×400 @ 2:30/100 m\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-17-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270417T090000
+DTEND;TZID=America/New_York:20270417T125500
+SUMMARY:Brick: Long ride 3:15 Z2 with race-power blocks 202–215 W → br
+ ick run…
+DESCRIPTION:Long ride 3:15 Z2 with race-power blocks 202–215 W → brick
+  run 40 min at goal pace 8:45/mi\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-18-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270418T090000
+DTEND;TZID=America/New_York:20270418T103500
+SUMMARY:Run: Long run 95 min easy ≤144 bpm
+DESCRIPTION:Long run 95 min easy ≤144 bpm\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-18-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270418T160000
+DTEND;TZID=America/New_York:20270418T163000
+SUMMARY:Swim: 30 min: easy recovery swim\, loosen the legs
+DESCRIPTION:30 min: easy recovery swim\, loosen the legs\nWeek 26 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-19-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270419T063000
+DTEND;TZID=America/New_York:20270419T070000
+SUMMARY:Lift · maintenance
+DESCRIPTION:Lift · maintenance\nDeadlift or squat 3×4 (heavy\, crisp)\nC
+ alf raise 3×10\nPogo hops 2×20\nCore 2 rounds\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-19-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270419T160000
+DTEND;TZID=America/New_York:20270419T163000
+SUMMARY:Run: 30 min easy ≤144 bpm (optional 2nd lift Wed AM)
+DESCRIPTION:30 min easy ≤144 bpm (optional 2nd lift Wed AM)\nWeek 27 · 
+ Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-20-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270420T063000
+DTEND;TZID=America/New_York:20270420T072500
+SUMMARY:Swim: 55 min: 10×200 @ 2:32/100 m
+DESCRIPTION:55 min: 10×200 @ 2:32/100 m\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-20-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270420T160000
+DTEND;TZID=America/New_York:20270420T173000
+SUMMARY:Bike: 90 min: 3×20 min @ race power 202–215 W
+DESCRIPTION:90 min: 3×20 min @ race power 202–215 W\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-21-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270421T160000
+DTEND;TZID=America/New_York:20270421T165500
+SUMMARY:Run: 55 min: 2×15 min at goal pace 8:45/mi
+DESCRIPTION:55 min: 2×15 min at goal pace 8:45/mi\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-22-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270422T063000
+DTEND;TZID=America/New_York:20270422T071500
+SUMMARY:Swim: 45 min easy
+DESCRIPTION:45 min easy\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-22-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270422T160000
+DTEND;TZID=America/New_York:20270422T171500
+SUMMARY:Bike: 75 min Z2 149–200 W
+DESCRIPTION:75 min Z2 149–200 W\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-23-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270423T063000
+DTEND;TZID=America/New_York:20270423T071000
+SUMMARY:Run: 40 min easy ≤144 bpm
+DESCRIPTION:40 min easy ≤144 bpm\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-23-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270423T160000
+DTEND;TZID=America/New_York:20270423T165000
+SUMMARY:Swim: 50 min: 1\,900 m timed
+DESCRIPTION:50 min: 1\,900 m timed\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-24-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270424T090000
+DTEND;TZID=America/New_York:20270424T125000
+SUMMARY:Brick: Long ride 3:30\, last hour at race power 202–215 W → br
+ ick run …
+DESCRIPTION:Long ride 3:30\, last hour at race power 202–215 W → brick
+  run 20 min easy ≤144 bpm\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-25-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270425T090000
+DTEND;TZID=America/New_York:20270425T104500
+SUMMARY:Run: Long run 1:45\, last 20 min at goal pace 8:45/mi
+DESCRIPTION:Long run 1:45\, last 20 min at goal pace 8:45/mi\nWeek 27 · B
+ uild
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-25-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270425T160000
+DTEND;TZID=America/New_York:20270425T163000
+SUMMARY:Swim: 30 min: easy recovery swim\, loosen the legs
+DESCRIPTION:30 min: easy recovery swim\, loosen the legs\nWeek 27 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-26-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270426T063000
+DTEND;TZID=America/New_York:20270426T065000
+SUMMARY:Lift · maintenance (half the sets)
+DESCRIPTION:Lift · maintenance (half the sets)\nDeadlift or squat 3×4 (h
+ eavy\, crisp)\nCalf raise 3×10\nPogo hops 2×20\nCore 2 rounds\nWeek 28 
+ · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-26-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270426T160000
+DTEND;TZID=America/New_York:20270426T164000
+SUMMARY:Run: 40 min easy ≤144 bpm + 4×20 s strides
+DESCRIPTION:40 min easy ≤144 bpm + 4×20 s strides\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-27-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270427T063000
+DTEND;TZID=America/New_York:20270427T070000
+SUMMARY:Swim: 30 min: easy drills · 6×50 smooth
+DESCRIPTION:30 min: easy drills · 6×50 smooth\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-27-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270427T160000
+DTEND;TZID=America/New_York:20270427T170000
+SUMMARY:Bike: 60 min easy 149–200 W with 3×1 min openers
+DESCRIPTION:60 min easy 149–200 W with 3×1 min openers\nWeek 28 · Buil
+ d
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-28-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270428T160000
+DTEND;TZID=America/New_York:20270428T163000
+SUMMARY:Swim: 30 min: easy technique · sighting 6×25
+DESCRIPTION:30 min: easy technique · sighting 6×25\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-29-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270429T063000
+DTEND;TZID=America/New_York:20270429T071000
+SUMMARY:Swim: Test: 400 easy warm-up · 400 m time trial · 5 min easy · 
+ 200 m …
+DESCRIPTION:Test: 400 easy warm-up · 400 m time trial · 5 min easy · 20
+ 0 m time trial · CSS = (400 time − 200 time) ÷ 2 (target 2:00–2:05/
+ 100 m). Log it on the Progress tab.\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-29-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270429T160000
+DTEND;TZID=America/New_York:20270429T170000
+SUMMARY:Bike: 60 min easy 149–200 W
+DESCRIPTION:60 min easy 149–200 W\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-30-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270430T063000
+DTEND;TZID=America/New_York:20270430T071500
+SUMMARY:Bike: 45 min easy spin 149–200 W
+DESCRIPTION:45 min easy spin 149–200 W\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-04-30-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270430T160000
+DTEND;TZID=America/New_York:20270430T163500
+SUMMARY:Swim: 35 min: easy aerobic · 6×50 smooth
+DESCRIPTION:35 min: easy aerobic · 6×50 smooth\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-01-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270501T090000
+DTEND;TZID=America/New_York:20270501T100000
+SUMMARY:Bike: FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 
+ min al…
+DESCRIPTION:FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 mi
+ n all-out · 10 min cool-down. FTP = 95% of 20-min power. Log it on the P
+ rogress tab.\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-02-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270502T090000
+DTEND;TZID=America/New_York:20270502T095000
+SUMMARY:Run: 50 min easy ≤144 bpm
+DESCRIPTION:50 min easy ≤144 bpm\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-02-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270502T160000
+DTEND;TZID=America/New_York:20270502T170000
+SUMMARY:Bike: 60 min easy spin 149–200 W
+DESCRIPTION:60 min easy spin 149–200 W\nWeek 28 · Build
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-03-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270503T063000
+DTEND;TZID=America/New_York:20270503T065000
+SUMMARY:Lift · short
+DESCRIPTION:Lift · short\nMain lift 2×3\nCalf raise 2×10\nCore 1 round\
+ nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-03-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270503T160000
+DTEND;TZID=America/New_York:20270503T163000
+SUMMARY:Run: 30 min easy ≤144 bpm
+DESCRIPTION:30 min easy ≤144 bpm\nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-04-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270504T063000
+DTEND;TZID=America/New_York:20270504T072000
+SUMMARY:Swim: 50 min: 4×400 at race effort
+DESCRIPTION:50 min: 4×400 at race effort\nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-04-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270504T160000
+DTEND;TZID=America/New_York:20270504T173000
+SUMMARY:Bike: 90 min: 2×30 min @ race power 202–215 W\, aero
+DESCRIPTION:90 min: 2×30 min @ race power 202–215 W\, aero\nWeek 29 · 
+ Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-05-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270505T160000
+DTEND;TZID=America/New_York:20270505T165500
+SUMMARY:Run: 55 min: 3×2 mi at goal pace 8:45/mi
+DESCRIPTION:55 min: 3×2 mi at goal pace 8:45/mi\nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-06-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270506T063000
+DTEND;TZID=America/New_York:20270506T071000
+SUMMARY:Swim: 40 min: open water in wetsuit with a buddy (or wetsuit in th
+ e p…
+DESCRIPTION:40 min: open water in wetsuit with a buddy (or wetsuit in the 
+ pool)\nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-06-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270506T160000
+DTEND;TZID=America/New_York:20270506T171500
+SUMMARY:Bike: 75 min Z2 149–200 W
+DESCRIPTION:75 min Z2 149–200 W\nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-07-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270507T160000
+DTEND;TZID=America/New_York:20270507T165000
+SUMMARY:Swim: 50 min: 1\,900 m continuous
+DESCRIPTION:50 min: 1\,900 m continuous\nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-08-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270508T090000
+DTEND;TZID=America/New_York:20270508T130000
+SUMMARY:Brick: Long ride 3:30 on hilly\, course-like roads at 202–215 W 
+ → bric…
+DESCRIPTION:Long ride 3:30 on hilly\, course-like roads at 202–215 W →
+  brick run 30 min easy ≤144 bpm\nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-09-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270509T090000
+DTEND;TZID=America/New_York:20270509T104000
+SUMMARY:Run: Long run 100 min easy ≤144 bpm
+DESCRIPTION:Long run 100 min easy ≤144 bpm\nWeek 29 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-10-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270510T063000
+DTEND;TZID=America/New_York:20270510T072000
+SUMMARY:Swim: 50 min: 4×400 at race effort
+DESCRIPTION:50 min: 4×400 at race effort\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-11-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270511T063000
+DTEND;TZID=America/New_York:20270511T065000
+SUMMARY:Lift · short
+DESCRIPTION:Lift · short\nMain lift 2×3\nCalf raise 2×10\nCore 1 round\
+ nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-11-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270511T160000
+DTEND;TZID=America/New_York:20270511T171500
+SUMMARY:Bike: 75 min: 3×15 min @ race power 202–215 W
+DESCRIPTION:75 min: 3×15 min @ race power 202–215 W\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-12-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270512T063000
+DTEND;TZID=America/New_York:20270512T072000
+SUMMARY:Run: 50 min: 2×15 min at goal pace 8:45/mi
+DESCRIPTION:50 min: 2×15 min at goal pace 8:45/mi\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-12-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270512T160000
+DTEND;TZID=America/New_York:20270512T163000
+SUMMARY:Swim: 30 min: open water\, easy
+DESCRIPTION:30 min: open water\, easy\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-13-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270513T063000
+DTEND;TZID=America/New_York:20270513T073000
+SUMMARY:Bike: 60 min Z2 149–200 W
+DESCRIPTION:60 min Z2 149–200 W\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-13-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270513T160000
+DTEND;TZID=America/New_York:20270513T162500
+SUMMARY:Run: 25 min easy ≤144 bpm
+DESCRIPTION:25 min easy ≤144 bpm\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-14-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270514T063000
+DTEND;TZID=America/New_York:20270514T070000
+SUMMARY:Swim: 30 min: easy · 4×50 fast
+DESCRIPTION:30 min: easy · 4×50 fast\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-15-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270515T090000
+DTEND;TZID=America/New_York:20270515T122000
+SUMMARY:Key: Tune-up: sprint or Olympic race\, or a self-sim: 1\,900 m swi
+ m · 2…
+DESCRIPTION:Tune-up: sprint or Olympic race\, or a self-sim: 1\,900 m swim
+  · 2:00 bike at race power 202–215 W · 45 min run at goal pace 8:45/m
+ i\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-16-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270516T090000
+DTEND;TZID=America/New_York:20270516T100000
+SUMMARY:Run: 60 min easy ≤144 bpm
+DESCRIPTION:60 min easy ≤144 bpm\nWeek 30 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-17-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270517T063000
+DTEND;TZID=America/New_York:20270517T072000
+SUMMARY:Swim: 50 min: 5×300 @ 2:30/100 m
+DESCRIPTION:50 min: 5×300 @ 2:30/100 m\nWeek 31 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-18-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270518T063000
+DTEND;TZID=America/New_York:20270518T065000
+SUMMARY:Lift · short
+DESCRIPTION:Lift · short\nMain lift 2×3\nCalf raise 2×10\nCore 1 round\
+ nWeek 31 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-18-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270518T160000
+DTEND;TZID=America/New_York:20270518T173000
+SUMMARY:Bike: 90 min: 2×30 min @ race power 202–215 W\, aero
+DESCRIPTION:90 min: 2×30 min @ race power 202–215 W\, aero\nWeek 31 · 
+ Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-19-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270519T063000
+DTEND;TZID=America/New_York:20270519T072500
+SUMMARY:Run: 55 min: 3×1 mi at goal pace 8:45/mi · 15 min steady
+DESCRIPTION:55 min: 3×1 mi at goal pace 8:45/mi · 15 min steady\nWeek 31
+  · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-19-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270519T160000
+DTEND;TZID=America/New_York:20270519T164500
+SUMMARY:Swim: 45 min easy
+DESCRIPTION:45 min easy\nWeek 31 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-20-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270520T063000
+DTEND;TZID=America/New_York:20270520T073000
+SUMMARY:Bike: 60 min easy 149–200 W on your full race setup
+DESCRIPTION:60 min easy 149–200 W on your full race setup\nWeek 31 · Pe
+ ak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-20-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270520T160000
+DTEND;TZID=America/New_York:20270520T163000
+SUMMARY:Run: 30 min easy ≤144 bpm
+DESCRIPTION:30 min easy ≤144 bpm\nWeek 31 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-21-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270521T063000
+DTEND;TZID=America/New_York:20270521T071500
+SUMMARY:Swim: 45 min: open water 1\,900 m in wetsuit\, sighting every 6–
+ 8 strok…
+DESCRIPTION:45 min: open water 1\,900 m in wetsuit\, sighting every 6–8 
+ strokes\nWeek 31 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-22-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270522T090000
+DTEND;TZID=America/New_York:20270522T125000
+SUMMARY:Key: Race rehearsal (May 22): 56 mi at race power 202–215 W in a
+ ero\, …
+DESCRIPTION:Race rehearsal (May 22): 56 mi at race power 202–215 W in ae
+ ro\, full race kit\, nutrition every 20 min · straight into 6 mi at goal
+  pace 8:45/mi\nWeek 31 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-23-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270523T090000
+DTEND;TZID=America/New_York:20270523T101500
+SUMMARY:Run: 75 min easy ≤144 bpm. Note what your gut and legs tell you.
+DESCRIPTION:75 min easy ≤144 bpm. Note what your gut and legs tell you.\
+ nWeek 31 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-24-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270524T063000
+DTEND;TZID=America/New_York:20270524T065000
+SUMMARY:Lift · short
+DESCRIPTION:Lift · short\nMain lift 2×3\nCalf raise 2×10\nCore 1 round\
+ nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-24-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270524T160000
+DTEND;TZID=America/New_York:20270524T163000
+SUMMARY:Run: 30 min easy ≤144 bpm
+DESCRIPTION:30 min easy ≤144 bpm\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-25-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270525T063000
+DTEND;TZID=America/New_York:20270525T071500
+SUMMARY:Swim: 45 min: 8×200 at race pace
+DESCRIPTION:45 min: 8×200 at race pace\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-25-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270525T160000
+DTEND;TZID=America/New_York:20270525T171500
+SUMMARY:Bike: 75 min: 2×20 min @ race power 202–215 W
+DESCRIPTION:75 min: 2×20 min @ race power 202–215 W\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-26-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270526T160000
+DTEND;TZID=America/New_York:20270526T164500
+SUMMARY:Run: 45 min: 3×1 mi at goal pace 8:45/mi
+DESCRIPTION:45 min: 3×1 mi at goal pace 8:45/mi\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-27-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270527T063000
+DTEND;TZID=America/New_York:20270527T070000
+SUMMARY:Swim: 30 min: open water\, easy
+DESCRIPTION:30 min: open water\, easy\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-27-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270527T160000
+DTEND;TZID=America/New_York:20270527T170000
+SUMMARY:Bike: 60 min Z2 149–200 W
+DESCRIPTION:60 min Z2 149–200 W\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-28-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270528T160000
+DTEND;TZID=America/New_York:20270528T164500
+SUMMARY:Swim: 45 min steady
+DESCRIPTION:45 min steady\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-29-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270529T090000
+DTEND;TZID=America/New_York:20270529T121500
+SUMMARY:Brick: Long ride 3:00 Z2 with 2×20 min at race power 202–215 W 
+ → bric…
+DESCRIPTION:Long ride 3:00 Z2 with 2×20 min at race power 202–215 W →
+  brick run 15 min easy ≤144 bpm\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-30-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270530T090000
+DTEND;TZID=America/New_York:20270530T101500
+SUMMARY:Run: Long run 75 min easy ≤144 bpm
+DESCRIPTION:Long run 75 min easy ≤144 bpm\nWeek 32 · Peak
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-05-31-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270531T063000
+DTEND;TZID=America/New_York:20270531T071000
+SUMMARY:Swim: 40 min: 300 easy · 4×200 @ 2:30/100 m · 200 easy
+DESCRIPTION:40 min: 300 easy · 4×200 @ 2:30/100 m · 200 easy\nWeek 33 
+ · Taper
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-01-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270601T063000
+DTEND;TZID=America/New_York:20270601T074500
+SUMMARY:Bike: 75 min: 2×10 min @ race power 202–215 W
+DESCRIPTION:75 min: 2×10 min @ race power 202–215 W\nWeek 33 · Taper
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-02-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270602T063000
+DTEND;TZID=America/New_York:20270602T065000
+SUMMARY:Lift · short
+DESCRIPTION:Lift · short\nMain lift 2×3\nCalf raise 2×10\nCore 1 round\
+ nWeek 33 · Taper
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-02-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270602T160000
+DTEND;TZID=America/New_York:20270602T164000
+SUMMARY:Run: 40 min with 3×1 mi at goal pace 8:45/mi
+DESCRIPTION:40 min with 3×1 mi at goal pace 8:45/mi\nWeek 33 · Taper
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-03-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270603T063000
+DTEND;TZID=America/New_York:20270603T070000
+SUMMARY:Swim: 30 min: open water\, easy
+DESCRIPTION:30 min: open water\, easy\nWeek 33 · Taper
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-03-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270603T160000
+DTEND;TZID=America/New_York:20270603T164500
+SUMMARY:Bike: 45 min easy 149–200 W
+DESCRIPTION:45 min easy 149–200 W\nWeek 33 · Taper
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-05-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270605T090000
+DTEND;TZID=America/New_York:20270605T104500
+SUMMARY:Brick: Long ride 1:30 with 2×10 min @ race power 202–215 W → 
+ brick ru…
+DESCRIPTION:Long ride 1:30 with 2×10 min @ race power 202–215 W → bri
+ ck run 15 min easy ≤144 bpm\nWeek 33 · Taper
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-06-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270606T090000
+DTEND;TZID=America/New_York:20270606T095000
+SUMMARY:Run: 50 min easy ≤144 bpm
+DESCRIPTION:50 min easy ≤144 bpm\nWeek 33 · Taper
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-07-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270607T063000
+DTEND;TZID=America/New_York:20270607T070000
+SUMMARY:Swim: 30 min: easy · 4×100 at race pace
+DESCRIPTION:30 min: easy · 4×100 at race pace\nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-08-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270608T063000
+DTEND;TZID=America/New_York:20270608T071500
+SUMMARY:Bike: 45 min: 3×3 min @ race power 202–215 W
+DESCRIPTION:45 min: 3×3 min @ race power 202–215 W\nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-08-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270608T160000
+DTEND;TZID=America/New_York:20270608T162000
+SUMMARY:Run: 20 min easy ≤144 bpm
+DESCRIPTION:20 min easy ≤144 bpm\nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-09-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270609T063000
+DTEND;TZID=America/New_York:20270609T070000
+SUMMARY:Run: 30 min with 4×1 min at goal pace 8:45/mi
+DESCRIPTION:30 min with 4×1 min at goal pace 8:45/mi\nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-09-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270609T160000
+DTEND;TZID=America/New_York:20270609T162500
+SUMMARY:Swim: 25 min easy
+DESCRIPTION:25 min easy\nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-10-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270610T063000
+DTEND;TZID=America/New_York:20270610T065000
+SUMMARY:Swim: 20 min in Lake George if allowed; check the water temperatur
+ e
+DESCRIPTION:20 min in Lake George if allowed; check the water temperature\
+ nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-10-pm@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270610T160000
+DTEND;TZID=America/New_York:20270610T163000
+SUMMARY:Bike: 30 min easy; final bike check (tires\, chain lube\, batterie
+ s)
+DESCRIPTION:30 min easy; final bike check (tires\, chain lube\, batteries)
+ \nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-12-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270612T090000
+DTEND;TZID=America/New_York:20270612T094000
+SUMMARY:Key: Shakeout: 20 min bike with 3×30 s pickups · 10 min run with
+  3 pi…
+DESCRIPTION:Shakeout: 20 min bike with 3×30 s pickups · 10 min run with 
+ 3 pickups · 10 min swim. Rack the bike. Same dinner as the rehearsal. Be
+ d early.\nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+BEGIN:VEVENT
+UID:lg703-2027-06-13-am@noahlazar
+DTSTAMP:20261104T141649Z
+DTSTART;TZID=America/New_York:20270613T090000
+DTEND;TZID=America/New_York:20270613T143000
+SUMMARY:Key: RACE DAY. Swim steady and sight · bike at race power 202–2
+ 15 W\, …
+DESCRIPTION:RACE DAY. Swim steady and sight · bike at race power 202–21
+ 5 W\, eat on a timer · run the first 3 mi ≤155 bpm\, then race the las
+ t 5K.\nWeek 34 · Race
+TRANSP:OPAQUE
+CATEGORIES:Training
+END:VEVENT
+END:VCALENDAR
