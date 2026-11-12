@@ -239,7 +239,12 @@ th { font-size: 12.5px; font-weight: 650; }
 @media (max-width: 600px) {
   .hb-profile { height: 72px; }
   .hb-profile text { display: none; } /* labels would render at ~5px on a phone; the phase is in the header line */
-  nav.tabs button { padding: 10px 9px 9px; font-size: 17px; }
+  /* Phones: tabs become a bottom bar within thumb reach; the status pill keeps the sticky bar at the top */
+  nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--bg); border-top: 1px solid var(--line); gap: 0; overflow: visible;
+    padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+  nav.tabs button { flex: 1 1 0; min-width: 0; min-height: 44px; padding: 10px 2px 9px; font-size: 17px; border-bottom: 0; border-top: 3px solid transparent; }
+  nav.tabs button[aria-selected="true"] { border-top-color: var(--accent); }
+  .wrap { padding-bottom: calc(64px + 64px); } /* room for the bar; the home-indicator inset is added by the bar itself and by the page wrapper */
   .daynav { flex-wrap: nowrap; }
   .daynav #goToday { order: 3; }
   h2 { font-size: 22px; }
@@ -352,12 +357,12 @@ th { font-size: 12.5px; font-weight: 650; }
   </header>
 
   <div class="appbar">
-  <nav class="tabs" role="tablist">
-    <button role="tab" id="tab-today" aria-selected="true" data-tab="today">Today</button>
-    <button role="tab" id="tab-week" aria-selected="false" data-tab="week">Week</button>
-    <button role="tab" id="tab-season" aria-selected="false" data-tab="season">Progress</button>
-    <button role="tab" id="tab-history" aria-selected="false" data-tab="history">History</button>
-    <button role="tab" id="tab-guide" aria-selected="false" data-tab="guide">Guide</button>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="tab-today" aria-selected="true" aria-controls="p-today" tabindex="0" data-tab="today">Today</button>
+    <button role="tab" id="tab-week" aria-selected="false" aria-controls="p-week" tabindex="-1" data-tab="week">Week</button>
+    <button role="tab" id="tab-season" aria-selected="false" aria-controls="p-season" tabindex="-1" data-tab="season">Progress</button>
+    <button role="tab" id="tab-history" aria-selected="false" aria-controls="p-history" tabindex="-1" data-tab="history">History</button>
+    <button role="tab" id="tab-guide" aria-selected="false" aria-controls="p-guide" tabindex="-1" data-tab="guide">Guide</button>
   </nav>
   <div class="status" id="status" data-state="busy">
     <span class="st-save" id="st-save" role="status" aria-live="polite">Loading your log…</span>
@@ -368,7 +373,7 @@ th { font-size: 12.5px; font-weight: 650; }
   </div>
 
   <!-- TODAY -->
-  <section class="panel" id="p-today" role="tabpanel">
+  <section class="panel" id="p-today" role="tabpanel" aria-labelledby="tab-today">
     <div class="habits" id="habits" hidden aria-label="This week's fixes"></div>
     <div class="daynav">
       <button class="btn" id="prevDay" aria-label="Previous day">‹</button>
@@ -426,7 +431,7 @@ th { font-size: 12.5px; font-weight: 650; }
   </section>
 
   <!-- WEEK -->
-  <section class="panel" id="p-week" role="tabpanel" hidden>
+  <section class="panel" id="p-week" role="tabpanel" aria-labelledby="tab-week" hidden>
     <div class="daynav">
       <button class="btn" id="prevWeek" aria-label="Previous week">‹</button>
       <h2 id="weekTitle"></h2>
@@ -441,7 +446,7 @@ th { font-size: 12.5px; font-weight: 650; }
   </section>
 
   <!-- SEASON -->
-  <section class="panel" id="p-season" role="tabpanel" hidden>
+  <section class="panel" id="p-season" role="tabpanel" aria-labelledby="tab-season" hidden>
     <div class="goal5" id="goal5" aria-label="Road to a 5-hour finish">
       <div class="g5-head">
         <div class="g5-target"><span class="g5-eye">The goal</span><span class="g5-big">5:00</span></div>
@@ -518,14 +523,14 @@ th { font-size: 12.5px; font-weight: 650; }
   </section>
 
   <!-- HISTORY -->
-  <section class="panel" id="p-history" role="tabpanel" hidden>
+  <section class="panel" id="p-history" role="tabpanel" aria-labelledby="tab-history" hidden>
     <div class="daynav"><h2>Your Garmin history</h2><a class="btn" href="history.html" target="_blank" rel="noopener">Open full screen</a></div>
     <p class="small">Your training dashboard built from the Garmin export (activities from 2021 through Oct 11, 2026). Rebuild it with build_dashboard.py after a new export, then redeploy.</p>
     <iframe id="histFrame" title="Garmin history dashboard" style="width:100%;height:85vh;border:1px solid var(--line);border-radius:8px;background:var(--card)" loading="lazy"></iframe>
   </section>
 
   <!-- GUIDE -->
-  <section class="panel" id="p-guide" role="tabpanel" hidden>
+  <section class="panel" id="p-guide" role="tabpanel" aria-labelledby="tab-guide" hidden>
     <div class="grid3">
       <div class="card"><h3><span class="bk">Bike</span> · strength</h3><ul class="list">
         <li>Garmin FTP 266 W at 77.1 kg ≈ 3.45 W/kg; VO2max 57–58.</li>
@@ -1044,13 +1049,13 @@ async function resume() {
     if (s === "offline") retryLater();
   }
   if (dayChanged && mode === "worker") loadCoach();
-  render(); pump();
+  render(); syncHash(false); pump();
 }
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") resume(); else pump(); });
 window.addEventListener("pageshow", e => { if (e.persisted) resume(); });
 window.addEventListener("online", () => { online = true; retryN = 0; resume(); });
 window.addEventListener("offline", () => { online = false; paintStatus(); });
-setInterval(() => { if (refreshToday()) { render(); if (mode === "worker") loadCoach(); } }, 60e3);
+setInterval(() => { if (refreshToday()) { render(); syncHash(false); if (mode === "worker") loadCoach(); } }, 60e3);
 
 // ---------- status pill: save state first, then Garmin freshness and coach ----------
 let gFetchedAt = 0, gNote = "", noteMsg = "", noteUntil = 0;
@@ -1575,7 +1580,7 @@ function renderWeek() {
     const dn = isDone(d.key, slot);
     return `<label class="cell ${dn ? "done" : ""}"><input type="checkbox" id="w-${d.key}-${slot}" data-day="${d.key}" data-slot="${slot}" data-f="done" ${dn ? "checked" : ""}><span><span class="${tagCls[s.s]}">${ST[s.s]}</span> ${esc(X(s.t))}</span></label>`;
   };
-  document.getElementById("weekBody").innerHTML = wk.days.map(d => `<tr class="${d.key === TODAY ? "today" : ""}"><td><a href="#today" data-open="${d.key}">${DAYNAMES[d.i]} ${fmt(d.date)}</a>${extrasOf(d.key).map(a => `<span class="xtra">+ ${esc(a.name)} · ${durTxt(a.mins)}</span>`).join("")}</td><td>${cell(d, "am")}</td><td>${cell(d, "pm")}</td></tr>`).join("");
+  document.getElementById("weekBody").innerHTML = wk.days.map(d => `<tr class="${d.key === TODAY ? "today" : ""}"><td><a href="#/today/${d.key}" data-open="${d.key}">${DAYNAMES[d.i]} ${fmt(d.date)}</a>${extrasOf(d.key).map(a => `<span class="xtra">+ ${esc(a.name)} · ${durTxt(a.mins)}</span>`).join("")}</td><td>${cell(d, "am")}</td><td>${cell(d, "pm")}</td></tr>`).join("");
   const by = {}; let pl = 0, dn = 0, cnt = 0, cdn = 0;
   for (const d of wk.days) for (const o of sessions(d)) {
     const k = o.s.s === "brick" ? "bike" : o.s.s, kd = doneSport(d.key, o.slot, k); by[k] = by[k] || { p: 0, d: 0 }; by[kd] = by[kd] || { p: 0, d: 0 };
@@ -1997,26 +2002,48 @@ document.addEventListener("input", e => {
   save(key);
   if (t.dataset.slot === "ck") fillToday();
 });
+// ---------- tabs and routing: tab, day and week live in the URL hash (#/today/2026-11-12, #/week/4, #/progress) ----------
+const TABS = ["today", "week", "season", "history", "guide"], SLUG = { season: "progress" }, UNSLUG = { progress: "season" };
+let curTab = "today";
 function showTab(name) {
-  for (const b of document.querySelectorAll("nav.tabs button")) b.setAttribute("aria-selected", b.dataset.tab === name ? "true" : "false");
-  for (const p of ["today", "week", "season", "history", "guide"]) document.getElementById("p-" + p).hidden = p !== name;
+  curTab = name;
+  for (const b of document.querySelectorAll("nav.tabs button")) { const on = b.dataset.tab === name; b.setAttribute("aria-selected", on ? "true" : "false"); b.tabIndex = on ? 0 : -1; }
+  for (const p of TABS) document.getElementById("p-" + p).hidden = p !== name;
   if (name === "history") { const f = document.getElementById("histFrame"); if (!f.src) f.src = "history.html"; }
   try { localStorage.setItem("lg703-tab", name); } catch (e) {}
 }
-document.querySelector("nav.tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) showTab(b.dataset.tab); });
+const routeHash = () => curTab === "today" ? "#/today" + (sel === TODAY ? "" : "/" + sel) : curTab === "week" ? "#/week/" + selWeek : "#/" + (SLUG[curTab] || curTab);
+function syncHash(push) { const h = routeHash(); if (location.hash === h) return; try { history[push ? "pushState" : "replaceState"](null, "", h); } catch (e) {} }
+function applyHash() {
+  const m = location.hash.match(/^#\/([a-z]+)(?:\/([\w-]+))?$/); if (!m) return false;
+  const tab = UNSLUG[m[1]] || m[1]; if (!TABS.includes(tab)) return false;
+  if (tab === "today") { const k = m[2] && inPlan(m[2]) ? m[2] : inPlan(TODAY) ? TODAY : sel; if (k !== sel) { dayDir = k > sel ? "next" : "prev"; sel = k; selWeek = BYKEY[k].wk; } }
+  if (tab === "week" && +m[2] >= 1 && +m[2] <= 34) selWeek = Math.floor(+m[2]);
+  showTab(tab); return true;
+}
+function goTab(name) { showTab(name); syncHash(true); window.scrollTo(0, 0); }
+window.addEventListener("popstate", () => { if (applyHash()) render(); });
+document.querySelector("nav.tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) goTab(b.dataset.tab); });
+// WAI-ARIA tabs: arrows, Home and End move between tabs (and select them); only the selected tab is in the Tab order.
+document.querySelector("nav.tabs").addEventListener("keydown", e => {
+  const tabs = [...document.querySelectorAll('nav.tabs [role="tab"]')], i = tabs.indexOf(document.activeElement); if (i < 0) return;
+  const n = e.key === "ArrowRight" ? (i + 1) % tabs.length : e.key === "ArrowLeft" ? (i + tabs.length - 1) % tabs.length : e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : -1;
+  if (n < 0) return;
+  e.preventDefault(); tabs[n].focus(); goTab(tabs[n].dataset.tab);
+});
 let dayDir = "";
-function selectDay(k) { if (!inPlan(k)) return; if (k !== sel) dayDir = k > sel ? "next" : "prev"; sel = k; selWeek = BYKEY[k].wk; render(); }
+function selectDay(k) { if (!inPlan(k)) return; if (k !== sel) dayDir = k > sel ? "next" : "prev"; sel = k; selWeek = BYKEY[k].wk; render(); syncHash(true); }
 const step = n => { const i = DAYS.findIndex(d => d.key === sel) + n; if (DAYS[i]) selectDay(DAYS[i].key); };
 document.getElementById("prevDay").onclick = () => step(-1);
 document.getElementById("nextDay").onclick = () => step(1);
 document.getElementById("goToday").onclick = () => selectDay(inPlan(TODAY) ? TODAY : DAYS[0].key);
 document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest("button[data-day]"); if (b) selectDay(b.dataset.day); });
-document.getElementById("prevWeek").onclick = () => { if (selWeek > 1) { selWeek--; renderWeek(); } };
-document.getElementById("nextWeek").onclick = () => { if (selWeek < 34) { selWeek++; renderWeek(); } };
-document.getElementById("thisWeek").onclick = () => { selWeek = curWk; renderWeek(); };
-document.getElementById("weekBody").addEventListener("click", e => { const a = e.target.closest("a[data-open]"); if (a) { e.preventDefault(); selectDay(a.dataset.open); showTab("today"); window.scrollTo(0, 0); } });
+document.getElementById("prevWeek").onclick = () => { if (selWeek > 1) { selWeek--; renderWeek(); syncHash(true); } };
+document.getElementById("nextWeek").onclick = () => { if (selWeek < 34) { selWeek++; renderWeek(); syncHash(true); } };
+document.getElementById("thisWeek").onclick = () => { selWeek = curWk; renderWeek(); syncHash(true); };
+document.getElementById("weekBody").addEventListener("click", e => { const a = e.target.closest("a[data-open]"); if (a) { e.preventDefault(); showTab("today"); selectDay(a.dataset.open); window.scrollTo(0, 0); } });
 document.addEventListener("keydown", e => {
-  if (document.getElementById("p-today").hidden || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (document.getElementById("p-today").hidden || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName) || document.activeElement.closest("nav.tabs")) return;
   if (e.key === "ArrowLeft") step(-1); if (e.key === "ArrowRight") step(1);
 });
 document.getElementById("gsync").onclick = () => loadGarmin(true);
@@ -2036,7 +2063,8 @@ document.getElementById("saveTest").onclick = () => {
   document.getElementById("test-val").value = "";
   saveSettings(); render();
 };
-let startTab = "today"; try { startTab = localStorage.getItem("lg703-tab") || "today"; } catch (e) {}
-showTab(["today", "week", "season", "history", "guide"].includes(startTab) ? startTab : "today");
+// The URL decides the view; with no route in it, fall back to the last tab used on this device.
+if (!applyHash()) { let startTab = "today"; try { startTab = localStorage.getItem("lg703-tab") || "today"; } catch (e) {} showTab(TABS.includes(startTab) ? startTab : "today"); }
+syncHash(false);
 render();
 </script>
