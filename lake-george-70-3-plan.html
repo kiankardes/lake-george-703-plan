@@ -238,11 +238,8 @@ th { font-size: 12.5px; font-weight: 650; }
 .hourbar .hb-block:nth-child(2) { order: -1; }
 .hb-profile .here { font: 600 12px var(--body); fill: var(--fg); }
 
-.hb-profile { height: 120px; }
 .daynav h2 { flex: 1 1 0; }
 @media (max-width: 600px) {
-  .hb-profile { height: 72px; }
-  .hb-profile text { display: none; } /* labels would render at ~5px on a phone; the phase is in the header line */
   /* Phones: tabs become a bottom bar within thumb reach; the status pill keeps the sticky bar at the top */
   nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--bg); border-top: 1px solid var(--line); gap: 0; overflow: visible;
     padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
@@ -379,6 +376,16 @@ button.st-meta { background: none; border: 0; padding: 0; min-height: 44px; curs
   .wtable td[data-l] { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; min-height: 44px; }
   .wtable td[data-l]::before { content: attr(data-l); font-size: 12.5px; font-weight: 650; color: var(--muted); }
 }
+
+/* ---- Charts: real-width drawing, readable labels, tap to inspect ---- */
+.chart, .hb-profile { touch-action: pan-y; }
+.chart text, .hb-profile text { font: 12px var(--body); fill: var(--muted); }
+.chart text.on { fill: var(--accent); font-weight: 600; } .hb-profile text.strong { fill: var(--fg); font-weight: 600; }
+.cursor rect { fill: var(--fg); opacity: .14; } .cursor line { stroke: var(--fg); stroke-width: 1.5; } .cursor circle { stroke: var(--card); stroke-width: 1.5; }
+.readout { min-height: 20px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cs-weeks { touch-action: pan-y; cursor: pointer; }
+.cs-weeks i.pick { box-shadow: inset 0 0 0 1.5px var(--accent); }
 
 /* Motion: everything below is skipped when the device asks for reduced motion */
 @media (prefers-reduced-motion: no-preference) {
@@ -553,7 +560,7 @@ button.st-meta { background: none; border: 0; padding: 0; min-height: 44px; curs
       </div>
       <div class="hb-block">
         <div class="hb-head"><span class="hb-title">Road to Lake George</span><span class="hb-num num" id="hbSeasonNum"></span></div>
-        <svg class="hb-profile" id="hbProfile" viewBox="0 0 680 84" preserveAspectRatio="none" role="img" aria-label="Season course profile: weekly planned hours with completed hours filled in"></svg>
+        <svg class="hb-profile" id="hbProfile" viewBox="0 0 680 84" role="img" aria-label="Season course profile: weekly planned hours with completed hours filled in"></svg>
         <div class="hb-foot"><span id="hbSeasonNote"></span></div>
       </div>
     </div>
@@ -1833,19 +1840,21 @@ function renderSeason() {
     let p = 0, dd = 0, xx = 0; for (const d of w.days) { for (const o of sessions(d)) { p += o.s.m; dd += doneMin(d.key, o.slot, o.s); } xx += extraMin(d.key); }
     return { n: w.n, p: p / 60, d: dd / 60, x: xx / 60 };
   });
-  const Wd = 680, Hd = 220, l = 34, b = 26, t = 10, top = Math.ceil(Math.max(...wks.map(w => Math.max(w.p, w.d + w.x))) / 5) * 5;
+  const cv = document.getElementById("chart"), Wd = chartWidth(cv), Hd = 220, l = 34, b = 26, t = 10, top = Math.ceil(Math.max(...wks.map(w => Math.max(w.p, w.d + w.x))) / 5) * 5;
   const y = v => Hd - b - (v / top) * (Hd - b - t), slotW = (Wd - l - 6) / 34, bw = slotW * .68;
   let svg = "";
-  for (let v = 0; v <= top; v += 5) svg += `<line x1="${l}" x2="${Wd - 4}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${v}h</text>`;
+  for (let v = 0; v <= top; v += 5) svg += `<line x1="${l}" x2="${Wd - 4}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${l - 6}" y="${y(v) + 4}" text-anchor="end">${v}h</text>`;
   wks.forEach((w, i) => {
     const x = l + i * slotW + (slotW - bw) / 2;
-    svg += `<rect x="${x}" y="${y(w.p)}" width="${bw}" height="${y(0) - y(w.p)}" fill="var(--line)" rx="2"><title>Week ${w.n}: ${w.p.toFixed(1)} h planned, ${w.d.toFixed(1)} h done</title></rect>`;
+    svg += `<rect x="${x}" y="${y(w.p)}" width="${bw}" height="${y(0) - y(w.p)}" fill="var(--line)" rx="2"/>`;
     if (w.d > 0) svg += `<rect x="${x}" y="${y(w.d)}" width="${bw}" height="${y(0) - y(w.d)}" fill="var(--accent)" rx="2"/>`;
-    if (w.x > 0) svg += `<rect x="${x}" y="${y(w.d + w.x)}" width="${bw}" height="${y(w.d) - y(w.d + w.x)}" fill="var(--warn)" rx="2"><title>Week ${w.n}: ${w.x.toFixed(1)} h extra</title></rect>`;
-    if (w.n === 1 || w.n % 4 === 0 || w.n === 34) svg += `<text x="${x + bw / 2}" y="${Hd - 8}" text-anchor="middle" font-size="11" fill="${w.n === curWk ? "var(--accent)" : "var(--muted)"}" font-family="IBM Plex Mono, monospace">${w.n}</text>`;
+    if (w.x > 0) svg += `<rect x="${x}" y="${y(w.d + w.x)}" width="${bw}" height="${y(w.d) - y(w.d + w.x)}" fill="var(--warn)" rx="2"/>`;
+    if (w.n === 1 || w.n % 4 === 0 || w.n === 34) svg += `<text x="${x + bw / 2}" y="${Hd - 8}" text-anchor="middle"${w.n === curWk ? ' class="on"' : ""}>${w.n}</text>`;
     if (w.n === curWk) svg += `<rect x="${x - 2}" y="${t}" width="${bw + 4}" height="${y(0) - t}" fill="none" stroke="var(--accent)" stroke-dasharray="3 3" rx="3"/>`;
   });
-  document.getElementById("chart").innerHTML = svg;
+  chartDone(cv, Wd, Hd, svg,
+    wks.map((w, i) => ({ x: l + i * slotW + slotW / 2, w: slotW, y0: t, y1: y(0), text: `Week ${w.n}: ${w.p.toFixed(1)} h planned, ${w.d.toFixed(1)} h done${w.x > 0 ? `, ${w.x.toFixed(1)} h extra` : ""}` })),
+    `<table><caption>Weekly hours, planned and done</caption><tr><th>Week</th><th>Planned hours</th><th>Done hours</th><th>Extra hours</th></tr>` + wks.map(w => `<tr><td>${w.n}</td><td>${w.p.toFixed(1)}</td><td>${w.d.toFixed(1)}</td><td>${w.x.toFixed(1)}</td></tr>`).join("") + `</table>`);
   // numbers
   const T = toks();
   document.getElementById("numbers").innerHTML = `<tr><th>Number</th><th>Current</th></tr>
@@ -1924,24 +1933,73 @@ function bikeSecs(watts, aero) {
   let v = 8; for (let i = 0; i < 40; i++) { const f = 0.5 * 1.2 * CdA * v ** 3 + crr * m * 9.81 * v - watts; v -= f / (1.5 * 1.2 * CdA * v * v + crr * m * 9.81); }
   return 90123 / (v * 0.86); // 56 mi; 0.86 = hilly-course penalty
 }
+// ---------- charts: drawn at their real pixel width (so 12px labels stay 12px), tap or arrow keys to read a value,
+// and a visually hidden data table for screen readers ----------
+const chartWidth = svg => Math.round(svg.clientWidth || Math.max(280, Math.min(966, document.querySelector(".wrap").clientWidth - 66)));
+function wireChart(svg) {
+  svg._wired = true;
+  const pick = e => {
+    const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) * (svg.viewBox.baseVal.width / r.width), it = svg._items || [];
+    if (!it.length) return;
+    let b = 0; for (let i = 1; i < it.length; i++) if (Math.abs(it[i].x - x) < Math.abs(it[b].x - x)) b = i;
+    chartSelect(svg, b);
+  };
+  svg.addEventListener("pointerdown", pick);
+  svg.addEventListener("pointermove", e => { if (e.pointerType === "mouse" || e.buttons) pick(e); });
+  svg.addEventListener("keydown", e => {
+    const n = (svg._items || []).length, i = svg._sel; if (!n) return;
+    const j = e.key === "ArrowRight" ? Math.min(n - 1, i == null ? 0 : i + 1) : e.key === "ArrowLeft" ? Math.max(0, i == null ? n - 1 : i - 1) : e.key === "Home" ? 0 : e.key === "End" ? n - 1 : -1;
+    if (j < 0) return;
+    e.preventDefault(); chartSelect(svg, j);
+  });
+}
+function chartSelect(svg, i) {
+  const items = svg._items || [], rd = document.getElementById(svg.id + "-read"), g = svg.querySelector(".cursor");
+  svg._sel = i == null || !items[i] ? null : i;
+  if (svg._sel == null) { rd.textContent = items.length ? "Tap the chart, or use the arrow keys, to read a value." : ""; if (g) g.innerHTML = ""; return; }
+  const it = items[i]; rd.textContent = it.text;
+  g.innerHTML = it.w ? `<rect x="${(it.x - it.w / 2).toFixed(1)}" y="${it.y0}" width="${it.w.toFixed(1)}" height="${it.y1 - it.y0}"/>`
+    : `<line x1="${it.x.toFixed(1)}" x2="${it.x.toFixed(1)}" y1="${it.y0}" y2="${it.y1}"/>` + (it.dots || []).map(([y, c]) => `<circle cx="${it.x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="${c}"/>`).join("");
+}
+// items: [{ x, text, y0, y1, w? (bar width) | dots? [[y, color]] }]; table: HTML of the data table
+function chartDone(svg, W, H, body, items, table) {
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("height", H); svg.removeAttribute("preserveAspectRatio");
+  svg.innerHTML = body + `<g class="cursor"></g>`;
+  svg._items = items;
+  if (!svg._wired) wireChart(svg);
+  if (!document.getElementById(svg.id + "-read")) {
+    const rd = document.createElement("p"); rd.id = svg.id + "-read"; rd.className = "small readout"; rd.setAttribute("aria-live", "polite"); svg.after(rd);
+    const t = document.createElement("div"); t.id = svg.id + "-table"; t.className = "vh"; rd.after(t);
+    svg.tabIndex = 0; svg.setAttribute("aria-describedby", rd.id);
+  }
+  setHTML(document.getElementById(svg.id + "-table"), table || "");
+  chartSelect(svg, svg._sel != null && svg._sel < items.length ? svg._sel : null);
+}
 function lineChart(svgId, series, opts) {
-  const el = document.getElementById(svgId), Wd = 680, Hd = opts.h || 220, l = 38, r = 10, t = 10, b = 24;
+  const el = document.getElementById(svgId), Wd = chartWidth(el), Hd = opts.h || 220, l = 38, r = 10, t = 10, b = 24;
   const pts = series.flatMap(s => s.pts);
-  if (pts.length < 2) { el.innerHTML = `<text x="${Wd / 2}" y="${Hd / 2}" text-anchor="middle" font-size="13" fill="var(--muted)">${opts.empty || "Collecting data…"}</text>`; return; }
+  if (pts.length < 2) { chartDone(el, Wd, Hd, `<text x="${Wd / 2}" y="${Hd / 2}" text-anchor="middle">${opts.empty || "Collecting data…"}</text>`, [], ""); return; }
   const xs = pts.map(p => +new Date(p[0] + "T12:00:00")), x0 = Math.min(...xs), x1 = Math.max(...xs) || x0 + 1;
   let y0 = Math.min(...pts.map(p => p[1])), y1 = Math.max(...pts.map(p => p[1]));
   const padY = (y1 - y0) * .15 || 5; y0 = Math.max(0, Math.floor(y0 - padY)); y1 = Math.ceil(y1 + padY);
   const X = k => l + (+new Date(k + "T12:00:00") - x0) / ((x1 - x0) || 1) * (Wd - l - r), Y = v => Hd - b - (v - y0) / ((y1 - y0) || 1) * (Hd - b - t);
+  const f = v => opts.fmt ? opts.fmt(v) : Math.round(v);
   let svg = "";
-  for (let i = 0; i <= 4; i++) { const v = y0 + (y1 - y0) * i / 4; svg += `<line x1="${l}" x2="${Wd - r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${l - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${opts.fmt ? opts.fmt(v) : Math.round(v)}</text>`; }
-  const first = pts.reduce((a, p) => p[0] < a ? p[0] : a, pts[0][0]), last = pts.reduce((a, p) => p[0] > a ? p[0] : a, pts[0][0]);
-  for (const k of [first, last]) svg += `<text x="${X(k)}" y="${Hd - 6}" text-anchor="${k === first ? "start" : "end"}" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${fmt(new Date(k + "T12:00:00"))}</text>`;
+  for (let i = 0; i <= 4; i++) { const v = y0 + (y1 - y0) * i / 4; svg += `<line x1="${l}" x2="${Wd - r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${l - 6}" y="${Y(v) + 4}" text-anchor="end">${f(v)}</text>`; }
+  const days = [...new Set(pts.map(p => p[0]))].sort(), first = days[0], last = days[days.length - 1];
+  for (const k of [first, last]) svg += `<text x="${X(k)}" y="${Hd - 6}" text-anchor="${k === first ? "start" : "end"}">${fmt(new Date(k + "T12:00:00"))}</text>`;
   for (const s of series) {
     if (!s.pts.length) continue;
     svg += `<polyline pathLength="1" fill="none" stroke="${s.color}" stroke-width="2.2" stroke-linejoin="round" points="${s.pts.map(p => X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join(" ")}"/>`;
     const e = s.pts[s.pts.length - 1]; svg += `<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="4" fill="${s.color}"/>`;
   }
-  el.innerHTML = svg;
+  const maps = series.map(s => new Map(s.pts)), day = k => fmt(new Date(k + "T12:00:00"));
+  const vals = k => maps.map(m => m.get(k));
+  const items = days.map(k => ({ x: X(k), y0: t, y1: Hd - b, dots: vals(k).map((v, i) => v == null ? null : [Y(v), series[i].color]).filter(Boolean),
+    text: `${day(k)}: ` + (opts.read ? opts.read(vals(k)) : series.map((s, i) => vals(k)[i] == null ? "" : `${s.name ? s.name.toLowerCase() + " " : ""}${f(vals(k)[i])}`).filter(Boolean).join(", ")) }));
+  const table = `<table><caption>${esc(opts.caption || "")}</caption><tr><th>Date</th>${series.map(s => `<th>${esc(s.name || "Value")}</th>`).join("")}</tr>` +
+    days.map(k => `<tr><td>${day(k)}</td>${vals(k).map(v => `<td>${v == null ? "" : f(v)}</td>`).join("")}</tr>`).join("") + `</table>`;
+  chartDone(el, Wd, Hd, svg, items, table);
   el.classList.add("draw"); // CSS draws the lines in when the Progress panel is shown
 }
 const MILES = [
@@ -1969,7 +2027,9 @@ function renderProgress() {
     .map(([l, v, c]) => `<div class="stat"><div class="v num ${c}">${hms(v)}</div><div class="l">${l}${l === "Bike" ? ` · ${Math.round(.785 * settings.ftp)} W` : l === "Finish" ? " · goal 5:00" : ""}</div></div>`).join("");
   // fitness chart
   const wl = GA ? Object.values(GA.well).filter(w => w.ctl != null).sort((a, b) => a.id.localeCompare(b.id)) : [];
-  lineChart("fitChart", [{ pts: wl.map(w => [w.id, w.ctl]), color: "var(--accent)" }, { pts: wl.map(w => [w.id, w.atl]), color: "var(--bike)" }], { empty: GA ? "Not enough data yet" : "Open this on your Cloudflare site to see Garmin data" });
+  lineChart("fitChart", [{ name: "Fitness", pts: wl.map(w => [w.id, w.ctl]), color: "var(--accent)" }, { name: "Fatigue", pts: wl.map(w => [w.id, w.atl]), color: "var(--bike)" }],
+    { caption: "Fitness and fatigue by day", empty: GA ? "Not enough data yet" : "Open this on your Cloudflare site to see Garmin data",
+      read: ([c, a]) => `fitness ${Math.round(c)}, fatigue ${Math.round(a)}, form ${Math.round(c - a) > 0 ? "+" : ""}${Math.round(c - a)}` });
   const lw = wl[wl.length - 1];
   // Garmin-fed charts get the shared loading/empty/error state instead of three empty frames
   const noG = !GA && mode !== "pending";
@@ -1982,10 +2042,10 @@ function renderProgress() {
   const since = keyOf(new Date(today.getTime() - 45 * 864e5));
   const rw = GA ? Object.values(GA.well).filter(w => w.id >= since).sort((a, b) => a.id.localeCompare(b.id)) : [];
   const rec = [["Sleep (h)", w => w.sleepSecs && w.sleepSecs / 3600, "var(--swim)", v => v.toFixed(1)], ["HRV (ms)", w => w.hrv, "var(--run)"], ["Resting HR", w => w.restingHR, "var(--bike)"]];
-  document.getElementById("recovery").innerHTML = rec.map((r, i) => `<div class="card"><h3>${r[0]}</h3><svg class="chart" id="rec${i}" viewBox="0 0 680 220" role="img" aria-label="${r[0]} trend"></svg><p class="small" id="recn${i}"></p></div>`).join("");
+  setHTML(document.getElementById("recovery"), rec.map((r, i) => `<div class="card"><h3>${r[0]}</h3><svg class="chart" id="rec${i}" viewBox="0 0 680 220" role="img" aria-label="${r[0]} trend"></svg><p class="small" id="recn${i}"></p></div>`).join(""));
   rec.forEach((r, i) => {
     const pts = rw.map(w => [w.id, r[1](w)]).filter(p => p[1]);
-    lineChart("rec" + i, [{ pts, color: r[2] }], { fmt: r[3], empty: "Builds up after a few nights of Garmin sync" });
+    lineChart("rec" + i, [{ name: r[0], pts, color: r[2] }], { fmt: r[3], caption: r[0] + " by night, last 45 days", empty: "Builds up after a few nights of Garmin sync" });
     const last7 = pts.slice(-7).map(p => p[1]);
     document.getElementById("recn" + i).textContent = last7.length ? `7-day average: ${(last7.reduce((a, b) => a + b, 0) / last7.length).toFixed(r[0].startsWith("Sleep") ? 1 : 0)}` : "";
   });
@@ -2037,22 +2097,25 @@ function renderHourbar() {
   const tot = all.reduce((a, w) => a + w.plan, 0), doneAll = all.reduce((a, w) => a + w.done, 0), planToAll = all.reduce((a, w) => a + w.planTo, 0);
   const days = Math.max(0, Math.ceil((RACE - today) / 864e5));
   document.getElementById("hbSeasonNum").innerHTML = `<b>${Math.round(doneAll / 60)}</b> of ${Math.round(tot / 60)} h planned`;
-  const Wd = 680, base = 64, top = 20, maxH = Math.max(...all.map(w => Math.max(w.plan, w.done))), sw = Wd / 34, bw = sw - 3;
+  const prof = document.getElementById("hbProfile"), Wd = chartWidth(prof), Hp = Wd > 600 ? 120 : 84, base = Hp - 20, top = 20, maxH = Math.max(...all.map(w => Math.max(w.plan, w.done))), sw = Wd / 34, bw = sw - 3;
   const y = m => base - m / maxH * (base - top);
   let svg = `<line x1="0" x2="${Wd}" y1="${base + .5}" y2="${base + .5}" stroke="var(--line)"/>`;
   let lastPh = "";
   all.forEach((w, i) => {
     const x = i * sw + 1.5;
-    svg += `<rect class="bar" style="--n:${i}" x="${x}" y="${y(w.plan)}" width="${bw}" height="${base - y(w.plan)}" rx="1.5" fill="var(--soft)" stroke="var(--line)"><title>Week ${w.n} (${w.ph}): ${hh(w.plan)} h planned, ${hh(w.done)} h done</title></rect>`;
+    svg += `<rect class="bar" style="--n:${i}" x="${x}" y="${y(w.plan)}" width="${bw}" height="${base - y(w.plan)}" rx="1.5" fill="var(--soft)" stroke="var(--line)"/>`;
     const core = w.done - w.by.extra;
     if (core > 0) svg += `<rect class="bar" style="--n:${i}" x="${x}" y="${y(core)}" width="${bw}" height="${base - y(core)}" rx="1.5" fill="var(--accent)"/>`;
     if (w.by.extra > 0) svg += `<rect x="${x}" y="${y(w.done)}" width="${bw}" height="${y(core) - y(w.done)}" rx="1.5" fill="var(--warn)"/>`;
     if (w.n === curWk && today >= START) svg += `<rect x="${x - 1.5}" y="${top - 4}" width="${bw + 3}" height="${base - top + 4}" fill="none" stroke="var(--fg)" stroke-width="1.5" rx="2"/><text class="here" x="${x > Wd - 90 ? x + bw : x}" y="${top - 9}" text-anchor="${x > Wd - 90 ? "end" : "start"}">You are here</text>`;
-    if (w.ph !== lastPh && w.ph !== "Taper") { svg += `<text x="${x}" y="${base + 15}" font-size="11.5" fill="var(--muted)" font-family="IBM Plex Sans, sans-serif">${w.ph === "Race" ? "" : w.ph}</text>`; lastPh = w.ph; }
+    if (w.ph !== lastPh && w.ph !== "Taper") { const tight = x + 34 > Wd - 34; // on a narrow chart the last phase label ends where "Race" begins
+      svg += `<text x="${tight ? Wd - 36 : x}" y="${base + 15}"${tight ? ' text-anchor="end"' : ""}>${w.ph === "Race" ? "" : w.ph}</text>`; lastPh = w.ph; }
   });
-  svg += `<text x="${Wd - 2}" y="${base + 15}" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--fg)" font-family="IBM Plex Sans, sans-serif">Race</text>`;
-  const prof = document.getElementById("hbProfile"); prof.innerHTML = svg;
-  prof.classList.toggle("rise", !profileRisen); profileRisen = true;
+  svg += `<text class="strong" x="${Wd - 2}" y="${base + 15}" text-anchor="end">Race</text>`;
+  chartDone(prof, Wd, Hp, svg,
+    all.map((w, i) => ({ x: i * sw + 1.5 + bw / 2, w: sw, y0: 0, y1: base, text: `Week ${w.n} (${w.ph}): ${hh(w.plan)} h planned, ${hh(w.done)} h done` })),
+    `<table><caption>Season hours by week</caption><tr><th>Week</th><th>Phase</th><th>Planned hours</th><th>Done hours</th></tr>` + all.map(w => `<tr><td>${w.n}</td><td>${w.ph}</td><td>${hh(w.plan)}</td><td>${hh(w.done)}</td></tr>`).join("") + `</table>`);
+  prof.classList.toggle("rise", !profileRisen); profileRisen = true;  prof.classList.toggle("rise", !profileRisen); profileRisen = true;
   const gapS = doneAll - planToAll;
   document.getElementById("hbSeasonNote").innerHTML = today < START ? "Plan starts Oct 19." :
     `${Math.round(doneAll / tot * 100)}% of season hours done · plan to date ${hh(planToAll)} h · ` + (Math.abs(gapS) < 30 ? '<span class="ahead">on track for June</span>' : gapS > 0 ? `<span class="ahead">${hh(gapS)} h ahead</span>` : `<span class="behind">${hh(-gapS)} h behind plan</span>`);
@@ -2154,6 +2217,14 @@ function renderConsistency() {
   for (let i = curWk - 2; i >= 0; i--) { if (cells[i].pct != null && cells[i].pct >= .85) streak++; else break; }
   const wHtml = cells.map((c, i) => `<i class="${c.cls}${c.n === curWk && today >= START ? " now" : ""}${c.rec ? " rec" : ""}" title="Week ${c.n}: ${c.p ? `${c.d} of ${c.p} sessions (${Math.round(c.pct * 100)}%)` : c.n < curWk ? "nothing planned" : "ahead"}" style="--n:${i}">${c.pct != null ? `<b style="height:${Math.max(6, c.pct * 100).toFixed(0)}%"></b>` : ""}</i>`).join("");
   const wEl = document.getElementById("csWeeks"); if (wEl.dataset.sig !== wHtml) { wEl.innerHTML = wHtml; wEl.dataset.sig = wHtml; }
+  if (!document.getElementById("csRead")) { // tap (or drag across) the strip to read a week; the table is for screen readers
+    const rd = document.createElement("p"); rd.id = "csRead"; rd.className = "small readout"; rd.setAttribute("aria-live", "polite"); rd.textContent = "Tap a week to read it."; wEl.after(rd);
+    const tb = document.createElement("div"); tb.id = "csTable"; tb.className = "vh"; rd.after(tb);
+    const pick = e => { const r = wEl.getBoundingClientRect(), i = Math.max(0, Math.min(33, Math.floor((e.clientX - r.left) / (r.width / 34)))), c = wEl.children[i]; if (!c) return;
+      for (const x of wEl.children) x.classList.toggle("pick", x === c); rd.textContent = c.title; };
+    wEl.addEventListener("pointerdown", pick); wEl.addEventListener("pointermove", e => { if (e.pointerType === "mouse" || e.buttons) pick(e); });
+  }
+  setHTML(document.getElementById("csTable"), `<table><caption>Share of planned sessions done each week</caption><tr><th>Week</th><th>Done</th><th>Planned so far</th></tr>` + cells.map(c => `<tr><td>${c.n}</td><td>${c.d}</td><td>${c.p}</td></tr>`).join("") + `</table>`);
   document.getElementById("csNum").innerHTML = plan ? `<b>${Math.round(done / plan * 100)}%</b> of planned sessions done · ${done} of ${plan}` : "Starts Oct 19";
   const cw = cells[curWk - 1];
   document.getElementById("csNote").innerHTML = (streak ? `<span class="streak">${streak} ${streak === 1 ? "week" : "weeks"} in a row at 85%+.</span> ` : `<span class="streak">Build a streak: 85%+ of sessions every week.</span> `) +
@@ -2230,7 +2301,7 @@ function applyHash() {
   if (tab === "week" && +m[2] >= 1 && +m[2] <= 34) selWeek = Math.floor(+m[2]);
   showTab(tab); return true;
 }
-function goTab(name) { showTab(name); syncHash(true); window.scrollTo(0, 0); }
+function goTab(name) { showTab(name); syncHash(true); render(); window.scrollTo(0, 0); } // render: charts are drawn at the width they now have
 window.addEventListener("popstate", () => { if (applyHash()) render(); });
 document.querySelector("nav.tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) goTab(b.dataset.tab); });
 // WAI-ARIA tabs: arrows, Home and End move between tabs (and select them); only the selected tab is in the Tab order.
@@ -2317,7 +2388,7 @@ paintTest();
 let openSecs = {}; try { openSecs = JSON.parse(localStorage.getItem("lg703-open") || "{}") || {}; } catch (e) {}
 for (const d of document.querySelectorAll("details.sec")) {
   if (d.id in openSecs) d.open = !!openSecs[d.id];
-  d.addEventListener("toggle", () => { openSecs[d.id] = d.open; try { localStorage.setItem("lg703-open", JSON.stringify(openSecs)); } catch (e) {} });
+  d.addEventListener("toggle", () => { if (d.open) render(); openSecs[d.id] = d.open; try { localStorage.setItem("lg703-open", JSON.stringify(openSecs)); } catch (e) {} });
 }
 // Tap pickers (RPE 1–10, soreness 1–5): one tap sets the value, tapping it again clears it. Stored exactly as the old dropdowns did.
 document.addEventListener("click", e => {
@@ -2342,6 +2413,9 @@ function toggleGarmin(open) {
 }
 document.getElementById("st-garmin").addEventListener("click", () => toggleGarmin(document.getElementById("gbar").hidden));
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !document.getElementById("gbar").hidden) { toggleGarmin(false); document.getElementById("st-garmin").focus(); } });
+// Charts are drawn in real pixels, so they redraw when the page width changes.
+let wrapW = document.querySelector(".wrap").clientWidth, rsT = 0;
+new ResizeObserver(() => { const w = document.querySelector(".wrap").clientWidth; if (w === wrapW) return; wrapW = w; clearTimeout(rsT); rsT = setTimeout(render, 150); }).observe(document.querySelector(".wrap"));
 // The URL decides the view; with no route in it, fall back to the last tab used on this device.
 if (!applyHash()) { let startTab = "today"; try { startTab = localStorage.getItem("lg703-tab") || "today"; } catch (e) {} showTab(TABS.includes(startTab) ? startTab : "today"); }
 syncHash(false);
