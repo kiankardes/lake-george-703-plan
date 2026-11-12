@@ -7,18 +7,35 @@ const html = (s, status = 200) => new Response(s, { status, headers: { "content-
 const getCookie = (req, name) => { const m = (req.headers.get("cookie") || "").match(new RegExp("(?:^|; )" + name + "=([^;]+)")); return m ? m[1] : null; };
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-const LOGIN = err => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lake George 70.3 Plan</title><style>
-:root{--bg:#f3f6f6;--card:#fff;--fg:#17211f;--muted:#5b6a67;--line:#d9e0df;--accent:#1d5f6e;--bad:#b3372b}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1615;--card:#172120;--fg:#e3ebe9;--muted:#93a4a0;--line:#2a3735;--accent:#6bb8c6;--bad:#ec7b6f;color-scheme:dark}}
-body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,"Segoe UI",sans-serif;padding:16px;box-sizing:border-box}
-form{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px}
-h1{margin:0;font-size:22px;text-transform:uppercase;letter-spacing:.02em}p{margin:0;color:var(--muted);font-size:13px}
-input{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
-button{font:inherit;font-weight:600;padding:9px;border:0;border-radius:6px;background:var(--accent);color:var(--card);cursor:pointer}.err{color:var(--bad)}
-</style></head><body><form method="post" action="/login"><h1>Lake George 70.3</h1><p>Enter your passcode to open the dashboard.</p>
-<input type="password" name="pass" id="pass" autocomplete="current-password" required autofocus aria-label="Passcode">
-${err ? `<p class="err">${err}</p>` : ""}<button type="submit">Open</button></form></body></html>`;
+// ---------- pages served by the Worker (login, setup and error pages, and the theme injected into History) ----------
+// Same design tokens as the dashboard's :root block in lake-george-70-3-plan.html. Keep the two in step.
+const THEME = `:root{--bg:#eef0f2;--card:#fff;--soft:#f6f7f8;--fg:#15191d;--muted:#4b545c;--faint:#6b747c;--line:#dde0e3;--line-strong:#b9bfc4;--accent:#1c5bb8;--accent-ink:#fff;
+--swim:#0e7c86;--bike:#c2500f;--run:#3d7a22;--lift:#8a6510;--good:#1e7b4f;--warn:#8f5a00;--warn-soft:#fbf0dc;--bad:#b42318;--body:"Barlow",system-ui,sans-serif;--display:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#111416;--soft:#1a1e21;--fg:#f2f4f5;--muted:#a9b2b9;--faint:#87919a;--line:#262b2f;--line-strong:#3b4248;--accent:#79aeff;--accent-ink:#00152f;
+--swim:#45c3cd;--bike:#ff8c4f;--run:#8fcd62;--lift:#e3ba52;--good:#5fd394;--warn:#f2b54d;--warn-soft:#2a1e08;--bad:#ff7b6c;color-scheme:dark}}`;
+const FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap">`;
+const ICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2315191d'/%3E%3Crect x='7' y='8' width='18' height='4' rx='2' fill='%23fff'/%3E%3Crect x='7' y='14' width='13' height='4' rx='2' fill='%23fff'/%3E%3Crect x='7' y='20' width='8' height='4' rx='2' fill='%23fff'/%3E%3C/svg%3E">`;
+// One shell for every page the Worker writes itself.
+const PAGE = (title, body) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef0f2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>${title}</title>${ICON}${FONTS}<style>${THEME}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--fg);font:400 15px/1.5 var(--body);padding:16px}
+.box{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--fg);border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px}
+.box.warn{border-left-color:var(--warn)}h1{margin:0;font:600 24px/1.1 var(--display)}p{margin:0;color:var(--muted)}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+input{font:inherit;min-height:44px;padding:0 12px;border:1px solid var(--line-strong);border-radius:6px;background:var(--soft);color:var(--fg)}
+button{font:inherit;font-weight:600;min-height:44px;border:1px solid var(--accent);border-radius:6px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.err{color:var(--bad);font-weight:600}
+details{font-size:13px}summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--accent);font-weight:500}code{overflow-wrap:anywhere}
+</style></head><body>${body}</body></html>`;
+const LOGIN = err => PAGE("Lake George 70.3 Plan", `<form class="box" method="post" action="/login"><h1>Lake George 70.3</h1><p>Enter your passcode to open the training plan.</p>
+<label>Passcode<input type="password" name="pass" id="pass" autocomplete="current-password" required autofocus></label>
+${err ? `<p class="err" role="alert">${err} Check it and try again.</p>` : ""}<button type="submit">Open training plan</button></form>`);
+const NOTICE = (title, text, fix) => PAGE(title, `<div class="box warn"><h1>${title}</h1><p>${text}</p>${fix ? `<details><summary>How to fix</summary><p>${fix}</p></details>` : ""}</div>`);
+// History is built separately (build_dashboard.py) with its own palette. This is added to it so it shares the dashboard's colors, type and theme.
+const HISTORY_THEME = `${FONTS}<style>${THEME}
+:root{--border:var(--line);--hover:var(--soft);--strength:var(--lift);--squash:var(--muted);--racket:var(--bad);--other:var(--line-strong);--z1:var(--line-strong);--z2:var(--swim);--z3:var(--run);--z4:var(--warn);--z5:var(--bad)}
+body{font-family:var(--body)}h1,h2,h3{font-family:var(--display);font-weight:600}button{min-height:44px}</style>`;
 
 
 // Garmin + Strava both feed intervals.icu: keep the Garmin copy, drop a Strava duplicate of the same day and sport.
@@ -157,7 +174,7 @@ export default {
 
   async fetch(req, env) {
     const url = new URL(req.url), p = url.pathname;
-    if (!env.PASSCODE) return html("<p>Set the PASSCODE secret first: <code>npx wrangler secret put PASSCODE</code></p>", 503);
+    if (!env.PASSCODE) return html(NOTICE("The site isn't set up yet", "It has no passcode, so it can't open.", "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put PASSCODE</code>, choose a passcode, then reload."), 503);
     const token = await sha("lg703:" + env.PASSCODE);
 
     if (p === "/login" && req.method === "POST") {
@@ -171,7 +188,7 @@ export default {
     if (getCookie(req, "lg703") !== token) return p.startsWith("/api/") ? json({ error: "locked" }, 401) : html(LOGIN(""), 401);
     if (p === "/history.html") {
       const h = await env.KV.get("history");
-      return h ? html(h) : html("<p style='font:15px sans-serif;padding:16px'>No history uploaded yet. Run deploy.sh on your Mac to upload it.</p>", 404);
+      return h ? html(h.replace("</head>", HISTORY_THEME + "</head>")) : html(NOTICE("No history uploaded yet", "Your Garmin history page hasn't been sent to the site.", "On your Mac, run <code>./deploy.sh</code> in <code>~/Desktop/Training</code>. It uploads <code>training-dashboard.html</code> along with the site."), 404);
     }
     if (!p.startsWith("/api/")) return env.ASSETS.fetch(req);
 

@@ -55,6 +55,9 @@ button, select, input, textarea { font: inherit; color: inherit; }
 .mono, .num { font-variant-numeric: tabular-nums; }
 .small { font-size: var(--t-13); color: var(--muted); }
 .src { font-size: var(--t-12); color: var(--faint); font-weight: var(--w-reg); }
+.skip { position: fixed; left: var(--s4); top: var(--s2); z-index: 20; transform: translateY(-200%); background: var(--fg); color: var(--bg); padding: var(--s3) var(--s4); border-radius: var(--r-ctl); font-weight: var(--w-semi); }
+.skip:focus { transform: none; }
+main:focus { outline: none; }
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .sw { color: var(--swim); font-weight: var(--w-semi); } .bk { color: var(--bike); font-weight: var(--w-semi); } .rn { color: var(--run); font-weight: var(--w-semi); } .lf { color: var(--lift); font-weight: var(--w-semi); } .ky { color: var(--key); font-weight: var(--w-semi); }
 .ahead { color: var(--good); font-weight: var(--w-semi); } .behind { color: var(--warn); font-weight: var(--w-semi); }
@@ -355,7 +358,8 @@ tr:last-child > td { border-bottom: 0; }
 }
 </style>
 
-<div class="wrap">
+<a class="skip" href="#main">Skip to the training plan</a>
+<main class="wrap" id="main" tabindex="-1">
   <header class="top">
     <span class="eyebrow">34-week plan, October 19 to race morning</span>
     <div class="toprow">
@@ -403,16 +407,16 @@ tr:last-child > td { border-bottom: 0; }
     <!-- Today's call: the verdict, the numbers behind it, and the check-in that feeds it -->
     <div class="call" id="ckcard">
       <div class="advice" id="advice" aria-live="polite"></div>
-      <label class="field ready" id="readyField">Training readiness, from your watch<input id="ck-ready" type="number" min="0" max="100" data-slot="ck" data-f="ready" inputmode="numeric" autocomplete="off"><span class="src" id="src-ready"></span></label>
+      <label class="field ready" id="readyField">Training readiness, from your watch<input id="ck-ready" name="ck-ready" type="number" min="0" max="100" data-slot="ck" data-f="ready" inputmode="numeric" autocomplete="off"><span class="src" id="src-ready"></span></label>
       <details class="ckedit" id="ckEdit">
         <summary><div class="gchips" id="gchips" hidden></div><span class="small">Edit check-in</span></summary>
         <div class="ckbody">
           <p class="small">Garmin fills in sleep, HRV and resting HR. Type over a number to correct it; clear it to go back to Garmin's.</p>
           <p class="small" id="ckDetail" hidden></p>
           <div class="checkin" id="ckFields">
-            <label class="field">Sleep (hours)<input id="ck-sleep" type="number" step="0.25" min="0" max="14" data-slot="ck" data-f="sleep" inputmode="decimal" autocomplete="off"><span class="src" id="src-sleep"></span></label>
-            <label class="field">Overnight HRV (ms)<input id="ck-hrv" type="number" min="0" max="250" data-slot="ck" data-f="hrv" inputmode="numeric" autocomplete="off"><span class="src" id="src-hrv"></span></label>
-            <label class="field">Resting HR<input id="ck-rhr" type="number" min="30" max="120" data-slot="ck" data-f="rhr" inputmode="numeric" autocomplete="off"><span class="src" id="src-rhr"></span></label>
+            <label class="field">Sleep (hours)<input id="ck-sleep" name="ck-sleep" type="number" step="0.25" min="0" max="14" data-slot="ck" data-f="sleep" inputmode="decimal" autocomplete="off"><span class="src" id="src-sleep"></span></label>
+            <label class="field">Overnight HRV (ms)<input id="ck-hrv" name="ck-hrv" type="number" min="0" max="250" data-slot="ck" data-f="hrv" inputmode="numeric" autocomplete="off"><span class="src" id="src-hrv"></span></label>
+            <label class="field">Resting HR<input id="ck-rhr" name="ck-rhr" type="number" min="30" max="120" data-slot="ck" data-f="rhr" inputmode="numeric" autocomplete="off"><span class="src" id="src-rhr"></span></label>
           </div>
           <div class="field">Soreness
             <div class="pick" role="group" aria-label="Soreness, 1 to 5" id="ck-sore" data-slot="ck" data-f="sore"><button type="button" data-v="1" aria-pressed="false">1</button><button type="button" data-v="2" aria-pressed="false">2</button><button type="button" data-v="3" aria-pressed="false">3</button><button type="button" data-v="4" aria-pressed="false">4</button><button type="button" data-v="5" aria-pressed="false">5</button></div>
@@ -426,7 +430,7 @@ tr:last-child > td { border-bottom: 0; }
 
     <div class="card" id="notesCard">
       <label class="field" for="notes">Notes: how it felt, splits, what to change</label>
-      <textarea id="notes" data-slot="notes"></textarea>
+      <textarea id="notes" name="notes" data-slot="notes"></textarea>
     </div>
 
     <div class="habits" id="habits" hidden aria-label="This week's fixes"></div>
@@ -512,11 +516,11 @@ tr:last-child > td { border-bottom: 0; }
             <div class="pick three" role="group" aria-label="Test type" id="test-type"><button type="button" data-v="ftp" aria-pressed="true">FTP</button><button type="button" data-v="css" aria-pressed="false">Swim CSS</button><button type="button" data-v="5k" aria-pressed="false">5K run</button></div>
           </div>
           <div class="formrow">
-            <label class="field" id="tf-ftp">FTP (watts)<input id="test-ftp" type="number" min="100" max="500" inputmode="numeric" autocomplete="off" placeholder="e.g. 272…"></label>
+            <label class="field" id="tf-ftp">FTP (watts)<input id="test-ftp" name="test-ftp" type="number" min="100" max="500" inputmode="numeric" autocomplete="off" placeholder="e.g. 272…"></label>
             <div class="field" id="tf-time" hidden><span id="tf-time-l">CSS per 100 m (min : sec)</span>
-              <div class="mmss"><input id="test-min" type="number" min="0" max="59" inputmode="numeric" autocomplete="off" aria-label="Minutes" placeholder="min…"><span aria-hidden="true">:</span><input id="test-sec" type="number" min="0" max="59" inputmode="numeric" autocomplete="off" aria-label="Seconds" placeholder="sec…"></div>
+              <div class="mmss"><input id="test-min" name="test-min" type="number" min="0" max="59" inputmode="numeric" autocomplete="off" aria-label="Minutes" placeholder="min…"><span aria-hidden="true">:</span><input id="test-sec" name="test-sec" type="number" min="0" max="59" inputmode="numeric" autocomplete="off" aria-label="Seconds" placeholder="sec…"></div>
             </div>
-            <label class="field">Date<input id="test-date" type="date"></label>
+            <label class="field">Date<input id="test-date" name="test-date" type="date"></label>
           </div>
           <p class="small" id="testMsg" aria-live="polite"></p>
           <div id="testPrevBox" hidden>
@@ -684,7 +688,7 @@ tr:last-child > td { border-bottom: 0; }
       <p class="small">Sources: Garmin Connect export (activities through Oct 11, 2026); race date from <a href="https://forum.slowtwitch.com/t/ironman-70-3-lake-george-ny-june-2027/1300325" target="_blank" rel="noopener">Slowtwitch: IRONMAN 70.3 Lake George, June 2027</a>.</p>
     </div>
   </section>
-</div>
+</main>
 
 <script>
 // This file is published as a fragment, so its title, meta tags and icon link can land in <body>, where browsers ignore some of them.
@@ -1326,8 +1330,8 @@ function liftTable(slot, s) {
   const ex = exOf(s);
   return `<p class="small" id="${slot}-lgen" hidden></p><table class="lifts"><tr><th></th><th>Exercise · target</th><th>lb</th><th>Reps per set</th></tr>` + ex.map((x, i) => `<tr>
     <td class="grp">${x.g}</td><td>${esc(x.n)}<br><span class="tgt" id="${slot}-lt-${i}"></span></td>
-    <td class="cw"><input id="${slot}-lw-${i}" type="number" min="0" max="999" step="2.5" inputmode="decimal" placeholder="${BW.test(x.n) ? "BW" : ""}" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="w"></td>
-    <td class="cr"><input id="${slot}-lr-${i}" type="text" inputmode="numeric" placeholder="10,10,9" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="r"></td></tr>`).join("") + `</table>`;
+    <td class="cw"><input id="${slot}-lw-${i}" name="${slot}-lw-${i}" type="number" min="0" max="999" step="2.5" inputmode="decimal" placeholder="${BW.test(x.n) ? "BW" : ""}" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="w"></td>
+    <td class="cr"><input id="${slot}-lr-${i}" name="${slot}-lr-${i}" type="text" inputmode="numeric" placeholder="10,10,9" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="r"></td></tr>`).join("") + `</table>`;
 }
 function fillLifts(slot, s, L) {
   const half = /half the sets/.test(s.t), act = document.activeElement, generic = [];
@@ -1537,7 +1541,7 @@ function buildToday() {
       ${s.s === "rest" ? "" : `<label class="donebtn big"><input type="checkbox" id="${slot}-done" data-slot="${slot}" data-f="done"><span class="d0">Mark done</span><span class="d1">Done</span></label>
       <div class="logrow" id="${slot}-log" hidden>
         <div class="field rpe">Effort (RPE)<div class="pick" role="group" aria-label="Effort, RPE 1 to 10" id="${slot}-rpe" data-slot="${slot}" data-f="rpe">${[1,2,3,4,5,6,7,8,9,10].map(v => `<button type="button" data-v="${v}" aria-pressed="false">${v}</button>`).join("")}</div></div>
-        <label class="field">Actual min<input id="${slot}-min" type="number" min="0" max="600" inputmode="numeric" autocomplete="off" placeholder="${s.m}" data-slot="${slot}" data-f="min"></label>
+        <label class="field">Actual min<input id="${slot}-min" name="${slot}-min" type="number" min="0" max="600" inputmode="numeric" autocomplete="off" placeholder="${s.m}" data-slot="${slot}" data-f="min"></label>
         <button class="btn" type="button" data-note="1">Add note</button>
       </div>`}
       <p class="small" id="g-${slot}" hidden></p>
