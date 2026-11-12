@@ -5,3 +5,5 @@ node_modules/
 log-backup-*.json
 .DS_Store
 .dev.vars
+# local test harness: mock server, KV snapshot, screenshots (never deployed: only ./site is an asset dir)
+dev/

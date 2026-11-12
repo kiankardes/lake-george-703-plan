@@ -67,7 +67,20 @@ header.top { display: flex; flex-direction: column; gap: 8px; }
 @media (prefers-reduced-motion: no-preference) { .hb-track .seg { transition: flex-basis .5s ease; } }
 .sync { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
 
-nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; gap: 2px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.appbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; column-gap: 12px; }
+nav.tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1 1 auto; min-width: 0; }
+/* Status pill: save state first; Garmin freshness and coach after it. Colors are tokens only. */
+.status { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 32px; padding: 4px 0; font-size: 12.5px; color: var(--muted); }
+.st-save { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); font-weight: 600; }
+.st-save::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--sd, var(--muted)); }
+.status[data-state="ok"] { --sd: var(--good); } .status[data-state="busy"] { --sd: var(--accent); }
+.status[data-state="off"] { --sd: var(--warn); } .status[data-state="fail"] { --sd: var(--bad); }
+.status[data-state="fail"] .st-save { color: var(--bad); }
+.st-act { min-height: 44px; }
+.st-meta[data-state="stale"] { color: var(--warn); } .st-meta[data-state="fail"] { color: var(--bad); }
+@media (max-width: 600px) { /* save problems get the whole row on a phone; the message wraps beside Retry */
+  .status[data-state="fail"] .st-meta, .status[data-state="off"] .st-meta { display: none; }
+  .status[data-state="fail"] { flex-wrap: nowrap; } .status[data-state="fail"] .st-save { flex: 1 1 0; min-width: 0; line-height: 1.3; } }
 nav.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 14px; font-family: var(--display); font-size: 18px; font-weight: 600; text-transform: uppercase; color: var(--muted); cursor: pointer; white-space: nowrap; }
 nav.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
 .panel { display: flex; flex-direction: column; gap: 16px; }
@@ -321,6 +334,8 @@ th { font-size: 12.5px; font-weight: 650; }
   .sess.is-done { animation: glow .7s ease-out; }
   .donebtn input:checked { animation: pop .35s var(--ease); }
   .advice, .swimcount { transition: background .3s, border-color .3s; }
+  .status[data-state="busy"] .st-save::before { animation: stpulse 1s ease-in-out infinite; }
+  @keyframes stpulse { 50% { opacity: .35; } }
 }
 </style>
 
@@ -333,9 +348,10 @@ th { font-size: 12.5px; font-weight: 650; }
     </div>
     <div class="dist"><span>1.2 mi swim</span><span>56 mi bike</span><span>13.1 mi run</span><span>Sunday, June 13, 2027</span><span id="phase"></span></div>
     <div hidden><div id="seasonbar"></div></div>
-    <span class="sync" id="sync">Loading your log…</span>
+    <span class="sync" id="sync"></span>
   </header>
 
+  <div class="appbar">
   <nav class="tabs" role="tablist">
     <button role="tab" id="tab-today" aria-selected="true" data-tab="today">Today</button>
     <button role="tab" id="tab-week" aria-selected="false" data-tab="week">Week</button>
@@ -343,6 +359,13 @@ th { font-size: 12.5px; font-weight: 650; }
     <button role="tab" id="tab-history" aria-selected="false" data-tab="history">History</button>
     <button role="tab" id="tab-guide" aria-selected="false" data-tab="guide">Guide</button>
   </nav>
+  <div class="status" id="status" data-state="busy">
+    <span class="st-save" id="st-save" role="status" aria-live="polite">Loading your log…</span>
+    <button class="btn st-act" id="st-act" type="button" hidden>Retry</button>
+    <span class="st-meta" id="st-garmin" hidden></span>
+    <span class="st-meta" id="st-coach" hidden></span>
+  </div>
+  </div>
 
   <!-- TODAY -->
   <section class="panel" id="p-today" role="tabpanel">
@@ -817,10 +840,21 @@ for (const r of D) {
 // Session start times (watch push + calendar): weekday AM 6:30, PM 4:00 after classes; weekend AM 9:00, PM 4:00.
 const slotTime = (d, slot) => slot === "pm" ? "16:00" : d.i >= 5 ? "09:00" : "06:30";
 const BYKEY = Object.fromEntries(DAYS.map(d => [d.key, d]));
-const today = new Date(); today.setHours(0, 0, 0, 0);
-const TODAY = keyOf(today);
+let today = new Date(); today.setHours(0, 0, 0, 0);
+let TODAY = keyOf(today);
 const inPlan = k => !!BYKEY[k];
-const curWk = Math.max(1, Math.min(34, Math.floor((today - START) / 864e5 / 7) + 1));
+const wkOf = d => Math.max(1, Math.min(34, Math.floor((d - START) / 864e5 / 7) + 1));
+let curWk = wkOf(today);
+// The page can stay open, or sit in the app switcher, past midnight: re-check the date whenever it resumes.
+function refreshToday() {
+  const n = new Date(); n.setHours(0, 0, 0, 0);
+  const k = keyOf(n); if (k === TODAY) return false;
+  const was = TODAY; today = n; TODAY = k; curWk = wkOf(today);
+  if (sel === was && inPlan(TODAY)) { sel = TODAY; selWeek = BYKEY[sel].wk; }
+  const td = document.getElementById("test-date"); if (td && (!td.value || td.value === was)) td.value = TODAY;
+  builtFor = null;
+  return true;
+}
 
 // ---------- state ----------
 let settings = structuredClone(DEF);
@@ -843,67 +877,218 @@ const X = t => { const T = toks(); return String(t).replace(/\{(\w+)\}/g, (m, k)
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 // ---------- storage ----------
-let db = null, mode = "pending", initDone;
-const writing = {}, again = {}, timers = {}, pending = new Set();
-let settingsPending = false;
-function setSync(t) { document.getElementById("sync").textContent = t; }
+// Every write (a day's log or settings) goes through one queue, the outbox, kept in localStorage "lg703-outbox".
+// A write leaves the outbox only after the server confirms it, so a closed tab, a reload or a dead connection never loses it.
+// Writes are sent one at a time, so two quick saves can't overlap and overwrite each other in the Worker's read-modify-write.
+// While a write is queued, it wins over anything re-read from the server.
+let db = null, mode = "pending";
 let GA = null, AUTO = {};
-const ready = (async () => {
+const OBX = "lg703-outbox";
+let outbox = { v: 1, mode: "", items: [] }, obxSeq = 0;
+const inflight = new Set();                 // ids being sent right now (memory only, never persisted)
+const lastConfirm = {};                     // "day|2026-11-11" or "settings" -> time the server confirmed it
+let online = true, signedOut = false, stateLoaded = false, storageErr = "", sendErr = "", lateAt = 0, savedAt = 0;
+let pumping = false, pumpAgain = false, pumpTimer = 0, retryN = 0, retryAt = 0;
+function setSync(t) { document.getElementById("sync").textContent = t; } // storage-mode line under the title
+function obxRead() {
+  try { const j = JSON.parse(localStorage.getItem(OBX) || "null"); if (j && Array.isArray(j.items)) outbox = j; }
+  catch (e) { storageErr = "This device can't keep unsaved logs: storage is blocked."; }
+}
+function obxWrite() {
+  try { localStorage.setItem(OBX, JSON.stringify(outbox)); storageErr = ""; return true; }
+  catch (e) { storageErr = e && (e.name === "QuotaExceededError" || e.code === 22) ? "This device's storage is full, so unsaved logs aren't protected." : "This device can't keep unsaved logs: storage is blocked."; return false; }
+}
+// Queue a write. Repeated edits to the same day merge into its waiting entry; an entry already being sent is left alone.
+function enqueue(kind, key, body) {
+  const now = Date.now();
+  const ex = outbox.items.find(x => x.kind === kind && x.key === key && x.mode === mode && !inflight.has(x.id));
+  if (ex) { ex.body = body; ex.madeAt = now; delete ex.dead; if (!stateLoaded) ex.rebase = true; }
+  else outbox.items.push(Object.assign({ id: now.toString(36) + "-" + (obxSeq++), kind, key, body, madeAt: now, mode }, stateLoaded ? {} : { rebase: true }));
+  outbox.mode = mode === "pending" ? outbox.mode : mode;
+  obxWrite(); paintStatus();
+}
+function queued(m) { return outbox.items.filter(x => x.mode === (m || mode)); }
+// Pending edits win over server data. Day edits made before the log had loaded are merged onto the server's copy of that day.
+const isObj = v => v && typeof v === "object" && !Array.isArray(v);
+const deepMerge = (base, top) => { const o = Object.assign({}, base); for (const k of Object.keys(top)) o[k] = isObj(o[k]) && isObj(top[k]) ? deepMerge(o[k], top[k]) : top[k]; return o; };
+function overlayOutbox() {
+  for (const x of queued()) {
+    if (x.kind === "day") { if (x.rebase && stateLoaded) { x.body = deepMerge(logs[x.key] || {}, x.body); delete x.rebase; } logs[x.key] = structuredClone(x.body); }
+    else settings = Object.assign(structuredClone(DEF), structuredClone(x.body));
+  }
+  obxWrite();
+}
+async function sendItem(x) {
   try {
-    const r = await fetch("/api/state", { credentials: "same-origin", headers: { accept: "application/json" } });
-    if (r.ok && (r.headers.get("content-type") || "").includes("json")) {
-      const j = await r.json();
-      logs = j.logs || {}; settings = Object.assign(structuredClone(DEF), j.settings || {});
-      mode = "worker"; setSync("Synced to your Cloudflare site");
-      document.getElementById("gbar").hidden = false;
-      render(); loadGarmin(); return;
+    if (mode === "local") { localStorage.setItem("lg703", JSON.stringify({ logs, settings })); return { ok: true }; }
+    if (mode === "db") { await db.doc(x.kind === "day" ? "days/" + x.key : "settings/main").set(x.body); return { ok: true }; }
+    const r = await fetch(x.kind === "day" ? "/api/day/" + x.key : "/api/settings", { method: "PUT", credentials: "same-origin", keepalive: document.visibilityState === "hidden",
+      headers: { "content-type": "application/json" }, body: JSON.stringify(x.body) });
+    return { ok: r.ok, status: r.status };
+  } catch (e) {
+    if (mode === "local") return { ok: false, storage: true, msg: e && (e.name === "QuotaExceededError" || e.code === 22) ? "This device's storage is full. Your latest change isn't saved." : "This device's storage is blocked. Your latest change isn't saved." };
+    if (mode === "db") return { ok: false, status: 0, msg: e && e.code === "quota_exceeded" ? "Account storage is full. Your latest change isn't saved." : "Couldn't reach your account." };
+    return { ok: false, net: true };
+  }
+}
+const BACKOFF = [2e3, 5e3, 15e3, 30e3, 60e3];
+const kick = () => mode === "worker" && !stateLoaded ? resume() : pump(); // timers either reload the log or send the queue
+function retryLater() { const ms = BACKOFF[Math.min(retryN++, BACKOFF.length - 1)]; retryAt = Date.now() + ms; clearTimeout(pumpTimer); pumpTimer = setTimeout(kick, ms); }
+function schedulePump(ms) { if (retryAt > Date.now()) return; clearTimeout(pumpTimer); pumpTimer = setTimeout(kick, ms); } // never cut a back-off short
+async function pump() {
+  if (pumping) { pumpAgain = true; return; }
+  pumping = true; clearTimeout(pumpTimer);
+  try {
+    for (;;) {
+      if (signedOut || mode === "pending") break;
+      if (mode === "worker" && !stateLoaded) break; // nothing is sent until the log has loaded (see kick)
+      const x = queued().find(i => !i.dead);
+      if (!x) break;
+      inflight.add(x.id); paintStatus();
+      const res = await sendItem(x);
+      inflight.delete(x.id);
+      if (res.ok) {
+        const i = outbox.items.indexOf(x); if (i >= 0) outbox.items.splice(i, 1);
+        obxWrite();
+        lastConfirm[x.kind === "day" ? "day|" + x.key : "settings"] = Date.now();
+        online = true; sendErr = ""; retryN = 0; retryAt = 0; savedAt = Date.now();
+        lateAt = Date.now() - x.madeAt > 3 * 60e3 ? x.madeAt : 0; // a late write says so in the pill
+        continue;
+      }
+      if (res.status === 401) { signedOut = true; break; }
+      if (res.net) { online = false; retryLater(); break; }
+      if (res.storage) { sendErr = res.msg; break; }
+      if (!res.status || res.status >= 500 || res.status === 429) { sendErr = res.msg || `Not saved (server error ${res.status}).`; retryLater(); break; }
+      x.dead = res.status; obxWrite(); // refused (4xx): keep it, show it, move on to the next write
     }
-  } catch (e) {}
+  } finally {
+    pumping = false; paintStatus();
+    if (pumpAgain) { pumpAgain = false; pump(); }
+  }
+}
+function retryNow() { retryN = 0; retryAt = 0; sendErr = ""; for (const x of outbox.items) delete x.dead; obxWrite(); kick(); }
+// Edits are queued at once (so closing the tab can't lose them) and sent after a 600 ms pause in typing.
+function save(key) { enqueue("day", key, structuredClone(logs[key] || {})); schedulePump(600); }
+function settingsLocked() { return mode === "worker" && (!online || !stateLoaded || signedOut || !navigator.onLine); }
+const NEEDS_NET = "Needs a connection. Tests, milestones and coach changes save only while online.";
+async function saveSettings() { await ready; enqueue("settings", "main", structuredClone(settings)); pump(); }
+// Load (or re-load) the log from the Worker. Writes confirmed in the last minute keep what's on screen: KV reads can lag a write.
+let stateLoading = null;
+function loadState() {
+  if (stateLoading) return stateLoading;
+  const t0 = Date.now();
+  return stateLoading = (async () => {
+    try {
+      const r = await fetch("/api/state", { credentials: "same-origin", headers: { accept: "application/json" } });
+      const isJson = (r.headers.get("content-type") || "").includes("json");
+      if (r.status === 401 && isJson) { signedOut = true; return "locked"; }
+      if (!isJson) return "notworker";
+      if (!r.ok) { online = true; return "down"; } // the Worker answered with an error: stay on the Cloudflare site, retry later
+      const j = await r.json(), keep = k => (lastConfirm[k] || 0) > t0 - 60e3;
+      const prev = logs; logs = j.logs || {};
+      for (const k of Object.keys(prev)) if (keep("day|" + k)) logs[k] = prev[k];
+      if (!keep("settings")) settings = Object.assign(structuredClone(DEF), j.settings || {});
+      stateLoaded = true; online = true; signedOut = false;
+      overlayOutbox();
+      return "ok";
+    } catch (e) { online = false; return "offline"; }
+    finally { stateLoading = null; }
+  })();
+}
+const ready = (async () => {
+  obxRead();
+  const s = await loadState();
+  if (s === "ok" || s === "locked" || s === "down" || (s === "offline" && outbox.mode === "worker")) {
+    mode = "worker"; outbox.mode = "worker"; obxWrite();
+    if (s === "down") { sendErr = "Couldn't load your log: the server returned an error."; retryLater(); }
+    if (s === "offline") retryLater(); // also retried on the "online" event and when the app comes back to the front
+    setSync(s === "ok" ? "Synced to your Cloudflare site" : s === "locked" ? "Signed out" : s === "down" ? "Couldn't load your log. Retrying." : "Offline. Your log loads when you reconnect.");
+    document.getElementById("gbar").hidden = false;
+    if (s !== "ok") overlayOutbox(); // offline or signed out: still show what's waiting to be sent
+    render();
+    if (s === "ok") { loadGarmin(); pump(); }
+    return;
+  }
   try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
   if (db) {
-    mode = "db"; setSync("Synced to your account");
+    mode = "db"; outbox.mode = "db"; stateLoaded = true; obxWrite(); setSync("Synced to your account");
+    const pendingDay = k => queued().some(x => x.kind === "day" && x.key === k);
     db.collection("days").onSnapshot(snap => {
-      for (const d of snap.docs) if (!pending.has(d.id)) logs[d.id] = structuredClone(d.data());
+      for (const d of snap.docs) if (!pendingDay(d.id)) logs[d.id] = structuredClone(d.data());
       render();
     }, () => setSync("Live sync stopped. Reload the page to reconnect."));
     db.doc("settings/main").onSnapshot(s => {
-      if (s.exists && !settingsPending) settings = Object.assign(structuredClone(DEF), structuredClone(s.data()));
+      if (s.exists && !queued().some(x => x.kind === "settings")) settings = Object.assign(structuredClone(DEF), structuredClone(s.data()));
       render();
     }, () => {});
+    overlayOutbox(); render(); pump();
   } else {
-    mode = "local";
-    try { const j = JSON.parse(localStorage.getItem("lg703") || "{}"); logs = j.logs || {}; settings = Object.assign(structuredClone(DEF), j.settings || {}); } catch (e) {}
+    mode = "local"; stateLoaded = true;
+    try { const j = JSON.parse(localStorage.getItem("lg703") || "{}"); logs = j.logs || {}; settings = Object.assign(structuredClone(DEF), j.settings || {}); }
+    catch (e) { storageErr = "This device's storage is blocked, so nothing here is saved."; }
+    if (!outbox.mode) outbox.mode = "local";
     setSync("Saving on this device only (account sync unavailable here)");
-    render();
+    overlayOutbox(); render(); pump();
   }
 })();
-function saveLocal() { try { localStorage.setItem("lg703", JSON.stringify({ logs, settings })); } catch (e) {} }
-function save(key) {
-  pending.add(key); clearTimeout(timers[key]);
-  timers[key] = setTimeout(() => flush(key), 600);
-}
-async function flush(key) {
-  await ready;
-  if (mode === "local") { saveLocal(); pending.delete(key); return; }
-  if (writing[key]) { again[key] = true; return; }
-  writing[key] = true; setSync("Saving…");
-  try {
-    if (mode === "worker") { await putJSON("/api/day/" + key, logs[key] || {}); setSync("Synced to your Cloudflare site"); }
-    else { await db.doc("days/" + key).set(logs[key] || {}); setSync("Synced to your account"); }
+// Coming back to the app: new day, fresh log, flush the queue. Also on reconnect.
+let lastResume = 0;
+async function resume() {
+  const dayChanged = refreshToday();
+  if (mode === "worker" && (Date.now() - lastResume > 30e3 || dayChanged || !stateLoaded)) {
+    lastResume = Date.now();
+    const s = await loadState();
+    if (s === "ok") { retryN = 0; retryAt = 0; if (sendErr.startsWith("Couldn't load")) sendErr = ""; setSync("Synced to your Cloudflare site"); if (!GA || Date.now() - (gFetchedAt || 0) > 15 * 60e3) loadGarmin(); }
+    if (s === "locked") setSync("Signed out");
+    if (s === "down") { sendErr = "Couldn't load your log: the server returned an error."; retryLater(); }
+    if (s === "offline") retryLater();
   }
-  catch (e) { setSync(e && e.code === "quota_exceeded" ? "Storage is full; older entries need clearing." : "Couldn't save. Check your connection; changes stay on screen."); }
-  writing[key] = false;
-  if (again[key]) { again[key] = false; flush(key); } else pending.delete(key);
+  if (dayChanged && mode === "worker") loadCoach();
+  render(); pump();
 }
-async function saveSettings() {
-  settingsPending = true; await ready;
-  if (mode === "local") { saveLocal(); settingsPending = false; return; }
-  try {
-    if (mode === "worker") await putJSON("/api/settings", settings); else await db.doc("settings/main").set(settings);
-    setSync(mode === "worker" ? "Synced to your Cloudflare site" : "Synced to your account");
-  } catch (e) { setSync("Couldn't save your test. Try again."); }
-  settingsPending = false;
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") resume(); else pump(); });
+window.addEventListener("pageshow", e => { if (e.persisted) resume(); });
+window.addEventListener("online", () => { online = true; retryN = 0; resume(); });
+window.addEventListener("offline", () => { online = false; paintStatus(); });
+setInterval(() => { if (refreshToday()) { render(); if (mode === "worker") loadCoach(); } }, 60e3);
+
+// ---------- status pill: save state first, then Garmin freshness and coach ----------
+let gFetchedAt = 0, gNote = "", noteMsg = "", noteUntil = 0;
+function flashNote(m) { noteMsg = m; noteUntil = Date.now() + 6e3; paintStatus(); setTimeout(paintStatus, 6100); }
+const hm = t => new Date(t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+function paintStatus() {
+  const box = document.getElementById("status"); if (!box) return;
+  const q = queued(), dead = q.filter(x => x.dead), sending = q.some(x => inflight.has(x.id));
+  let st, text, act = "";
+  if (storageErr) { st = "fail"; text = storageErr; act = "retry"; }
+  else if (signedOut) { st = "fail"; text = "Signed out. Reload and enter your passcode; unsaved changes are kept."; act = "reload"; }
+  else if (dead.length) { st = "fail"; text = `${dead.length} change${dead.length > 1 ? "s" : ""} refused by the server.`; act = "retry"; }
+  else if (sendErr && (q.length || !stateLoaded)) { st = "fail"; text = sendErr + (retryAt ? ` Retrying ${hm(retryAt)}.` : ""); act = "retry"; }
+  else if (noteMsg && Date.now() < noteUntil && !q.length) { st = "off"; text = noteMsg; }
+  else if (q.length && (!online || !navigator.onLine)) { st = "off"; text = `Offline, ${q.length} change${q.length > 1 ? "s" : ""} waiting`; }
+  else if (mode === "worker" && !stateLoaded && !online) { st = "off"; text = "Offline. Your log loads when you reconnect."; }
+  else if (q.length || sending) { st = "busy"; text = "Saving…"; }
+  else if (mode === "pending") { st = "busy"; text = "Loading your log…"; }
+  else { st = "ok"; text = lateAt ? `Saved a log from ${new Date(lateAt).toDateString() === new Date().toDateString() ? hm(lateAt) : fmt(new Date(lateAt)) + " " + hm(lateAt)}` : mode === "local" ? "Saved on this device" : "Saved"; }
+  box.dataset.state = st;
+  const sv = document.getElementById("st-save"); if (sv.textContent !== text) sv.textContent = text;
+  const btn = document.getElementById("st-act"); btn.hidden = !act; btn.textContent = act === "reload" ? "Reload" : "Retry"; btn.dataset.act = act;
+  // Garmin and coach (Cloudflare site only)
+  const g = document.getElementById("st-garmin"), c = document.getElementById("st-coach");
+  g.hidden = c.hidden = mode !== "worker";
+  if (mode === "worker") {
+    const age = gFetchedAt ? Date.now() - gFetchedAt : 0;
+    g.textContent = gNote || (gFetchedAt ? `Garmin ${hm(gFetchedAt)}` : "Garmin…");
+    g.dataset.state = gNote ? "fail" : age > 60 * 60e3 ? "stale" : "";
+    const cc = COACH && COACH.createdAt ? COACH : null;
+    c.textContent = coachBusy ? "Coach reviewing…" : coachMsg ? "Coach unavailable" : cc && cc.forDate === TODAY ? `Coach ${hm(cc.createdAt)}` : "Coach";
+    c.dataset.state = coachMsg && !coachBusy ? "fail" : "";
+  }
 }
+document.addEventListener("click", e => {
+  const b = e.target.closest("#st-act"); if (!b) return;
+  if (b.dataset.act === "reload") location.reload(); else retryNow();
+});
 
 // ---------- helpers ----------
 const sessions = d => [d.am, d.pm].map((s, i) => s && s.s !== "rest" ? { s, slot: i ? "pm" : "am" } : null).filter(Boolean);
@@ -912,10 +1097,6 @@ const isDone = (k, slot) => { const L = logs[k] && logs[k][slot]; if (L && typeo
 const doneMin = (k, slot, s) => { if (!isDone(k, slot)) return 0; const L = logs[k] && logs[k][slot], a = AUTO[k] && AUTO[k][slot]; return +(L && L.min) || (a ? a.mins : 0) || s.m; };
 // A ride done in place of a run counts toward bike hours (and the session counts as done).
 const doneSport = (k, slot, planned) => { const a = AUTO[k] && AUTO[k][slot]; return a && a.sub ? a.sport : planned; };
-async function putJSON(path, body) {
-  const r = await fetch(path, { method: "PUT", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
-  if (!r.ok) throw new Error(String(r.status));
-}
 
 // ---------- Garmin via intervals.icu (Cloudflare site only) ----------
 const sportOf = t => /swim/i.test(t) ? "swim" : /ride|cycl/i.test(t) ? "bike" : /run/i.test(t) ? "run" : /weight|strength/i.test(t) ? "lift" : /squash|racquet|tennis|pickleball/i.test(t) ? "squash" : "other";
@@ -987,8 +1168,8 @@ async function loadGarmin(force) {
   try {
     const r = await fetch("/api/garmin" + (force === true ? "?refresh=1" : ""), { credentials: "same-origin" });
     const j = await r.json();
-    if (!r.ok) { g.textContent = j.error === "no_key" ? "Garmin isn't connected yet: the intervals.icu API key secret is missing." : "Garmin sync failed: " + (j.detail || j.error || r.status); return; }
-    GA = { well: {}, acts: {}, lib: j.library || [] };
+    if (!r.ok) { gNote = j.error === "no_key" ? "Garmin not connected" : "Garmin sync failed"; paintStatus(); g.textContent = j.error === "no_key" ? "Garmin isn't connected yet: the intervals.icu API key secret is missing." : "Garmin sync failed: " + (j.detail || j.error || r.status); return; }
+    GA = { well: {}, acts: {}, lib: j.library || [] }; gFetchedAt = j.fetchedAt || Date.now(); gNote = j.error ? "Garmin sync problem" : "";
     for (const w of j.wellness || []) GA.well[w.id] = w;
     for (const a of j.activities || []) {
       const x = { id: a.id, date: a.start_date_local.slice(0, 10), time: a.start_date_local.slice(11, 16), type: a.type || "", name: a.name || a.type || "Activity",
@@ -1000,7 +1181,7 @@ async function loadGarmin(force) {
     const when = j.fetchedAt ? new Date(j.fetchedAt).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" }) : "—";
     g.textContent = (j.error ? `Last sync hit a problem (${j.error}). ` : "") + `Garmin data as of ${when} · ${(j.activities || []).length} activities · refreshes automatically every 20 min` + (j.stravaHidden && !(j.activities || []).length ? ` · ${j.stravaHidden} Strava-only activities have no details (Strava blocks sharing them); import your Garmin history in intervals.icu to fill these in.` : "");
     render();
-  } catch (e) { g.textContent = "Garmin sync failed. Check your connection and try again."; }
+  } catch (e) { gNote = "Garmin offline"; paintStatus(); g.textContent = "Garmin sync failed. Check your connection and try again."; }
   finally { if (!coachStarted) { coachStarted = true; loadCoach(); } }
 }
 const PCT = { Z2T: "72-77%", TEMPO: "77-86%", SS: "88-94%", SSH: "85-90%", RP: "76-81%", RP10: "80-85%" };
@@ -1145,14 +1326,14 @@ async function loadCoach(force) {
     if (!force) { const r = await fetch("/api/coach", { credentials: "same-origin" }); if (r.ok) COACH = await r.json(); }
     if (force || !COACH || COACH.forDate !== TODAY) {
       if (coachBusy) return;
-      coachBusy = true; coachMsg = "Coach is reviewing your last 7 days…"; renderCoach();
+      coachBusy = true; coachMsg = "Coach is reviewing your last 7 days…"; renderCoach(); paintStatus();
       const r = await fetch("/api/coach", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify(coachCtx()) });
       const j = await r.json();
       coachMsg = r.ok ? "" : j.error === "no_ai_key" ? "Coach is off: add your Claude key with  npx wrangler secret put ANTHROPIC_API_KEY" : j.error === "daily_limit" ? "Coach limit reached for today (8 reviews)." : "Coach couldn't run: " + (j.detail || j.error || r.status);
       if (r.ok) COACH = j;
     }
   } catch (e) { coachMsg = "Coach couldn't run. Check your connection."; }
-  coachBusy = false; renderCoach();
+  coachBusy = false; renderCoach(); paintStatus();
 }
 function renderCoach() {
   const card = document.getElementById("coachCard"); card.hidden = mode !== "worker";
@@ -1171,12 +1352,13 @@ function renderCoach() {
       : `<p class="small">No changes: train as planned.</p>`);
 }
 function acceptCoach(list) {
+  if (settingsLocked()) { flashNote(NEEDS_NET); return; }
   const o = Object.assign({}, settings.ovr || {}), cut = keyOf(new Date(today.getTime() - 30 * 864e5));
   for (const k of Object.keys(o)) if (k < cut) delete o[k];
   for (const x of list) o[x.date + "|" + x.slot] = Object.assign({}, x, { createdAt: COACH.createdAt });
   settings.ovr = o; saveSettings(); render();
 }
-function undoCoach(k) { const o = Object.assign({}, settings.ovr || {}); delete o[k]; settings.ovr = o; saveSettings(); render(); }
+function undoCoach(k) { if (settingsLocked()) { flashNote(NEEDS_NET); return; } const o = Object.assign({}, settings.ovr || {}); delete o[k]; settings.ovr = o; saveSettings(); render(); }
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-cacc],[data-caccall],[data-cundo],#coachAsk"); if (!b) return;
   if (b.id === "coachAsk") return loadCoach(true);
@@ -1783,7 +1965,7 @@ function render() {
   const a = document.activeElement && document.activeElement.id;
   applyOverrides();
   if (builtFor !== sel + "|" + settings.ftp + "|" + settings.css + "|" + settings.gp) buildToday();
-  fillToday(); fillPriority(); renderWeek(); renderSeason(); renderProgress(); renderGuide(); renderHeader(); renderHourbar(); renderHabits(); renderCoach(); renderGoal(); renderConsistency();
+  fillToday(); fillPriority(); renderWeek(); renderSeason(); renderProgress(); renderGuide(); renderHeader(); renderHourbar(); renderHabits(); renderCoach(); renderGoal(); renderConsistency(); paintStatus();
   if (a) { const e = document.getElementById(a); if (e && document.activeElement !== e) e.focus(); }
 }
 
@@ -1796,7 +1978,7 @@ function setField(key, slot, f, val) {
 }
 document.addEventListener("change", e => {
   const t = e.target;
-  if (t.dataset && t.dataset.ms) { settings.ms = Object.assign({}, settings.ms, { [t.dataset.ms]: t.checked }); saveSettings(); render(); return; }
+  if (t.dataset && t.dataset.ms) { if (settingsLocked()) { t.checked = !t.checked; flashNote(NEEDS_NET); return; } settings.ms = Object.assign({}, settings.ms, { [t.dataset.ms]: t.checked }); saveSettings(); render(); return; }
   if (!t.dataset || !t.dataset.slot) return;
   const key = t.dataset.day || sel;
   setField(key, t.dataset.slot, t.dataset.f, t.type === "checkbox" ? t.checked : t.value);
@@ -1843,6 +2025,7 @@ document.getElementById("test-date").value = TODAY;
 document.getElementById("saveTest").onclick = () => {
   const type = document.getElementById("test-type").value, raw = document.getElementById("test-val").value.trim(), date = document.getElementById("test-date").value || TODAY;
   const msg = document.getElementById("testMsg");
+  if (settingsLocked()) { msg.textContent = NEEDS_NET; return; }
   const mmss = s => { const m = s.match(/^(\d+):(\d{1,2})$/); return m ? +m[1] * 60 + +m[2] : NaN; };
   let label;
   if (type === "ftp") { const v = Math.round(+raw); if (!(v >= 100 && v <= 500)) { msg.textContent = "Enter FTP in watts, e.g. 272."; return; } settings.ftp = v; label = v + " W"; }
