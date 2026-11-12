@@ -353,6 +353,33 @@ button.st-meta { background: none; border: 0; padding: 0; min-height: 44px; curs
   .strip .d span { display: block; text-align: center; }
 }
 
+/* ---- Week and Progress rework: tokens only ---- */
+.whero .v { font-family: var(--display); font-stretch: 75%; font-size: 30px; font-weight: 700; line-height: 1.1; }
+.whero .v small { font-family: var(--body); font-stretch: 100%; font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 4px; }
+.hb-legend i.swim { background: var(--swim); } .hb-legend i.bike { background: var(--bike); } .hb-legend i.run { background: var(--run); } .hb-legend i.lift { background: var(--lift); } .hb-legend i.extra { background: var(--warn); }
+.wtable a[data-open] { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+.cell { min-height: 44px; padding: 4px 0; cursor: pointer; align-items: center; }
+.cell input { width: 18px; height: 18px; margin-top: 0; }
+/* Collapsible sections: a heading, its headline number, and Show or Hide */
+.sec > summary { list-style: none; cursor: pointer; min-height: 44px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.sec > summary::-webkit-details-marker { display: none; }
+.sec > summary .hb-num { flex: 1 1 auto; text-align: right; }
+.sec > summary::after { content: "Show"; font-size: 13px; color: var(--accent); text-decoration: underline; }
+.sec[open] > summary::after { content: "Hide"; }
+.sec-in { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; }
+.mmss { display: flex; align-items: center; gap: 6px; } .mmss input { width: 90px; }
+.pick.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pick.three button { font-family: var(--body); font-stretch: 100%; font-size: 14px; }
+@media (max-width: 600px) {
+  /* Week table becomes one stacked block per day: nothing clips, each session row is its own tap target */
+  .wtable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .wtable, .wtable tbody, .wtable tr, .wtable td { display: block; }
+  .wtable tr { padding: 4px 0; border-bottom: 1px solid var(--line); }
+  .wtable td, .wtable td:first-child { min-width: 0; border-bottom: 0; padding: 0 11px; white-space: normal; }
+  .wtable td[data-l] { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; min-height: 44px; }
+  .wtable td[data-l]::before { content: attr(data-l); font-size: 12.5px; font-weight: 650; color: var(--muted); }
+}
+
 /* Motion: everything below is skipped when the device asks for reduced motion */
 @media (prefers-reduced-motion: no-preference) {
   :root { --ease: cubic-bezier(.2, .8, .2, 1); }
@@ -501,10 +528,10 @@ button.st-meta { background: none; border: 0; padding: 0; min-height: 44px; curs
       <button class="btn" id="nextWeek" aria-label="Next week">›</button>
     </div>
     <div class="weeknote" id="weekNote2" hidden></div>
-    <div class="stats" id="weekStats"></div>
+    <div class="hourbar" id="weekStats"></div>
     <div class="card"><h3>This week's goals</h3><div class="goals" id="weekGoals"></div></div>
-    <div class="scroll"><table class="wtable"><thead><tr><th>Day</th><th>AM</th><th>PM</th></tr></thead><tbody id="weekBody"></tbody></table></div>
-    <p class="small">Tick sessions here or on the Today tab. Click a day name to open it in Today.</p>
+    <div class="scroll"><table class="wtable" role="table"><thead role="rowgroup"><tr role="row"><th role="columnheader">Day</th><th role="columnheader">AM</th><th role="columnheader">PM</th></tr></thead><tbody id="weekBody" role="rowgroup"></tbody></table></div>
+    <p class="small">Tick sessions here or on the Today tab. Tap a day name to open it in Today.</p>
   </section>
 
   <!-- SEASON -->
@@ -518,11 +545,6 @@ button.st-meta { background: none; border: 0; padding: 0; min-height: 44px; curs
       <div class="g5-rows" id="g5Rows"></div>
       <p class="g5-foot" id="g5Foot"></p>
     </div>
-    <div class="consist" id="consist" aria-label="Consistency">
-      <div class="cs-head"><span class="hb-title">Consistency</span><span class="hb-num" id="csNum"></span></div>
-      <div class="cs-weeks" id="csWeeks" role="img" aria-label="Share of planned sessions done each week"></div>
-      <div class="hb-foot"><span id="csNote"></span><span class="cs-key"><i class="ok"></i>≥85% <i class="mid"></i>60–84% <i class="low"></i>&lt;60%</span></div>
-    </div>
     <div class="hourbar">
       <div class="hb-block">
         <div class="hb-head"><span class="hb-title">This week</span><span class="hb-num num" id="hbWeekNum"></span></div>
@@ -535,53 +557,85 @@ button.st-meta { background: none; border: 0; padding: 0; min-height: 44px; curs
         <div class="hb-foot"><span id="hbSeasonNote"></span></div>
       </div>
     </div>
+    <div class="consist" id="consist" aria-label="Consistency">
+      <div class="cs-head"><span class="hb-title">Consistency</span><span class="hb-num" id="csNum"></span></div>
+      <div class="cs-weeks" id="csWeeks" role="img" aria-label="Share of planned sessions done each week"></div>
+      <div class="hb-foot"><span id="csNote"></span><span class="cs-key"><i class="ok"></i>≥85% <i class="mid"></i>60–84% <i class="low"></i>&lt;60%</span></div>
+    </div>
     <div hidden><div class="stats" id="projection"></div><div class="stats" id="seasonStats"></div></div>
-    <div class="card">
+    <details class="sec" id="sec-fit" open>
+      <summary><h3>Fitness and recovery</h3><span class="hb-num" id="sum-fit"></span></summary>
+      <div class="sec-in">
+    <div id="fitState"></div>
+    <div class="card" id="fitCard">
       <h3>Fitness, fatigue, form</h3>
       <div class="legend"><span><i style="background:var(--accent)"></i>Fitness (42-day load)</span><span><i style="background:var(--bike)"></i>Fatigue (7-day load)</span></div>
       <svg class="chart" id="fitChart" viewBox="0 0 680 220" role="img" aria-label="Fitness and fatigue over time"></svg>
       <p class="small" id="fitNote"></p>
     </div>
     <div class="grid3" id="recovery"></div>
+      </div>
+    </details>
+    <details class="sec" id="sec-tests">
+      <summary><h3>Tests and numbers</h3><span class="hb-num" id="sum-tests"></span></summary>
+      <div class="sec-in">
+        <div class="card" id="testCard">
+          <h3>Log a test</h3>
+          <div class="field">Test
+            <div class="pick three" role="group" aria-label="Test type" id="test-type"><button type="button" data-v="ftp" aria-pressed="true">FTP</button><button type="button" data-v="css" aria-pressed="false">Swim CSS</button><button type="button" data-v="5k" aria-pressed="false">5K run</button></div>
+          </div>
+          <div class="formrow">
+            <label class="field" id="tf-ftp">FTP (watts)<input id="test-ftp" type="number" min="100" max="500" inputmode="numeric" autocomplete="off" placeholder="e.g. 272…"></label>
+            <div class="field" id="tf-time" hidden><span id="tf-time-l">CSS per 100 m (min : sec)</span>
+              <div class="mmss"><input id="test-min" type="number" min="0" max="59" inputmode="numeric" autocomplete="off" aria-label="Minutes" placeholder="min…"><span aria-hidden="true">:</span><input id="test-sec" type="number" min="0" max="59" inputmode="numeric" autocomplete="off" aria-label="Seconds" placeholder="sec…"></div>
+            </div>
+            <label class="field">Date<input id="test-date" type="date"></label>
+          </div>
+          <p class="small" id="testMsg" aria-live="polite"></p>
+          <div id="testPrevBox" hidden>
+            <div class="scroll"><table id="testPrev"></table></div>
+            <p class="small">Preview only. Nothing changes until you tap Save test.</p>
+          </div>
+          <div class="formrow"><button class="btn primary" id="saveTest">Save test</button></div>
+          <div class="scroll"><table id="testList"></table></div>
+        </div>
     <div class="grid2">
       <div class="card">
         <h3>Benchmarks</h3>
         <div class="scroll"><table id="bench"></table></div>
       </div>
       <div class="card">
+        <h3>Your current numbers</h3>
+        <p class="small">Every watt and pace target in the plan is calculated from these. Log a test and they update everywhere.</p>
+        <div class="scroll"><table id="numbers"></table></div>
+      </div>
+    </div>
+      </div>
+    </details>
+    <details class="sec" id="sec-miles">
+      <summary><h3>Milestones</h3><span class="hb-num" id="sum-miles"></span></summary>
+      <div class="sec-in">
+      <div class="card">
         <h3>Milestones</h3>
         <p class="small">Ticked automatically from Garmin where possible; tick the gear ones yourself.</p>
         <div id="miles" class="list" style="list-style:none;padding:0"></div>
       </div>
-    </div>
+      </div>
+    </details>
+    <details class="sec" id="sec-hours">
+      <summary><h3>Hours and adherence</h3><span class="hb-num" id="sum-hours"></span></summary>
+      <div class="sec-in">
     <div class="card">
       <h3>Weekly hours: planned vs done</h3>
       <div class="legend"><span><i style="background:var(--line)"></i>Planned</span><span><i style="background:var(--accent)"></i>Done (plan)</span><span><i style="background:var(--warn)"></i>Extra</span></div>
       <svg class="chart" id="chart" viewBox="0 0 680 220" role="img" aria-label="Weekly planned and completed training hours"></svg>
     </div>
-    <div class="grid2">
-      <div class="card">
-        <h3>Your current numbers</h3>
-        <p class="small">Every watt and pace target in the plan is calculated from these. Log a test and they update everywhere.</p>
-        <div class="scroll"><table id="numbers"></table></div>
-      </div>
-      <div class="card">
-        <h3>Log a test</h3>
-        <div class="formrow">
-          <label class="field">Test
-            <select id="test-type"><option value="ftp">FTP (watts)</option><option value="css">Swim CSS (m:ss per 100 m)</option><option value="5k">5K time (mm:ss)</option></select></label>
-          <label class="field">Result<input id="test-val" type="text" placeholder="e.g. 272 or 2:15"></label>
-          <label class="field">Date<input id="test-date" type="date"></label>
-          <button class="btn primary" id="saveTest">Save test</button>
-        </div>
-        <p class="small" id="testMsg"></p>
-        <div class="scroll"><table id="testList"></table></div>
-      </div>
-    </div>
     <div class="card">
       <h3>Adherence by sport</h3>
       <div class="scroll"><table id="sportTable"></table></div>
     </div>
+      </div>
+    </details>
   </section>
 
   <!-- HISTORY -->
@@ -933,13 +987,13 @@ let selWeek = BYKEY[sel].wk;
 
 // ---------- token expansion ----------
 const pace = s => `${Math.floor(s / 60)}:${pad(Math.round(s % 60))}`;
-function toks() {
-  const f = settings.ftp, w = (a, b) => `${Math.round(a * f)}–${Math.round(b * f)} W`;
+function toks(st = settings) {
+  const f = st.ftp, w = (a, b) => `${Math.round(a * f)}–${Math.round(b * f)} W`;
   return {
     Z2: w(.56, .75), Z2T: w(.72, .77), TEMPO: w(.77, .86), SS: w(.88, .94), SSH: w(.85, .90), RP: w(.76, .81),
     RP10: `${Math.round(.76 * f) + 10}–${Math.round(.81 * f) + 10} W`, FTP: `${f} W`,
-    CSS: pace(settings.css) + "/100 m", CSS2: pace(settings.css + 2) + "/100 m", CSS3: pace(settings.css + 3) + "/100 m", CSS5: pace(settings.css + 5) + "/100 m",
-    GP: pace(settings.gp) + "/mi"
+    CSS: pace(st.css) + "/100 m", CSS2: pace(st.css + 2) + "/100 m", CSS3: pace(st.css + 3) + "/100 m", CSS5: pace(st.css + 5) + "/100 m",
+    GP: pace(st.gp) + "/mi"
   };
 }
 const X = t => { const T = toks(); return String(t).replace(/\{(\w+)\}/g, (m, k) => T[k] ?? m); };
@@ -1706,7 +1760,8 @@ function fillToday() {
 // ---------- render: Week ----------
 function renderWeek() {
   const wk = WEEKS[selWeek], first = wk.days[0].date, last = wk.days[6].date;
-  document.getElementById("weekTitle").textContent = `Week ${selWeek} · ${fmt(first)}–${fmt(last)} · ${wk.ph}${wk.kind === "t" ? " · test week" : wk.kind === "r" ? " · recovery" : ""}`;
+  document.getElementById("weekTitle").innerHTML = `Week ${selWeek}<span class="sub">${fmt(first)}–${fmt(last)}, ${esc(wk.ph)}${wk.kind === "t" ? ", test week" : wk.kind === "r" ? ", recovery" : ""}</span>`;
+  document.getElementById("thisWeek").hidden = selWeek === curWk;
   const wn = document.getElementById("weekNote2"), fo = FOCUS[selWeek];
   wn.hidden = !fo && !wk.note;
   wn.innerHTML = (fo ? `<strong>Focus:</strong> ${esc(fo[0])}<br><strong>Habit:</strong> ${esc(fo[1])}` : "") + (wk.note ? `<br><span class="small">${esc(wk.note)}</span>` : "");
@@ -1717,7 +1772,7 @@ function renderWeek() {
     const dn = isDone(d.key, slot);
     return `<label class="cell ${dn ? "done" : ""}"><input type="checkbox" id="w-${d.key}-${slot}" data-day="${d.key}" data-slot="${slot}" data-f="done" ${dn ? "checked" : ""}><span><span class="${tagCls[s.s]}">${ST[s.s]}</span> ${esc(X(s.t))}</span></label>`;
   };
-  document.getElementById("weekBody").innerHTML = wk.days.map(d => `<tr class="${d.key === TODAY ? "today" : ""}"><td><a href="#/today/${d.key}" data-open="${d.key}">${DAYNAMES[d.i]} ${fmt(d.date)}</a>${extrasOf(d.key).map(a => `<span class="xtra">+ ${esc(a.name)} · ${durTxt(a.mins)}</span>`).join("")}</td><td>${cell(d, "am")}</td><td>${cell(d, "pm")}</td></tr>`).join("");
+  document.getElementById("weekBody").innerHTML = wk.days.map(d => `<tr role="row" class="${d.key === TODAY ? "today" : ""}"><td role="cell"><a href="#/today/${d.key}" data-open="${d.key}">${DAYNAMES[d.i]} ${fmt(d.date)}</a>${extrasOf(d.key).map(a => `<span class="xtra">+ ${esc(a.name)} · ${durTxt(a.mins)}</span>`).join("")}</td><td role="cell" data-l="AM">${cell(d, "am")}</td><td role="cell" data-l="PM">${cell(d, "pm")}</td></tr>`).join("");
   const by = {}; let pl = 0, dn = 0, cnt = 0, cdn = 0;
   for (const d of wk.days) for (const o of sessions(d)) {
     const k = o.s.s === "brick" ? "bike" : o.s.s, kd = doneSport(d.key, o.slot, k); by[k] = by[k] || { p: 0, d: 0 }; by[kd] = by[kd] || { p: 0, d: 0 };
@@ -1728,12 +1783,16 @@ function renderWeek() {
   for (const d of wk.days) { for (const a of extrasOf(d.key)) { xm += a.mins; xn++; } for (const a of (GA && GA.acts[d.key]) || []) load += a.load || 0; }
   dn += xm;
   const h = m => (m / 60).toFixed(1);
-  document.getElementById("weekStats").innerHTML =
-    `<div class="stat"><div class="v num">${h(dn)} / ${h(pl)}</div><div class="l">hours done (incl. extras) / planned</div></div>
-     <div class="stat"><div class="v num">${cdn} / ${cnt}</div><div class="l">sessions done</div></div>` +
-    (xn ? `<div class="stat"><div class="v num" style="color:var(--warn)">${h(xm)}</div><div class="l">extra hours (${xn} unplanned)</div></div>` : "") +
-    (load ? `<div class="stat"><div class="v num">${Math.round(load)}</div><div class="l">training load this week</div></div>` : "") +
-    ["swim", "bike", "run", "lift"].filter(k => by[k]).map(k => `<div class="stat"><div class="v num"><span class="${tagCls[k]}">${h(by[k].d)}</span> / ${h(by[k].p)}</div><div class="l">${ST[k]} hours</div></div>`).join("");
+  // Headline: sessions and hours against plan, on the same bar as Progress (the line marks the plan through today).
+  const H = weekHours(wk), cap = Math.max(H.plan, H.done) || 1, started = wk.days[0].key <= TODAY, ended = wk.days[6].key < TODAY, gap = H.done - H.planTo;
+  const names = { swim: "Swim", bike: "Bike", run: "Run", lift: "Strength", extra: "Extra" }, segs = ["swim", "bike", "run", "lift", "extra"].filter(k => H.by[k] > 0);
+  const verdict = Math.abs(gap) < 15 ? '<span class="ahead">On plan</span>' : gap > 0 ? `<span class="ahead">${h(gap)} h ahead</span>` : `<span class="behind">${h(-gap)} h behind</span>`;
+  document.getElementById("weekStats").innerHTML = `<div class="hb-block whero">
+      <div class="hb-head"><span class="v num">${cdn} <small>of ${cnt} sessions</small></span><span class="v num">${h(dn)} <small>of ${h(pl)} h${xn ? ", extras included" : ""}</small></span></div>
+      <div class="hb-track" role="img" aria-label="Hours done in week ${selWeek}: ${segs.map(k => `${names[k]} ${h(H.by[k])}`).join(", ") || "none yet"}. Planned ${h(pl)}.">${segs.map(k => `<div class="seg ${k}" style="flex:0 0 ${(H.by[k] / cap * 100).toFixed(2)}%"></div>`).join("")}${started && !ended ? `<div class="mark" style="left:calc(${Math.min(100, H.planTo / cap * 100).toFixed(2)}% - 1px)"></div>` : ""}</div>
+      <div class="hb-foot"><span>${!started ? `Starts ${fmt(first)}.` : (ended ? "Week finished. " : `Line = plan through today (${h(H.planTo)} h). `) + verdict}</span></div>
+      <div class="hb-foot"><span class="hb-legend">${["swim", "bike", "run", "lift"].filter(k => by[k]).map(k => `<span><i class="${k}"></i>${ST[k]} ${h(by[k].d)} of ${h(by[k].p)} h</span>`).join("")}${xn ? `<span><i class="extra"></i>Extra ${h(xm)} h (${xn} unplanned)</span>` : ""}</span>${load ? `<span>Training load this week: ${Math.round(load)}</span>` : ""}</div>
+    </div>`;
   document.getElementById("weekGoals").innerHTML = weekGoals(selWeek).map(g => `<div class="goal ${g.c}"><span class="mk">${g.c === "ok" ? "✓" : g.c === "bad" ? "✗" : "○"}</span><span>${esc(g.t)}</span></div>`).join("");
   document.getElementById("prevWeek").disabled = selWeek === 1;
   document.getElementById("nextWeek").disabled = selWeek === 34;
@@ -1766,6 +1825,7 @@ function renderSeason() {
      <div class="stat"><div class="v num">${streak}</div><div class="l">day streak (all sessions done)</div></div>
      <div class="stat"><div class="v num">${(doneAll / 60).toFixed(0)} h</div><div class="l">trained (${(extraAll / 60).toFixed(0)} h extra) of ${(plannedAll / 60).toFixed(0)} h planned</div></div>
      <div class="stat"><div class="v num">${Math.max(0, Math.ceil((RACE - today) / 864e5))}</div><div class="l">days to race</div></div>`;
+  document.getElementById("sum-hours").textContent = due ? `${pct}% of sessions hit, ${(doneAll / 60).toFixed(0)} of ${(plannedAll / 60).toFixed(0)} h` : "";
   document.getElementById("sportTable").innerHTML = `<tr><th>Sport</th><th>Done</th><th>Due so far</th><th>Hit rate</th></tr>` +
     ["swim", "bike", "run", "lift", "key"].filter(k => sport[k]).map(k => `<tr><td class="${tagCls[k]}">${ST[k]}</td><td class="num">${sport[k].done}</td><td class="num">${sport[k].due}</td><td class="num">${sport[k].due ? Math.round(100 * sport[k].done / sport[k].due) + "%" : "—"}</td></tr>`).join("");
   // chart
@@ -1911,6 +1971,12 @@ function renderProgress() {
   const wl = GA ? Object.values(GA.well).filter(w => w.ctl != null).sort((a, b) => a.id.localeCompare(b.id)) : [];
   lineChart("fitChart", [{ pts: wl.map(w => [w.id, w.ctl]), color: "var(--accent)" }, { pts: wl.map(w => [w.id, w.atl]), color: "var(--bike)" }], { empty: GA ? "Not enough data yet" : "Open this on your Cloudflare site to see Garmin data" });
   const lw = wl[wl.length - 1];
+  // Garmin-fed charts get the shared loading/empty/error state instead of three empty frames
+  const noG = !GA && mode !== "pending";
+  setHTML(document.getElementById("fitState"), !noG ? "" : mode === "worker" ? garminState() : stateBox("empty", "Garmin charts show on your Cloudflare site", "Fitness, fatigue, sleep, HRV and resting HR come from your watch, which this copy can't reach."));
+  document.getElementById("fitCard").hidden = noG; document.getElementById("recovery").hidden = noG;
+  document.getElementById("sum-fit").textContent = lw ? `Fitness ${Math.round(lw.ctl)}, form ${Math.round(lw.ctl - lw.atl) > 0 ? "+" : ""}${Math.round(lw.ctl - lw.atl)}` : "";
+  document.getElementById("sum-tests").textContent = `FTP ${settings.ftp} W, CSS ${pace(settings.css)}/100 m, ${pace(settings.gp)}/mi`;
   document.getElementById("fitNote").textContent = lw ? `Now: fitness ${Math.round(lw.ctl)}, fatigue ${Math.round(lw.atl)}, form ${Math.round(lw.ctl - lw.atl)}. Fitness should climb steadily (roughly 3–5 points a week in build blocks) toward 70+ by late May. Form between −10 and −30 is normal in hard weeks; aim for +5 to +15 on race morning.` : "";
   // recovery trends (last 45 days)
   const since = keyOf(new Date(today.getTime() - 45 * 864e5));
@@ -1939,6 +2005,7 @@ function renderProgress() {
     const on = auto || !!ms[m.id], manual = !m.auto && !m.day && !m.log;
     return `<label class="cell ${on ? "done" : ""}" style="padding:4px 0"><input type="checkbox" id="ms-${m.id}" data-ms="${m.id}" ${on ? "checked" : ""} ${manual ? "" : "disabled"}><span>${esc(m.t)}${auto ? ' <span class="badge plan">Garmin</span>' : ""}</span></label>`;
   }).join("");
+  document.getElementById("sum-miles").textContent = `${document.querySelectorAll("#miles input:checked").length} of ${MILES.length} done`;
 }
 
 // ---------- hours bar ----------
@@ -2041,9 +2108,9 @@ function renderHabits() {
 const GOAL = { swim: 40 * 60, tr: 6 * 60, bike: 160 * 60, run: 94 * 60 }; // 5:00:00 total
 const MI = 56, HM = 13.11;
 let goalEntered = false, csEntered = false;
-function projection() {
-  const aero = !!(settings.ms || {}).aero;
-  return { swim: 19.31 * (settings.css + 5), tr: 7 * 60, bike: bikeSecs(.785 * settings.ftp, aero), run: settings.gp * HM };
+function projection(st = settings) {
+  const aero = !!(st.ms || {}).aero;
+  return { swim: 19.31 * (st.css + 5), tr: 7 * 60, bike: bikeSecs(.785 * st.ftp, aero), run: st.gp * HM };
 }
 function renderGoal() {
   const P = projection(), tot = P.swim + P.tr + P.bike + P.run, gtot = 5 * 3600, gap = tot - gtot;
@@ -2063,7 +2130,7 @@ function renderGoal() {
   }).join("");
   const rEl = document.getElementById("g5Rows"); if (rEl.dataset.sig !== rowsHtml) { rEl.innerHTML = rowsHtml; rEl.dataset.sig = rowsHtml; }
   const nowEl = document.getElementById("g5Now");
-  const show = v => nowEl.textContent = hms(v).replace(/:\d\d$/, "");
+  const show = v => nowEl.textContent = hms(Math.round(v / 60) * 60).replace(/:\d\d$/, ""); // rounded to the minute, so it agrees with "min to find"
   if (goalEntered === "running") return;
   if (!goalEntered && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
     const t0 = performance.now(), from = gtot;
@@ -2190,25 +2257,73 @@ document.addEventListener("keydown", e => {
 });
 document.getElementById("gsync").onclick = () => loadGarmin(true);
 document.getElementById("gpush").onclick = pushWorkouts;
-document.getElementById("test-date").value = TODAY;
-document.getElementById("saveTest").onclick = () => {
-  const type = document.getElementById("test-type").value, raw = document.getElementById("test-val").value.trim(), date = document.getElementById("test-date").value || TODAY;
-  const msg = document.getElementById("testMsg");
+// ---------- log a test: the right input for each test, checked before saving, with a preview of what will change ----------
+let testType = "ftp";
+const tEl = id => document.getElementById(id);
+tEl("test-date").value = TODAY;
+// Reads the form. Returns { empty } | { err, focus } | { next: settings with the new number, label }. Same limits and labels as before.
+function readTest() {
+  const next = structuredClone(settings);
+  if (testType === "ftp") {
+    const raw = tEl("test-ftp").value.trim(); if (!raw) return { empty: true };
+    const v = Math.round(+raw);
+    if (!(v >= 100 && v <= 500)) return { err: "Enter FTP in watts, between 100 and 500.", focus: "test-ftp" };
+    next.ftp = v; return { next, label: v + " W" };
+  }
+  const m = tEl("test-min").value.trim(), sc = tEl("test-sec").value.trim(); if (!m && !sc) return { empty: true };
+  if (!/^\d*$/.test(m) || !/^\d*$/.test(sc) || +sc > 59) return { err: "Use whole minutes, and seconds from 0 to 59.", focus: "test-sec" };
+  const v = (+m || 0) * 60 + (+sc || 0);
+  if (testType === "css") {
+    if (!(v >= 60 && v <= 240)) return { err: "Enter CSS per 100 m between 1:00 and 4:00.", focus: "test-min" };
+    next.css = v; return { next, label: pace(v) + "/100 m" };
+  }
+  if (!(v >= 900 && v <= 2700)) return { err: "Enter your 5K time between 15:00 and 45:00.", focus: "test-min" };
+  next.gp = Math.round(v / 3.10686) + 90; return { next, label: pace(v) + " → goal pace " + pace(next.gp) + "/mi" };
+}
+function paintTest() {
+  for (const b of tEl("test-type").children) b.setAttribute("aria-pressed", b.dataset.v === testType ? "true" : "false");
+  tEl("tf-ftp").hidden = testType !== "ftp"; tEl("tf-time").hidden = testType === "ftp";
+  tEl("tf-time-l").textContent = testType === "css" ? "CSS per 100 m (min : sec)" : "5K time (min : sec)";
+  const r = readTest(), box = tEl("testPrevBox");
+  box.hidden = !r.next; if (!r.next) return r;
+  const T0 = toks(), T1 = toks(r.next), P0 = projection(), P1 = projection(r.next);
+  const fin = P => hms(Math.round((P.swim + P.tr + P.bike + P.run) / 60) * 60).replace(/:\d\d$/, "");
+  const rows = testType === "ftp" ? [["FTP", T0.FTP, T1.FTP], ["Endurance (Z2)", T0.Z2, T1.Z2], ["Tempo", T0.TEMPO, T1.TEMPO], ["Sweet spot", T0.SS, T1.SS], ["Race power", T0.RP, T1.RP], ["Projected bike split", hms(P0.bike), hms(P1.bike)]]
+    : testType === "css" ? [["Swim CSS", T0.CSS, T1.CSS], ["Projected race swim", hms(P0.swim), hms(P1.swim)]]
+    : [["Goal 70.3 run pace (5K pace + 90 s/mi)", T0.GP, T1.GP], ["Projected run split", hms(P0.run), hms(P1.run)]];
+  rows.push(["Projected finish", fin(P0), fin(P1)]);
+  tEl("testPrev").innerHTML = `<tr><th>If you save</th><th>Now</th><th>After</th></tr>` + rows.map(([l, a, z]) => `<tr><td>${esc(l)}</td><td class="num">${esc(a)}</td><td class="num">${a === z ? esc(z) : `<strong>${esc(z)}</strong>`}</td></tr>`).join("");
+  return r;
+}
+tEl("test-type").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; testType = b.dataset.v; tEl("testMsg").textContent = ""; paintTest(); });
+for (const id of ["test-ftp", "test-min", "test-sec"]) {
+  tEl(id).addEventListener("input", () => { tEl("testMsg").textContent = ""; paintTest(); });
+  tEl(id).addEventListener("change", () => { const r = readTest(); if (r.err) tEl("testMsg").textContent = r.err; });
+}
+tEl("saveTest").onclick = () => {
+  const msg = tEl("testMsg"), date = tEl("test-date").value || TODAY;
   if (settingsLocked()) { msg.textContent = NEEDS_NET; return; }
-  const mmss = s => { const m = s.match(/^(\d+):(\d{1,2})$/); return m ? +m[1] * 60 + +m[2] : NaN; };
-  let label;
-  if (type === "ftp") { const v = Math.round(+raw); if (!(v >= 100 && v <= 500)) { msg.textContent = "Enter FTP in watts, e.g. 272."; return; } settings.ftp = v; label = v + " W"; }
-  else if (type === "css") { const v = mmss(raw); if (!(v >= 60 && v <= 240)) { msg.textContent = "Enter CSS as m:ss per 100 m, e.g. 2:15."; return; } settings.css = v; label = pace(v) + "/100 m"; }
-  else { const v = mmss(raw); if (!(v >= 900 && v <= 2700)) { msg.textContent = "Enter your 5K time as mm:ss, e.g. 22:30."; return; } settings.gp = Math.round(v / 3.10686) + 90; label = pace(v) + " → goal pace " + pace(settings.gp) + "/mi"; }
-  settings.tests = (settings.tests || []).concat([{ date, type, label }]);
+  const r = readTest();
+  if (r.empty) { msg.textContent = "Enter a result first."; tEl(testType === "ftp" ? "test-ftp" : "test-min").focus(); return; }
+  if (r.err) { msg.textContent = r.err; tEl(r.focus).focus(); return; }
+  if (testType === "ftp") settings.ftp = r.next.ftp; else if (testType === "css") settings.css = r.next.css; else settings.gp = r.next.gp;
+  settings.tests = (settings.tests || []).concat([{ date, type: testType, label: r.label }]);
+  for (const id of ["test-ftp", "test-min", "test-sec"]) tEl(id).value = "";
+  saveSettings(); render(); paintTest();
   msg.textContent = "Saved. Every target in the plan now uses the new number.";
-  document.getElementById("test-val").value = "";
-  saveSettings(); render();
 };
+paintTest();
+// Collapsible Progress sections remember whether they're open, on this device.
+let openSecs = {}; try { openSecs = JSON.parse(localStorage.getItem("lg703-open") || "{}") || {}; } catch (e) {}
+for (const d of document.querySelectorAll("details.sec")) {
+  if (d.id in openSecs) d.open = !!openSecs[d.id];
+  d.addEventListener("toggle", () => { openSecs[d.id] = d.open; try { localStorage.setItem("lg703-open", JSON.stringify(openSecs)); } catch (e) {} });
+}
 // Tap pickers (RPE 1–10, soreness 1–5): one tap sets the value, tapping it again clears it. Stored exactly as the old dropdowns did.
 document.addEventListener("click", e => {
   const b = e.target.closest(".pick button"); if (!b) return;
-  const g = b.parentElement, cur = ((logs[sel] || {})[g.dataset.slot] || {})[g.dataset.f];
+  const g = b.parentElement; if (!g.dataset.slot) return; // other pickers (test type) have their own handler
+  const cur = ((logs[sel] || {})[g.dataset.slot] || {})[g.dataset.f];
   setField(sel, g.dataset.slot, g.dataset.f, String(cur ?? "") === b.dataset.v ? "" : b.dataset.v);
 });
 // "Add note" jumps to the day's note; "Try again" buttons in error states re-run what failed.
