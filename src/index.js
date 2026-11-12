@@ -124,14 +124,20 @@ async function anthropic(env, model, body) {
 async function coach(env, ctx) {
   const body = { max_tokens: 4000, system: COACH_SYSTEM, tools: [COACH_TOOL], tool_choice: { type: "auto" },
     messages: [{ role: "user", content: JSON.stringify(ctx) }] };
-  let model = env.COACH_MODEL || "claude-sonnet-5-5", r = await anthropic(env, model, body);
-  if (r.status === 404) { // model retired: fall back to the newest Sonnet the key can use
-    const list = await (await fetch("https://api.anthropic.com/v1/models?limit=50", { headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" } })).json();
-    const alt = (list.data || []).find(m => /sonnet/.test(m.id));
-    if (alt) { model = alt.id; r = await anthropic(env, model, body); }
-  }
+  // A failure of the Claude request itself (network error or a non-2xx answer) is marked refundable: it gives the daily count back.
+  // Anything that goes wrong after a successful Claude response still counts.
+  const refundable = msg => Object.assign(new Error(String(msg).slice(0, 240)), { refund: true });
+  let model = env.COACH_MODEL || "claude-sonnet-5-5", r;
+  try {
+    r = await anthropic(env, model, body);
+    if (r.status === 404) { // model retired: fall back to the newest Sonnet the key can use
+      const list = await (await fetch("https://api.anthropic.com/v1/models?limit=50", { headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" } })).json();
+      const alt = (list.data || []).find(m => /sonnet/.test(m.id));
+      if (alt) { model = alt.id; r = await anthropic(env, model, body); }
+    }
+  } catch (e) { throw refundable("Claude request failed: " + (e.message || e)); }
+  if (!r.ok) { let msg = ""; try { msg = ((await r.json()).error || {}).message || ""; } catch (e) {} throw refundable(`Claude ${r.status}: ${msg}`); }
   const j = await r.json();
-  if (!r.ok) throw new Error(`Claude ${r.status}: ${(j.error && j.error.message) || ""}`.slice(0, 240));
   const tool = (j.content || []).find(c => c.type === "tool_use");
   let out = tool ? tool.input : null;
   if (!out) { // model answered in text: take the JSON object from it
@@ -189,14 +195,7 @@ export default {
         return json({ ok: true });
       }
 
-      if (!env.INTERVALS_API_KEY) return json({ error: "no_key" }, 503);
-
-      if (p === "/api/garmin" && req.method === "GET") {
-        let g = await env.KV.get("garmin", "json");
-        if (!g || url.searchParams.get("refresh") === "1" || Date.now() - (g.fetchedAt || 0) > 15 * 60e3) g = await refresh(env);
-        return json(g);
-      }
-
+      // Coach routes come before the Garmin key check: the coach needs the Claude key, not the intervals.icu one.
       if (p === "/api/coach" && req.method === "GET") return json((await env.KV.get("coach", "json")) || {});
       if (p === "/api/coach" && req.method === "POST") {
         if (!env.ANTHROPIC_API_KEY) return json({ error: "no_ai_key" }, 503);
@@ -208,9 +207,22 @@ export default {
         const used = n.date === ctx.today ? n.count : 0;
         if (used >= 8) return json({ error: "daily_limit" }, 429);
         await env.KV.put("coachCount", JSON.stringify({ date: ctx.today, count: used + 1 }));
-        const c = await coach(env, ctx);
+        let c;
+        try { c = await coach(env, ctx); }
+        catch (e) { // the cap stays 8; only a failed Claude request gives its count back
+          if (e && e.refund) await env.KV.put("coachCount", JSON.stringify({ date: ctx.today, count: used }));
+          throw e;
+        }
         await env.KV.put("coach", JSON.stringify(c));
         return json(c);
+      }
+
+      if (!env.INTERVALS_API_KEY) return json({ error: "no_key" }, 503);
+
+      if (p === "/api/garmin" && req.method === "GET") {
+        let g = await env.KV.get("garmin", "json");
+        if (!g || url.searchParams.get("refresh") === "1" || Date.now() - (g.fetchedAt || 0) > 15 * 60e3) g = await refresh(env);
+        return json(g);
       }
 
       if (p === "/api/push" && req.method === "POST") {

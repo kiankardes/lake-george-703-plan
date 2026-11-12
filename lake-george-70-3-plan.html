@@ -1,4 +1,8 @@
 <title>Lake George 70.3 Plan</title>
+<meta name="description" content="Daily plan, check-in, log and progress for IRONMAN 70.3 Lake George on June 13, 2027.">
+<meta name="theme-color" content="#e9eff0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1719" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f5468'/%3E%3Crect x='7' y='8' width='18' height='4' rx='2' fill='%23fbfcfc'/%3E%3Crect x='7' y='14' width='13' height='4' rx='2' fill='%23fbfcfc'/%3E%3Crect x='7' y='20' width='8' height='4' rx='2' fill='%23fbfcfc'/%3E%3C/svg%3E">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -249,10 +253,6 @@ th { font-size: 12.5px; font-weight: 650; }
   .daynav #goToday { order: 3; }
   h2 { font-size: 22px; }
 }
-/* Garmin controls shrink to one quiet row at the bottom of Today */
-#gbar { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 14px; background: none; border-style: dashed; }
-#gbar .formrow { flex: none; }
-#gbar #gstat { flex: 1 1 260px; }
 
 /* Road to 5:00: the goal is the first thing on the page. One row per sport: bar = projected split, tick = the 5:00 budget */
 .goal5 { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
@@ -298,6 +298,61 @@ th { font-size: 12.5px; font-weight: 650; }
 .cs-key i.ok { background: var(--good); } .cs-key i.mid { background: var(--warn); } .cs-key i.low { background: var(--bad); }
 .streak { color: var(--fg); font-weight: 650; }
 
+/* ---- Today rework: tokens only ---- */
+/* Tap targets: every control is at least 44px tall */
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+.daynav .btn { min-width: 44px; }
+.field input, .field select, .field textarea, .lifts input { min-height: 44px; }
+.daynav h2 .ds { display: none; }
+/* Today's call: verdict, the numbers behind it (tap to edit), readiness prominent until filled */
+.call { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.ckedit > summary { list-style: none; cursor: pointer; display: flex; flex-direction: column; gap: 4px; min-height: 44px; justify-content: center; }
+.ckedit > summary::-webkit-details-marker { display: none; }
+.ckedit > summary > .small { color: var(--accent); text-decoration: underline; }
+.ckbody { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; }
+.gchips { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); }
+.src { font-size: 11.5px; color: var(--muted); font-weight: 400; }
+.field.ready.need { font-size: 14px; font-weight: 600; color: var(--fg); max-width: 300px; }
+.field.ready.need input { font-family: var(--display); font-stretch: 75%; font-size: 24px; font-weight: 700; border-color: var(--accent); }
+/* Mark done: the first control in a session card */
+.donebtn.big { display: flex; justify-content: center; min-height: 44px; padding: 10px 14px; font-family: var(--display); font-stretch: 75%; font-size: 19px; }
+.donebtn .d1, .sess.is-done .donebtn .d0 { display: none; }
+.sess.is-done .donebtn .d1 { display: inline; }
+.sess.is-done .donebtn.big { background: var(--good); border-color: var(--good); color: var(--card); }
+.sess.is-done .donebtn.big input { accent-color: var(--card); }
+.logrow { border-top: 0; padding-top: 0; }
+.logrow .field.rpe { flex: 1 1 100%; }
+/* Tap pickers: RPE 1–10 and soreness 1–5 */
+.pick { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.pick button { min-height: 44px; background: var(--bg); border: 1px solid var(--line); border-radius: 7px; cursor: pointer; font-family: var(--display); font-stretch: 75%; font-size: 19px; font-weight: 600; }
+.pick button:hover { border-color: var(--accent); }
+.pick button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--card); }
+.coachnote .stale { display: block; margin: 4px 0; }
+.sbody > summary { list-style: none; cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--accent); text-decoration: underline; }
+.sbody > summary::-webkit-details-marker { display: none; }
+.sess:not(.is-done) .sbody > summary { display: none; }
+.sbody-in { display: flex; flex-direction: column; gap: 10px; }
+/* Loading, empty and error states share one pattern */
+.state { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; border-radius: 6px; padding: 10px 14px; font-size: 14.5px; border-left: 4px solid var(--line); background: var(--soft); }
+.state b { font-family: var(--display); font-stretch: 75%; font-size: 17px; }
+.state.err { background: var(--warn-soft); border-color: var(--warn); }
+.state.load b::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-right: 6px; }
+.state summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--accent); text-decoration: underline; }
+.state code, .state details p { overflow-wrap: anywhere; }
+.habits .hstate { grid-column: 1 / -1; }
+/* Garmin panel under the status bar */
+button.st-meta { background: none; border: 0; padding: 0; min-height: 44px; cursor: pointer; text-decoration: underline; }
+.gpanel { flex: 1 1 100%; display: flex; flex-direction: column; gap: 10px; padding: 10px 0 14px; border-top: 1px solid var(--line); }
+@media (max-width: 600px) {
+  /* The race facts and the storage line move to the foot of the page on a phone, so today's call starts the screen */
+  header.top { display: contents; }
+  header.top > .eyebrow, header.top > .dist, header.top > .sync { order: 9; }
+  .daynav h2 .dl { display: none; } .daynav h2 .ds { display: inline; }
+  .gchips { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .gchip { min-width: 0; padding: 6px; }
+  .strip .d span { display: block; text-align: center; }
+}
+
 /* Motion: everything below is skipped when the device asks for reduced motion */
 @media (prefers-reduced-motion: no-preference) {
   :root { --ease: cubic-bezier(.2, .8, .2, 1); }
@@ -339,7 +394,7 @@ th { font-size: 12.5px; font-weight: 650; }
   .sess.is-done { animation: glow .7s ease-out; }
   .donebtn input:checked { animation: pop .35s var(--ease); }
   .advice, .swimcount { transition: background .3s, border-color .3s; }
-  .status[data-state="busy"] .st-save::before { animation: stpulse 1s ease-in-out infinite; }
+  .status[data-state="busy"] .st-save::before, .state.load b::before { animation: stpulse 1s ease-in-out infinite; }
   @keyframes stpulse { 50% { opacity: .35; } }
 }
 </style>
@@ -367,14 +422,21 @@ th { font-size: 12.5px; font-weight: 650; }
   <div class="status" id="status" data-state="busy">
     <span class="st-save" id="st-save" role="status" aria-live="polite">Loading your log…</span>
     <button class="btn st-act" id="st-act" type="button" hidden>Retry</button>
-    <span class="st-meta" id="st-garmin" hidden></span>
+    <button class="st-meta" id="st-garmin" type="button" aria-expanded="false" aria-controls="gbar" hidden></button>
     <span class="st-meta" id="st-coach" hidden></span>
+  </div>
+  <div class="gpanel" id="gbar" hidden>
+    <p class="small" id="gstat"></p>
+    <div id="gfix"></div>
+    <div class="formrow">
+      <button class="btn" id="gsync">Sync Garmin</button>
+      <button class="btn primary" id="gpush">Send next 14 days to my watch</button>
+    </div>
   </div>
   </div>
 
   <!-- TODAY -->
   <section class="panel" id="p-today" role="tabpanel" aria-labelledby="tab-today">
-    <div class="habits" id="habits" hidden aria-label="This week's fixes"></div>
     <div class="daynav">
       <button class="btn" id="prevDay" aria-label="Previous day">‹</button>
       <h2 id="dayTitle"></h2>
@@ -382,51 +444,51 @@ th { font-size: 12.5px; font-weight: 650; }
       <button class="btn" id="nextDay" aria-label="Next day">›</button>
     </div>
     <div class="strip" id="strip"></div>
-    <a class="advice verdict" id="verdict" href="#ckcard" hidden></a>
-    <div class="grid2" id="sessions"></div>
 
-    <div class="card" id="ckcard">
-      <h3>Morning check-in</h3>
-      <p class="small">Enter these from your Garmin when you wake up. The dashboard tells you whether to train as written, trim it, or back off.</p>
-      <div class="checkin">
-        <label class="field">Sleep (hours)<input id="ck-sleep" type="number" step="0.25" min="0" max="14" data-slot="ck" data-f="sleep" inputmode="decimal"></label>
-        <label class="field">Training readiness<input id="ck-ready" type="number" min="0" max="100" data-slot="ck" data-f="ready" inputmode="numeric"></label>
-        <label class="field">Overnight HRV (ms)<input id="ck-hrv" type="number" min="0" max="250" data-slot="ck" data-f="hrv" inputmode="numeric"></label>
-        <label class="field">Resting HR<input id="ck-rhr" type="number" min="30" max="120" data-slot="ck" data-f="rhr" inputmode="numeric"></label>
-        <label class="field">Soreness
-          <select id="ck-sore" data-slot="ck" data-f="sore">
-            <option value="">—</option><option value="1">1 · fresh</option><option value="2">2</option><option value="3">3 · normal</option><option value="4">4 · heavy</option><option value="5">5 · hurting</option>
-          </select></label>
-      </div>
-      <div class="gchips" id="gchips" hidden></div>
-      <div class="advice" id="advice"></div>
+    <!-- Today's call: the verdict, the numbers behind it, and the check-in that feeds it -->
+    <div class="call" id="ckcard">
+      <div class="advice" id="advice" aria-live="polite"></div>
+      <label class="field ready" id="readyField">Training readiness, from your watch<input id="ck-ready" type="number" min="0" max="100" data-slot="ck" data-f="ready" inputmode="numeric" autocomplete="off"><span class="src" id="src-ready"></span></label>
+      <details class="ckedit" id="ckEdit">
+        <summary><div class="gchips" id="gchips" hidden></div><span class="small">Edit check-in</span></summary>
+        <div class="ckbody">
+          <p class="small">Garmin fills in sleep, HRV and resting HR. Type over a number to correct it; clear it to go back to Garmin's.</p>
+          <p class="small" id="ckDetail" hidden></p>
+          <div class="checkin" id="ckFields">
+            <label class="field">Sleep (hours)<input id="ck-sleep" type="number" step="0.25" min="0" max="14" data-slot="ck" data-f="sleep" inputmode="decimal" autocomplete="off"><span class="src" id="src-sleep"></span></label>
+            <label class="field">Overnight HRV (ms)<input id="ck-hrv" type="number" min="0" max="250" data-slot="ck" data-f="hrv" inputmode="numeric" autocomplete="off"><span class="src" id="src-hrv"></span></label>
+            <label class="field">Resting HR<input id="ck-rhr" type="number" min="30" max="120" data-slot="ck" data-f="rhr" inputmode="numeric" autocomplete="off"><span class="src" id="src-rhr"></span></label>
+          </div>
+          <div class="field">Soreness
+            <div class="pick" role="group" aria-label="Soreness, 1 to 5" id="ck-sore" data-slot="ck" data-f="sore"><button type="button" data-v="1" aria-pressed="false">1</button><button type="button" data-v="2" aria-pressed="false">2</button><button type="button" data-v="3" aria-pressed="false">3</button><button type="button" data-v="4" aria-pressed="false">4</button><button type="button" data-v="5" aria-pressed="false">5</button></div>
+            <span class="src">1 fresh, 3 normal, 4 heavy, 5 hurting. Tap again to clear.</span>
+          </div>
+        </div>
+      </details>
     </div>
 
+    <div class="grid2" id="sessions"></div>
+
+    <div class="card" id="notesCard">
+      <label class="field" for="notes">Notes: how it felt, splits, what to change</label>
+      <textarea id="notes" data-slot="notes"></textarea>
+    </div>
+
+    <div class="habits" id="habits" hidden aria-label="This week's fixes"></div>
     <div class="weeknote" id="weekNote" hidden></div>
     <div class="card" id="coachCard" hidden>
       <div class="formrow"><h3>Coach</h3><button class="btn" id="coachAsk">Review again</button></div>
       <p class="small">Claude reads your last 7 days (Garmin, check-ins, lift logs, notes) and suggests changes to the next few days. Nothing changes until you accept.</p>
       <p class="small" id="coachStat"></p>
+      <div id="coachState"></div>
       <div id="coachBody"></div>
     </div>
 
     <div class="card" id="actsCard" hidden>
       <h3>Everything you did</h3>
       <p class="small">Every activity from Garmin and Strava for this day. Anything not on the plan counts as extra and goes into your weekly hours and load.</p>
-      <div class="scroll"><table id="actsList"></table></div>
-    </div>
-
-    <div class="card">
-      <label class="field" for="notes">Notes: how it felt, splits, what to change</label>
-      <textarea id="notes" data-slot="notes"></textarea>
-    </div>
-
-    <div class="card" id="gbar" hidden>
-      <div class="formrow">
-        <button class="btn" id="gsync">Sync Garmin</button>
-        <button class="btn primary" id="gpush">Send next 14 days to my watch</button>
-      </div>
-      <p class="small" id="gstat"></p>
+      <div class="scroll" id="actsScroll"><table id="actsList"></table></div>
+      <div id="actsEmpty"></div>
     </div>
   </section>
 
@@ -644,6 +706,8 @@ th { font-size: 12.5px; font-weight: 650; }
 </div>
 
 <script>
+// This file is published as a fragment, so its title, meta tags and icon link can land in <body>, where browsers ignore some of them.
+for (const e of document.querySelectorAll("body > title, body > meta, body > link[rel='icon']")) document.head.appendChild(e);
 // ---------- plan data ----------
 const START = new Date(2026, 9, 19), RACE = new Date(2027, 5, 13);
 const DEF = { ftp: 266, css: 150, gp: 525, rhr: 52, tests: [] };
@@ -1008,7 +1072,6 @@ const ready = (async () => {
     if (s === "down") { sendErr = "Couldn't load your log: the server returned an error."; retryLater(); }
     if (s === "offline") retryLater(); // also retried on the "online" event and when the app comes back to the front
     setSync(s === "ok" ? "Synced to your Cloudflare site" : s === "locked" ? "Signed out" : s === "down" ? "Couldn't load your log. Retrying." : "Offline. Your log loads when you reconnect.");
-    document.getElementById("gbar").hidden = false;
     if (s !== "ok") overlayOutbox(); // offline or signed out: still show what's waiting to be sent
     render();
     if (s === "ok") { loadGarmin(); pump(); }
@@ -1058,8 +1121,17 @@ window.addEventListener("offline", () => { online = false; paintStatus(); });
 setInterval(() => { if (refreshToday()) { render(); syncHash(false); if (mode === "worker") loadCoach(); } }, 60e3);
 
 // ---------- status pill: save state first, then Garmin freshness and coach ----------
-let gFetchedAt = 0, gNote = "", noteMsg = "", noteUntil = 0;
-function flashNote(m) { noteMsg = m; noteUntil = Date.now() + 6e3; paintStatus(); setTimeout(paintStatus, 6100); }
+let gFetchedAt = 0, gNote = "", gState = "", gDetail = "", noteMsg = "", noteSt = "off", noteUntil = 0; // gState: loading | ok | nokey | error | offline
+function flashNote(m, st) { noteMsg = m; noteSt = st || "off"; noteUntil = Date.now() + 6e3; paintStatus(); setTimeout(paintStatus, 6100); }
+// Garmin's loading, empty and error states, used wherever Garmin data would show.
+function garminState() {
+  if (gState === "loading") return stateBox("load", "Loading Garmin data…", "Sleep, HRV, activities and fitness come from your watch through intervals.icu.");
+  if (gState === "nokey") return stateBox("err", "Garmin isn't connected", "The site has no intervals.icu key, so nothing from your watch can load. The plan and your log still work.", { fix: "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put INTERVALS_API_KEY</code> and paste your intervals.icu API key, then reload this page." });
+  if (gState === "error") return stateBox("err", "Garmin sync failed", "The last sync didn't finish, so what you see may be out of date.", { retry: "garmin", fix: esc(gDetail), fixLabel: "Details" });
+  if (gState === "offline") return stateBox("err", "Can't reach Garmin data", "You look offline. It loads again when you reconnect.", { retry: "garmin" });
+  if (gState === "ok") return stateBox("empty", "No Garmin activities yet", "Once your watch syncs a workout, this week's numbers show here.");
+  return "";
+}
 const hm = t => new Date(t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 function paintStatus() {
   const box = document.getElementById("status"); if (!box) return;
@@ -1069,7 +1141,7 @@ function paintStatus() {
   else if (signedOut) { st = "fail"; text = "Signed out. Reload and enter your passcode; unsaved changes are kept."; act = "reload"; }
   else if (dead.length) { st = "fail"; text = `${dead.length} change${dead.length > 1 ? "s" : ""} refused by the server.`; act = "retry"; }
   else if (sendErr && (q.length || !stateLoaded)) { st = "fail"; text = sendErr + (retryAt ? ` Retrying ${hm(retryAt)}.` : ""); act = "retry"; }
-  else if (noteMsg && Date.now() < noteUntil && !q.length) { st = "off"; text = noteMsg; }
+  else if (noteMsg && Date.now() < noteUntil && !q.length) { st = noteSt; text = noteMsg; }
   else if (q.length && (!online || !navigator.onLine)) { st = "off"; text = `Offline, ${q.length} change${q.length > 1 ? "s" : ""} waiting`; }
   else if (mode === "worker" && !stateLoaded && !online) { st = "off"; text = "Offline. Your log loads when you reconnect."; }
   else if (q.length || sending) { st = "busy"; text = "Saving…"; }
@@ -1086,9 +1158,10 @@ function paintStatus() {
     g.textContent = gNote || (gFetchedAt ? `Garmin ${hm(gFetchedAt)}` : "Garmin…");
     g.dataset.state = gNote ? "fail" : age > 60 * 60e3 ? "stale" : "";
     const cc = COACH && COACH.createdAt ? COACH : null;
-    c.textContent = coachBusy ? "Coach reviewing…" : coachMsg ? "Coach unavailable" : cc && cc.forDate === TODAY ? `Coach ${hm(cc.createdAt)}` : "Coach";
-    c.dataset.state = coachMsg && !coachBusy ? "fail" : "";
-  }
+    c.textContent = coachBusy ? "Coach reviewing…" : coachErr ? (coachErr.kind === "limit" ? "Coach limit reached" : "Coach unavailable") : cc && cc.forDate === TODAY ? `Coach ${hm(cc.createdAt)}` : "Coach";
+    c.dataset.state = coachErr && coachErr.kind !== "limit" && !coachBusy ? "fail" : "";
+    setHTML(document.getElementById("gfix"), ["nokey", "error", "offline"].includes(gState) ? garminState() : "");
+  } else if (!document.getElementById("gbar").hidden) toggleGarmin(false);
 }
 document.addEventListener("click", e => {
   const b = e.target.closest("#st-act"); if (!b) return;
@@ -1170,11 +1243,13 @@ function ckEff(k) {
 }
 async function loadGarmin(force) {
   const g = document.getElementById("gstat"); g.textContent = "Syncing Garmin…";
+  if (!GA) { gState = "loading"; renderHabits(); paintStatus(); }
   try {
     const r = await fetch("/api/garmin" + (force === true ? "?refresh=1" : ""), { credentials: "same-origin" });
     const j = await r.json();
-    if (!r.ok) { gNote = j.error === "no_key" ? "Garmin not connected" : "Garmin sync failed"; paintStatus(); g.textContent = j.error === "no_key" ? "Garmin isn't connected yet: the intervals.icu API key secret is missing." : "Garmin sync failed: " + (j.detail || j.error || r.status); return; }
-    GA = { well: {}, acts: {}, lib: j.library || [] }; gFetchedAt = j.fetchedAt || Date.now(); gNote = j.error ? "Garmin sync problem" : "";
+    if (!r.ok) { gState = j.error === "no_key" ? "nokey" : "error"; gDetail = String(j.detail || j.error || r.status); gNote = gState === "nokey" ? "Garmin not connected" : "Garmin sync failed";
+      g.textContent = gState === "nokey" ? "Garmin isn't connected." : "Garmin sync failed."; render(); return; }
+    GA = { well: {}, acts: {}, lib: j.library || [] }; gFetchedAt = j.fetchedAt || Date.now(); gNote = j.error ? "Garmin sync problem" : ""; gState = "ok";
     for (const w of j.wellness || []) GA.well[w.id] = w;
     for (const a of j.activities || []) {
       const x = { id: a.id, date: a.start_date_local.slice(0, 10), time: a.start_date_local.slice(11, 16), type: a.type || "", name: a.name || a.type || "Activity",
@@ -1186,7 +1261,7 @@ async function loadGarmin(force) {
     const when = j.fetchedAt ? new Date(j.fetchedAt).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" }) : "—";
     g.textContent = (j.error ? `Last sync hit a problem (${j.error}). ` : "") + `Garmin data as of ${when} · ${(j.activities || []).length} activities · refreshes automatically every 20 min` + (j.stravaHidden && !(j.activities || []).length ? ` · ${j.stravaHidden} Strava-only activities have no details (Strava blocks sharing them); import your Garmin history in intervals.icu to fill these in.` : "");
     render();
-  } catch (e) { gNote = "Garmin offline"; paintStatus(); g.textContent = "Garmin sync failed. Check your connection and try again."; }
+  } catch (e) { gState = GA ? "ok" : "offline"; gNote = "Garmin offline"; g.textContent = "Garmin sync failed. Check your connection and try again."; render(); }
   finally { if (!coachStarted) { coachStarted = true; loadCoach(); } }
 }
 const PCT = { Z2T: "72-77%", TEMPO: "77-86%", SS: "88-94%", SSH: "85-90%", RP: "76-81%", RP10: "80-85%" };
@@ -1239,7 +1314,8 @@ async function pushWorkouts() {
     const r = await fetch("/api/push", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify({ events: evs }) });
     const j = await r.json();
     g.textContent = r.ok ? `Sent ${evs.length} workouts for the next 14 days to intervals.icu. They reach your watch on its next Garmin sync.` : "Couldn't send workouts: " + (j.detail || j.error || r.status);
-  } catch (e) { g.textContent = "Couldn't send workouts. Check your connection."; }
+    flashNote(r.ok ? `Sent ${evs.length} workouts to your watch` : "Couldn't send workouts to your watch", r.ok ? "ok" : "fail");
+  } catch (e) { g.textContent = "Couldn't send workouts. Check your connection."; flashNote("Couldn't send workouts: no connection", "fail"); }
 }
 
 // ---------- strength log + progression ----------
@@ -1287,7 +1363,7 @@ function fillLifts(slot, s, L) {
 
 // ---------- AI coach ----------
 // The Worker asks Claude to review the last 7 days and propose changes to the next few. Nothing changes until you tap Accept.
-let COACH = null, coachBusy = false, coachStarted = false, coachMsg = "", ovrSig = "";
+let COACH = null, coachBusy = false, coachStarted = false, coachErr = null, ovrSig = ""; // coachErr: { kind: nokey | limit | offline | fail, detail }
 function fromCoach(c) {
   if (c.sport === "rest") return Object.assign(OFF(c.details || "Off"), { coach: c });
   if (c.sport === "lift") {
@@ -1331,30 +1407,40 @@ async function loadCoach(force) {
     if (!force) { const r = await fetch("/api/coach", { credentials: "same-origin" }); if (r.ok) COACH = await r.json(); }
     if (force || !COACH || COACH.forDate !== TODAY) {
       if (coachBusy) return;
-      coachBusy = true; coachMsg = "Coach is reviewing your last 7 days…"; renderCoach(); paintStatus();
+      coachBusy = true; coachErr = null; renderCoach(); paintStatus();
       const r = await fetch("/api/coach", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify(coachCtx()) });
       const j = await r.json();
-      coachMsg = r.ok ? "" : j.error === "no_ai_key" ? "Coach is off: add your Claude key with  npx wrangler secret put ANTHROPIC_API_KEY" : j.error === "daily_limit" ? "Coach limit reached for today (8 reviews)." : "Coach couldn't run: " + (j.detail || j.error || r.status);
+      coachErr = r.ok ? null : { kind: j.error === "no_ai_key" ? "nokey" : j.error === "daily_limit" ? "limit" : "fail", detail: String(j.detail || j.error || r.status) };
       if (r.ok) COACH = j;
     }
-  } catch (e) { coachMsg = "Coach couldn't run. Check your connection."; }
+  } catch (e) { coachErr = { kind: "offline", detail: "" }; }
   coachBusy = false; renderCoach(); paintStatus();
+}
+function coachState(has) {
+  if (coachBusy) return stateBox("load", "Coach is reviewing your last 7 days…", "This takes a few seconds. Nothing changes until you accept.");
+  const e = coachErr; if (!e) return "";
+  const last = has ? " Your last review is below." : "";
+  if (e.kind === "nokey") return stateBox("err", "Coach is off", "The site has no Claude key, so it can't review your week." + last, { fix: "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put ANTHROPIC_API_KEY</code>, then tap Review again." });
+  if (e.kind === "limit") return stateBox("empty", "Coach limit reached for today", "8 reviews a day. It resets tomorrow." + last);
+  if (e.kind === "offline") return stateBox("err", "Coach needs a connection", "Try again when you're back online." + last, { retry: "coach" });
+  return stateBox("err", "Coach couldn't run", "The review didn't finish. Nothing in your plan changed." + last, { retry: "coach", fix: esc(e.detail), fixLabel: "Details" });
 }
 function renderCoach() {
   const card = document.getElementById("coachCard"); card.hidden = mode !== "worker";
   if (card.hidden) return;
   document.getElementById("coachAsk").disabled = coachBusy;
   const c = COACH && COACH.createdAt ? COACH : null, ovr = settings.ovr || {};
-  document.getElementById("coachStat").textContent = coachMsg || (c ? `Reviewed ${new Date(c.createdAt).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })}${c.forDate !== TODAY ? " (not today's review yet)" : ""}` : "No review yet.");
-  if (!c) { document.getElementById("coachBody").innerHTML = ""; return; }
+  document.getElementById("coachStat").textContent = c ? `Reviewed ${new Date(c.createdAt).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })}${c.forDate !== TODAY ? " (not today's review yet)" : ""}` : coachBusy || coachErr ? "" : "No review yet. Tap Review again to get one.";
+  setHTML(document.getElementById("coachState"), coachState(!!c));
+  if (!c) { setHTML(document.getElementById("coachBody"), ""); return; }
   const live = c.changes.map((x, i) => ({ x, i })).filter(({ x }) => x.date >= TODAY && BYKEY[x.date]);
   const isOn = x => { const o = ovr[x.date + "|" + x.slot]; return o && o.createdAt === c.createdAt && o.details === x.details; };
   const pend = live.filter(({ x }) => !isOn(x));
-  document.getElementById("coachBody").innerHTML = `<p>${esc(c.summary)}</p>${c.lifts ? `<p class="small"><strong class="lf">Strength:</strong> ${esc(c.lifts)}</p>` : ""}` +
-    (live.length ? live.map(({ x, i }) => { const d = BYKEY[x.date], on = isOn(x); return `<div class="cchange"><div><strong>${DAYNAMES[d.i]} ${fmt(d.date)} · ${x.slot.toUpperCase()}</strong> → <span class="${tagCls[x.sport]}">${ST[x.sport]}</span>${x.minutes ? " · " + durTxt(x.minutes) : ""}: ${esc(X(x.details))}<br><span class="small">${esc(x.reason)}</span></div>` +
+  setHTML(document.getElementById("coachBody"), `<p>${esc(c.summary)}</p>${c.lifts ? `<p class="small"><strong class="lf">Strength:</strong> ${esc(c.lifts)}</p>` : ""}` +
+    (live.length ? live.map(({ x, i }) => { const d = BYKEY[x.date], on = isOn(x), stale = coachStale(Object.assign({ createdAt: c.createdAt }, x)); return `<div class="cchange"><div><strong>${DAYNAMES[d.i]} ${fmt(d.date)} · ${x.slot.toUpperCase()}</strong> → <span class="${tagCls[x.sport]}">${ST[x.sport]}</span>${x.minutes ? " · " + durTxt(x.minutes) : ""}: ${esc(X(x.details))}<br><span class="small">${esc(x.reason)}</span>${stale ? `<br><span class="small"><span class="badge extra">Out of date</span> ${esc(stale)}</span>` : ""}</div>` +
       (on ? `<span><span class="badge plan">Accepted</span> <button class="btn" data-cundo="${x.date}|${x.slot}">Undo</button></span>` : `<button class="btn primary" data-cacc="${i}">Accept</button>`) + `</div>`; }).join("") +
       (pend.length > 1 ? `<div class="formrow"><button class="btn primary" data-caccall="1">Accept all ${pend.length}</button></div>` : "")
-      : `<p class="small">No changes: train as planned.</p>`);
+      : `<p class="small">No changes: train as planned.</p>`));
 }
 function acceptCoach(list) {
   if (settingsLocked()) { flashNote(NEEDS_NET); return; }
@@ -1450,7 +1536,8 @@ const tagCls = { swim: "sw", bike: "bk", run: "rn", lift: "lf", brick: "bk", key
 let builtFor = null;
 function buildToday() {
   const d = BYKEY[sel], wk = WEEKS[d.wk];
-  document.getElementById("dayTitle").innerHTML = `${d.date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span class="sub">Week ${d.wk} of 34, ${esc(d.ph)}${d.key === TODAY ? " · today" : ""}</span>`;
+  const dl = o => d.date.toLocaleDateString("en-US", o);
+  document.getElementById("dayTitle").innerHTML = `<span class="dl">${dl({ weekday: "long", month: "long", day: "numeric" })}</span><span class="ds">${dl({ weekday: "short", month: "short", day: "numeric" })}</span><span class="sub">Week ${d.wk} of 34, ${esc(d.ph)}${d.key === TODAY ? " · today" : ""}</span>`;
   const wn = document.getElementById("weekNote"), fo = FOCUS[d.wk];
   wn.hidden = !fo && !wk.note;
   wn.innerHTML = (fo ? `<strong>This week's focus:</strong> ${esc(fo[0])}<br><strong>Habit:</strong> ${esc(fo[1])}` : "") + (wk.note ? `<br><span class="small">${esc(wk.note)}</span>` : "") + `<span id="swimCount" class="swimcount"></span>`;
@@ -1464,20 +1551,25 @@ function buildToday() {
     const { steps, hard } = stepsOf(s), fuel = fuelOf(s);
     el.className = "card sess " + s.s; el.id = "sess-" + slot;
     const title = s.s === "lift" ? esc(s.t) : s.s === "rest" ? "Rest" : `${ST[s.s]} · ${durTxt(s.m)}`;
+    const made = s.coach && s.coach.createdAt ? new Date(s.coach.createdAt).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
+    // Order: what it is, the Mark done control, then (once done) the log row and Garmin's review, then the session itself.
     el.innerHTML = `<div class="sesshead"><span class="slot">${slot.toUpperCase()}</span><span class="chip">${ST[s.s]}</span><h3>${title}</h3>${hard ? '<span class="hard">Hard</span>' : ""}</div>
+      ${s.s === "rest" ? "" : `<label class="donebtn big"><input type="checkbox" id="${slot}-done" data-slot="${slot}" data-f="done"><span class="d0">Mark done</span><span class="d1">Done</span></label>
+      <div class="logrow" id="${slot}-log" hidden>
+        <div class="field rpe">Effort (RPE)<div class="pick" role="group" aria-label="Effort, RPE 1 to 10" id="${slot}-rpe" data-slot="${slot}" data-f="rpe">${[1,2,3,4,5,6,7,8,9,10].map(v => `<button type="button" data-v="${v}" aria-pressed="false">${v}</button>`).join("")}</div></div>
+        <label class="field">Actual min<input id="${slot}-min" type="number" min="0" max="600" inputmode="numeric" autocomplete="off" placeholder="${s.m}" data-slot="${slot}" data-f="min"></label>
+        <button class="btn" type="button" data-note="1">Add note</button>
+      </div>`}
+      <p class="small" id="g-${slot}" hidden></p>
+      <div class="review" id="rv-${slot}" hidden></div>
+      <details class="sbody" id="${slot}-body" open><summary>Session details</summary><div class="sbody-in">
       <p class="prio" id="pr-${slot}" hidden></p>
-      ${s.coach ? `<p class="small coachnote"><strong>Coach change:</strong> ${esc(s.coach.reason)} <button class="btn" data-cundo="${sel}|${slot}">Undo</button></p>` : ""}
+      ${s.coach ? `<p class="small coachnote"><strong>Coach change${made ? `, suggested ${esc(made)}` : ""}:</strong> ${esc(s.coach.reason)} <span class="stale" id="cs-${slot}" hidden></span> <button class="btn" data-cundo="${sel}|${slot}">Undo</button></p>` : ""}
       ${exOf(s).length ? liftTable(slot, s) : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
       ${feelOf(s) ? `<p class="why"><strong>${esc(feelOf(s))}</strong></p>` : ""}
       <p class="why">${esc(whyOf(s, hard))}</p>${fuel ? `<p class="fuel">${esc(fuel)}</p>` : ""}
-      <p class="small" id="g-${slot}" hidden></p>
       <div class="routes" id="r-${slot}" hidden></div>
-      <div class="review" id="rv-${slot}" hidden></div>
-      ${s.s === "rest" ? "" : `<div class="logrow">
-        <label class="donebtn"><input type="checkbox" id="${slot}-done" data-slot="${slot}" data-f="done"> Done</label>
-        <label class="field">Effort (RPE)<select id="${slot}-rpe" data-slot="${slot}" data-f="rpe"><option value="">—</option>${[1,2,3,4,5,6,7,8,9,10].map(v => `<option value="${v}">${v}</option>`).join("")}</select></label>
-        <label class="field">Actual min<input id="${slot}-min" type="number" min="0" max="600" inputmode="numeric" placeholder="${s.m}" data-slot="${slot}" data-f="min"></label>
-      </div>`}`;
+      </div></details>`;
     box.appendChild(el);
   });
   builtFor = sel + "|" + settings.ftp + "|" + settings.css + "|" + settings.gp;
@@ -1498,22 +1590,61 @@ function fillPriority() {
     if (card) card.classList.toggle("priority", cls === "top");
   }
 }
+const CKF = ["sleep", "ready", "hrv", "rhr"];
+const setHTML = (el, html) => { if (el && el.dataset.sig !== html) { el.innerHTML = html; el.dataset.sig = html; } }; // skip identical repaints (keeps open disclosures open)
+function paintPick(id, val) { const g = document.getElementById(id); if (g) for (const b of g.children) b.setAttribute("aria-pressed", String(val ?? "") === b.dataset.v ? "true" : "false"); }
+// One pattern for loading, empty and error states. kind: "load" | "empty" | "err". Setup hints sit behind a disclosure.
+function stateBox(kind, title, text, o = {}) {
+  return `<div class="state ${kind}"><b>${esc(title)}</b><span>${esc(text)}</span>` +
+    (o.retry ? `<button class="btn" type="button" data-retry="${o.retry}">Try again</button>` : "") +
+    (o.fix ? `<details><summary>${o.fixLabel || "How to fix"}</summary><p class="small">${o.fix}</p></details>` : "") + `</div>`;
+}
+// A coach suggestion is out of date once a matching activity has been logged after it was made.
+function coachStale(c) {
+  if (!c || !c.createdAt || !{ swim: 1, bike: 1, run: 1, lift: 1 }[c.sport]) return null;
+  const made = c.createdAt, madeDay = keyOf(new Date(made)), name = { swim: "swim", bike: "ride", run: "run", lift: "lift" }[c.sport];
+  const on = k => fmt(new Date(k + "T12:00:00")), mine = AUTO[c.date] && AUTO[c.date][c.slot];
+  const a = GA ? Object.values(GA.acts).flat().filter(a => a.sport === c.sport && a !== mine && +new Date(a.date + "T" + (a.time || "12:00") + ":00") > made).sort((x, y) => (x.date + x.time).localeCompare(y.date + y.time))[0] : null;
+  if (a) return `You logged a ${name} on ${on(a.date)}, after this was suggested.`;
+  for (const d of DAYS) {
+    if (d.key <= madeDay || d.key > TODAY) continue;
+    for (const o of sessions(d)) if ((o.s.s === "brick" ? "bike" : o.s.s) === c.sport && !(d.key === c.date && o.slot === c.slot) && isDone(d.key, o.slot)) return `You logged a ${name} on ${on(d.key)}, after this was suggested.`;
+  }
+  return null;
+}
 function fillToday() {
   const d = BYKEY[sel], L = logs[sel] || {}, act = document.activeElement;
   const setV = (id, v) => { const e = document.getElementById(id); if (e && e !== act) { if (e.type === "checkbox") e.checked = !!v; else e.value = v ?? ""; } };
-  ["sleep", "ready", "hrv", "rhr", "sore"].forEach(f => setV("ck-" + f, (L.ck || {})[f]));
   setV("notes", L.notes);
-  const ac = autoCk(sel);
-  ["sleep", "ready", "hrv", "rhr"].forEach(f => { const e = document.getElementById("ck-" + f); if (e) e.placeholder = ac[f] != null ? ac[f] + " (Garmin)" : ""; });
+  // Check-in: Garmin fills sleep, HRV and resting HR; a typed value overrides it. Each field says where its number came from.
+  const ac = autoCk(sel), typed = L.ck || {}, has = f => typed[f] !== "" && typed[f] != null;
+  for (const f of CKF) {
+    const e = document.getElementById("ck-" + f);
+    if (e && e !== act) e.value = has(f) ? typed[f] : ac[f] ?? "";
+    document.getElementById("src-" + f).textContent = has(f) ? "you typed" : ac[f] != null ? "from Garmin" : f === "ready" ? "Garmin doesn't send this" : "not set";
+  }
+  paintPick("ck-sore", typed.sore);
+  // Readiness is the one number Garmin never sends: it stays prominent until it's filled, then joins the other fields.
+  const rf = document.getElementById("readyField"), needReady = sel === TODAY && !has("ready") && ac.ready == null;
+  if (document.getElementById("ck-ready") !== act) {
+    const home = document.getElementById(needReady ? "ckcard" : "ckFields");
+    if (rf.parentElement !== home) needReady ? home.insertBefore(rf, document.getElementById("ckEdit")) : home.appendChild(rf);
+    rf.classList.toggle("need", needReady);
+  }
   for (const slot of ["am", "pm"]) {
     const v = L[slot] || {}, dn = isDone(sel, slot), au = AUTO[sel] && AUTO[sel][slot];
-    setV(slot + "-done", dn); setV(slot + "-rpe", v.rpe); setV(slot + "-min", v.min);
+    setV(slot + "-done", dn); paintPick(slot + "-rpe", v.rpe); setV(slot + "-min", v.min);
+    const lg = document.getElementById(slot + "-log"); if (lg && !lg.contains(act)) lg.hidden = !(dn || v.rpe || v.min);
     if (d[slot] && d[slot].s === "lift") fillLifts(slot, d[slot], v);
     const card = document.getElementById("sess-" + slot); if (card) card.classList.toggle("is-done", dn);
+    // When a session becomes done its details fold away (and open again if it's unticked); never while you're typing in them.
+    const sb = document.getElementById(slot + "-body"); if (sb && sb.dataset.done !== String(dn) && !sb.contains(act)) { sb.open = !dn; sb.dataset.done = String(dn); }
     const gl = document.getElementById("g-" + slot);
     const rv = document.getElementById("rv-" + slot);
     if (rv) { const g = au && !au.sub && d[slot] ? grade(d[slot], au) : []; rv.hidden = !g.length; rv.innerHTML = g.length ? "<strong>Review</strong>" + g.map(([ok, t]) => `<span class="${ok === 1 ? "ok" : ok === 0 ? "bad" : ""}">${ok === 1 ? "✓" : ok === 0 ? "⚠" : "•"} ${esc(t)}</span>`).join("") : ""; }
     if (gl) { gl.hidden = !au; if (au) gl.textContent = "Garmin: " + [au.sub ? au.sub + " (counts as done)" : "", au.name, au.mins + " min", au.hr ? Math.round(au.hr) + " bpm avg" : "", au.w ? Math.round(au.w) + " W avg" : "", au.np ? Math.round(au.np) + " W normalized" : ""].filter(Boolean).join(" · "); }
+    const cs = document.getElementById("cs-" + slot), stale = d[slot] && d[slot].coach ? coachStale(d[slot].coach) : null;
+    if (cs) { cs.hidden = !stale; cs.innerHTML = stale ? `<span class="badge extra">Out of date</span> ${esc(stale)}` : ""; }
   }
   // routes from your own ride history
   for (const slot of ["am", "pm"]) {
@@ -1522,20 +1653,26 @@ function fillToday() {
     re.hidden = !rs.length;
     if (rs.length) re.innerHTML = `<strong>Route ideas from your rides</strong>` + rs.map(a => `<a href="https://intervals.icu/activities/${encodeURIComponent(a.id)}" target="_blank" rel="noopener">${esc(a.name || "Ride")}</a> <span class="num">· ${(a.distance / 1609).toFixed(0)} mi · ${Math.round((a.total_elevation_gain || 0) * 3.281).toLocaleString()} ft · ${durTxt(Math.round(a.moving_time / 60))} · ${esc((a.start_date_local || "").slice(0, 10))}</span>`).join("<br>");
   }
-  // Garmin numbers for this day
-  const w = GA && GA.well[sel], wf = wellOn(sel), gc = document.getElementById("gchips");
+  // The numbers behind the call, compact, each tagged with its source. Detail (sleep score, fitness and fatigue) is in the editor.
+  const w = GA && GA.well[sel], wf = wellOn(sel), gc = document.getElementById("gchips"), eff = ckEff(sel);
   const form = wf && wf.ctl != null && wf.atl != null ? Math.round(wf.ctl - wf.atl) : null;
-  const chip = (v, l, low) => `<div class="gchip ${low ? "low" : ""}"><b>${v}</b><span>${l}</span></div>`;
+  const chip = (v, l, low, src) => `<div class="gchip ${low ? "low" : ""}"><b>${v}</b><span>${l}</span><span class="src">${src}</span></div>`;
+  const srcOf = f => has(f) ? "typed" : "Garmin", num = f => eff[f] != null && eff[f] !== "" && isFinite(+eff[f]) ? +eff[f] : null;
   const chips = [];
-  if (w && w.sleepSecs) chips.push(chip((w.sleepSecs / 3600).toFixed(1) + " h", "Sleep" + (w.sleepScore ? ` · score ${w.sleepScore}` : ""), w.sleepSecs < 7 * 3600));
-  if (w && w.hrv) chips.push(chip(Math.round(w.hrv) + " ms", "HRV", w.hrv < 30));
-  if (w && w.restingHR) chips.push(chip(w.restingHR, "Resting HR", w.restingHR >= settings.rhr + 8));
-  if (w && w.readiness) chips.push(chip(Math.round(w.readiness), "Readiness", w.readiness < 50));
-  if (form != null) chips.push(chip(`${form > 0 ? "+" : ""}${form}`, `Form · fitness ${Math.round(wf.ctl)} / fatigue ${Math.round(wf.atl)}`, form <= -25));
-  gc.hidden = !chips.length; gc.innerHTML = chips.join("");
+  if (num("sleep") != null) chips.push(chip((has("sleep") || !w || !w.sleepSecs ? num("sleep") : w.sleepSecs / 3600).toFixed(1) + " h", "Sleep", num("sleep") < 7, srcOf("sleep")));
+  if (num("hrv") != null) chips.push(chip(Math.round(num("hrv")) + " ms", "HRV", num("hrv") < 30, srcOf("hrv")));
+  if (num("rhr") != null) chips.push(chip(Math.round(num("rhr")), "Rest HR", num("rhr") >= settings.rhr + 8, srcOf("rhr")));
+  if (num("ready") != null) chips.push(chip(Math.round(num("ready")), "Readiness", num("ready") < 50, srcOf("ready")));
+  if (form != null) chips.push(chip(`${form > 0 ? "+" : ""}${form}`, "Form", form <= -25, "Garmin"));
+  gc.hidden = !chips.length; setHTML(gc, chips.join(""));
+  const det = [w && w.sleepSecs ? `sleep ${(w.sleepSecs / 3600).toFixed(1)} h${w.sleepScore ? ` · score ${w.sleepScore}` : ""}` : "", w && w.hrv ? `HRV ${Math.round(w.hrv)} ms` : "", w && w.restingHR ? `resting HR ${w.restingHR}` : "", w && w.readiness ? `readiness ${Math.round(w.readiness)}` : "",
+    form != null ? `form ${form > 0 ? "+" : ""}${form} · fitness ${Math.round(wf.ctl)} / fatigue ${Math.round(wf.atl)}` : ""].filter(Boolean);
+  const cd = document.getElementById("ckDetail"); cd.hidden = !det.length; cd.textContent = det.length ? "Garmin for this day: " + det.join("; ") + "." : "";
   // everything done this day
-  const all = GA ? (GA.acts[sel] || []) : [], ac2 = document.getElementById("actsCard");
-  ac2.hidden = !all.length;
+  const all = GA ? (GA.acts[sel] || []) : [], ac2 = document.getElementById("actsCard"), none = !!GA && !all.length && sel <= TODAY;
+  ac2.hidden = !all.length && !none;
+  document.getElementById("actsScroll").hidden = !all.length;
+  setHTML(document.getElementById("actsEmpty"), none ? stateBox("empty", "Nothing from Garmin for this day", sel === TODAY ? "Activities show here after your watch syncs. Use Sync Garmin in the status bar to check now." : "No activity was recorded on your watch.") : "");
   if (all.length) document.getElementById("actsList").innerHTML = `<tr><th>Time</th><th>Activity</th><th>Time</th><th>Avg HR</th><th>Load</th><th></th></tr>` + all.map(a =>
     `<tr><td class="num">${esc(a.time)}</td><td>${esc(a.name)} <span class="small">${esc(a.type)}${a.km ? " · " + (a.km / 1.609).toFixed(1) + " mi" : ""}</span></td><td class="num">${durTxt(a.mins)}</td><td class="num">${a.hr ? Math.round(a.hr) : "—"}</td><td class="num">${a.load != null ? Math.round(a.load) : "—"}</td><td>${a.matched ? `<span class="badge plan">plan · ${a.matched.toUpperCase()}${a.sub ? " · " + esc(a.sub.toLowerCase()) : ""}</span>` : '<span class="badge extra">extra</span>'}</td></tr>`).join("");
   // adaptive context: yesterday's extras, week over plan
@@ -1544,7 +1681,7 @@ function fillToday() {
   for (const x of WEEKS[d.wk].days) { if (x.key > sel) break; for (const o of sessions(x)) { plannedTo += o.s.m; doneTo += doneMin(x.key, o.slot, o.s); } doneTo += extraMin(x.key); }
   const hard = [d.am, d.pm].some(s => s && isHard(s.t));
   const yHot = hotEasy(prevKey(sel));
-  const a = advice(ckEff(sel), hard, { form, yExtra, over: doneTo - plannedTo, yHot }), ad = document.getElementById("advice");
+  const a = advice(eff, hard, { form, yExtra, over: doneTo - plannedTo, yHot }), ad = document.getElementById("advice");
   // swim count: the #1 limiter gets a running tally on every day of the week
   const sc = document.getElementById("swimCount");
   if (sc) {
@@ -1553,17 +1690,17 @@ function fillToday() {
     sc.className = "swimcount " + (done >= Math.min(2, sw.length) ? "ok" : "low");
     sc.innerHTML = `<b>Swims this week: ${done} of ${sw.length}</b> · ${done >= sw.length ? "all done." : left ? `${left} still on the calendar. Swimming is your biggest limiter, so these come first.` : "none left this week. Make the first one next week non-negotiable."}`;
   }
-  ad.className = "advice " + a.c; ad.innerHTML = `<b>${esc(a.h)}</b>${esc(a.t)}`;
-  const vd = document.getElementById("verdict"); vd.hidden = sel !== TODAY; vd.className = "advice verdict " + a.c; vd.innerHTML = `<b>${esc(a.h)}</b>${esc(a.t)}<span class="vlink">Check-in ↓</span>`;
+  ad.className = "advice " + a.c; setHTML(ad, `<b>${esc(a.h)}</b>${esc(a.t)}`);
   // strip
   const wk = WEEKS[d.wk], strip = document.getElementById("strip");
   strip.innerHTML = wk.days.map(x => {
     const st = dayStatus(x);
     const dots = sessions(x).map(o => `<i class="${o.s.s} ${isDone(x.key, o.slot) ? "done" : st.past ? "miss" : ""}"></i>`).join("") || '<span class="small">rest</span>';
-    return `<button data-day="${x.key}" class="${x.key === sel ? "sel" : ""} ${x.key === TODAY ? "today" : ""}" aria-label="${DAYNAMES[x.i]} ${fmt(x.date)}"><span class="d">${DAYNAMES[x.i]} ${x.date.getDate()}</span><span class="dots">${dots}</span></button>`;
+    return `<button data-day="${x.key}" class="${x.key === sel ? "sel" : ""} ${x.key === TODAY ? "today" : ""}" aria-label="${DAYNAMES[x.i]} ${fmt(x.date)}"><span class="d"><span>${DAYNAMES[x.i]}</span> <span>${x.date.getDate()}</span></span><span class="dots">${dots}</span></button>`;
   }).join("");
   document.getElementById("prevDay").disabled = sel === DAYS[0].key;
   document.getElementById("nextDay").disabled = sel === DAYS[DAYS.length - 1].key;
+  document.getElementById("goToday").hidden = sel === TODAY;
 }
 
 // ---------- render: Week ----------
@@ -1877,7 +2014,12 @@ function habitStats() {
 }
 function renderHabits() {
   const box = document.getElementById("habits"), h = habitStats();
-  box.hidden = !h; if (!h) return;
+  if (!h) { // loading, not connected, failed or nothing synced yet (Cloudflare site only)
+    const st = mode === "worker" ? garminState() : "";
+    box.hidden = !st; setHTML(box, st ? `<div class="hhead">This week's fixes<span>Week ${curWk} · from Garmin</span></div><div class="hstate">${st}</div>` : "");
+    return;
+  }
+  box.hidden = false; delete box.dataset.sig;
   const tile = (cls, label, value, unit, foot, meter) => `<div class="habit ${cls}"><span class="hl">${label}</span><span class="hv">${value}${unit ? `<small>${unit}</small>` : ""}</span>${meter || ""}<span class="hf">${foot}</span></div>`;
   const meter = (pct, target) => `<div class="meter"><b style="width:${Math.max(2, Math.min(100, pct))}%"></b><i style="left:calc(${target}% - 1px)"></i></div>`;
   const sw = h.daysSinceSwim, swCls = sw <= 3 ? "ok" : sw <= 6 ? "warn" : "bad";
@@ -2063,6 +2205,28 @@ document.getElementById("saveTest").onclick = () => {
   document.getElementById("test-val").value = "";
   saveSettings(); render();
 };
+// Tap pickers (RPE 1–10, soreness 1–5): one tap sets the value, tapping it again clears it. Stored exactly as the old dropdowns did.
+document.addEventListener("click", e => {
+  const b = e.target.closest(".pick button"); if (!b) return;
+  const g = b.parentElement, cur = ((logs[sel] || {})[g.dataset.slot] || {})[g.dataset.f];
+  setField(sel, g.dataset.slot, g.dataset.f, String(cur ?? "") === b.dataset.v ? "" : b.dataset.v);
+});
+// "Add note" jumps to the day's note; "Try again" buttons in error states re-run what failed.
+document.addEventListener("click", e => {
+  if (e.target.closest("[data-note]")) { const n = document.getElementById("notes"); n.scrollIntoView({ block: "center" }); n.focus({ preventScroll: true }); return; }
+  const r = e.target.closest("[data-retry]"); if (!r) return;
+  if (r.dataset.retry === "garmin") loadGarmin(true); else if (r.dataset.retry === "coach") loadCoach(true);
+});
+// Check-in numbers are replaced, not appended to, when you start typing over Garmin's value.
+document.addEventListener("focusin", e => { const t = e.target; if (t.dataset && t.dataset.slot === "ck" && t.tagName === "INPUT") try { t.select(); } catch (x) {} });
+document.addEventListener("focusout", e => { const t = e.target; if (t.dataset && t.dataset.slot === "ck") setTimeout(fillToday, 0); });
+// Garmin panel in the status bar: Sync and Send to watch, reachable from every tab.
+function toggleGarmin(open) {
+  const p = document.getElementById("gbar"), b = document.getElementById("st-garmin");
+  p.hidden = !open; b.setAttribute("aria-expanded", open ? "true" : "false");
+}
+document.getElementById("st-garmin").addEventListener("click", () => toggleGarmin(document.getElementById("gbar").hidden));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !document.getElementById("gbar").hidden) { toggleGarmin(false); document.getElementById("st-garmin").focus(); } });
 // The URL decides the view; with no route in it, fall back to the last tab used on this device.
 if (!applyHash()) { let startTab = "today"; try { startTab = localStorage.getItem("lg703-tab") || "today"; } catch (e) {} showTab(TABS.includes(startTab) ? startTab : "today"); }
 syncHash(false);
