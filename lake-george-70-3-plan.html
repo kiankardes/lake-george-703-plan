@@ -12,9 +12,9 @@
    Numbers carry it; fields are divided by rules, not boxed in cards. Everything below uses these tokens only. */
 :root {
   /* color: neutrals, one accent (only on things you tap), four sports, three statuses */
-  --bg: #eef0f2; --card: #ffffff; --soft: #f6f7f8; --fg: #15191d; --muted: #4b545c; --faint: #6b747c; --line: #dde0e3; --line-strong: #b9bfc4;
+  --bg: #eef0f2; --card: #ffffff; --soft: #f6f7f8; --fg: #15191d; --muted: #4b545c; --faint: #5f6870; --line: #dde0e3; --line-strong: #b9bfc4;
   --accent: #1c5bb8; --accent-ink: #ffffff; --accent-soft: #e6eef9;
-  --swim: #0e7c86; --bike: #c2500f; --run: #3d7a22; --lift: #8a6510; --key: #15191d;
+  --swim: #0b737c; --bike: #ad460b; --run: #377020; --lift: #8a6510; --key: #15191d;
   --good: #1e7b4f; --good-soft: #e3f2ea; --warn: #8f5a00; --warn-soft: #fbf0dc; --bad: #b42318; --bad-soft: #fbe6e3;
   /* type: Barlow for reading, Barlow Semi Condensed for numbers and headings */
   --body: "Barlow", system-ui, sans-serif; --display: "Barlow Semi Condensed", "Barlow", system-ui, sans-serif; --mono: var(--body);
@@ -65,16 +65,26 @@ main:focus { outline: none; }
 /* ---------- app shell ---------- */
 .wrap { max-width: var(--page); margin: 0 auto; padding-block: var(--s4) var(--s16); display: flex; flex-direction: column; gap: var(--s4);
   padding-left: max(var(--s4), env(safe-area-inset-left, 0px)); padding-right: max(var(--s4), env(safe-area-inset-right, 0px)); }
-header.top { display: flex; flex-direction: column; gap: var(--s1); }
-.toprow { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s3); }
-.count { font: var(--w-bold) var(--t-30)/1 var(--display); text-align: right; white-space: nowrap; }
-.eyebrow, .dist, .sync { font-size: var(--t-13); color: var(--muted); }
-.dist { display: flex; flex-wrap: wrap; gap: 0 var(--s4); }
-.sync { color: var(--faint); font-size: var(--t-12); }
+header.top { display: flex; flex-direction: column; gap: var(--s2); }
+/* brand row: mark, race name with the current week, and the countdown as the one big number */
+.toprow { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+.brand { display: flex; align-items: center; gap: var(--s3); min-width: 0; }
+.mark { width: var(--s8); height: var(--s8); flex: none; }
+.mark .m-sw { fill: var(--swim); } .mark .m-bk { fill: var(--bike); } .mark .m-rn { fill: var(--run); }
+.brand > div { display: flex; flex-direction: column; min-width: 0; }
+.phase { font-size: var(--t-13); color: var(--muted); }
+.countdown { display: flex; flex-direction: column; align-items: flex-end; text-align: right; white-space: nowrap; }
+.count { font: var(--w-bold) var(--t-30)/1 var(--display); }
+.countdown .cl { font-size: var(--t-12); color: var(--muted); }
+.dist { display: flex; flex-wrap: wrap; gap: 0 var(--s4); font-size: var(--t-13); color: var(--muted); }
+.sync { color: var(--warn); font-size: var(--t-13); font-weight: var(--w-med); }
 .appbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: var(--hair) solid var(--line); display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s3); }
 nav.tabs { display: flex; flex: 1 1 auto; min-width: 0; overflow-x: auto; }
 nav.tabs button { min-height: var(--tap); padding: 0 var(--s3); border: 0; border-bottom: 2px solid transparent; background: none; font: var(--w-semi) var(--t-17)/1 var(--display); color: var(--muted); white-space: nowrap; cursor: pointer; }
-nav.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); }
+nav.tabs button { position: relative; } nav.tabs button[aria-selected="true"] { color: var(--fg); }
+/* the selected tab's line is its own element so it can glide to the next tab (see motion) */
+nav.tabs .ti { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--fg); opacity: 0; pointer-events: none; }
+nav.tabs [aria-selected="true"] .ti { opacity: 1; }
 /* status pill: save state first; Garmin freshness and coach after it */
 .status { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s3); min-height: var(--tap); font-size: var(--t-13); color: var(--muted); }
 .st-save { display: inline-flex; align-items: center; gap: var(--s2); color: var(--fg); font-weight: var(--w-semi); }
@@ -150,11 +160,14 @@ tr:last-child > td { border-bottom: 0; }
 .strip .d { font-size: var(--t-13); }
 .strip button.today .d { color: var(--accent); font-weight: var(--w-semi); }
 .strip button.sel { background: var(--fg); color: var(--bg); } .strip button.sel .d { color: var(--bg); }
+/* sport marks: shape and color together, so a sport never depends on color alone */
+.gl { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vertical-align: -.125em; }
 .dots { display: flex; gap: 3px; }
-.dots i { width: var(--s2); height: var(--s2); border-radius: 50%; border: 1.5px solid var(--dc, var(--faint)); }
-.dots i.done { background: var(--dc, var(--faint)); } .dots i.miss { border-color: var(--bad); }
-.strip button.sel .dots i { border-color: var(--bg); } .strip button.sel .dots i.done { background: var(--bg); }
+.dots i { width: var(--s5); height: var(--s5); border-radius: 50%; border: 1.5px solid var(--dc, var(--faint)); color: var(--dc, var(--faint)); display: grid; place-items: center; font-size: var(--t-12); }
+.dots i.done { background: var(--dc, var(--faint)); color: var(--card); } .dots i.miss { border-color: var(--bad); border-style: dashed; }
+.strip button.sel .dots i { border-color: var(--bg); color: var(--bg); } .strip button.sel .dots i.done { background: var(--bg); color: var(--fg); }
 .dots i.swim { --dc: var(--swim); } .dots i.bike, .dots i.brick { --dc: var(--bike); } .dots i.run { --dc: var(--run); } .dots i.lift { --dc: var(--lift); } .dots i.key { --dc: var(--key); }
+.chip, .wtag { display: inline-flex; align-items: center; gap: var(--s1); }
 /* today's call: the one bold element */
 .call { padding: 0; gap: 0; }
 .advice { padding: var(--s3) var(--s4); font-size: var(--t-15); border-left: var(--bar) solid var(--ac, var(--line-strong)); display: flex; flex-direction: column; gap: var(--s1); }
@@ -163,6 +176,7 @@ tr:last-child > td { border-bottom: 0; }
 .advice.go { --ac: var(--good); } .advice.trim { --ac: var(--warn); } .advice.easy { --ac: var(--bad); }
 .call > .field.ready { padding: var(--s3) var(--s4); border-top: var(--hair) solid var(--line); }
 .field.ready.need { font-size: var(--t-15); font-weight: var(--w-semi); color: var(--fg); }
+@media (min-width: 601px) { .field.ready.need { display: grid; grid-template-columns: auto minmax(0, var(--col-md)) 1fr; align-items: center; gap: var(--s4); } }
 .field.ready.need input { max-width: var(--col-lg); font: var(--w-bold) var(--t-24)/1 var(--display); border-color: var(--accent); }
 .ckedit { border-top: var(--hair) solid var(--line); }
 .ckedit > summary { display: flex; flex-direction: column; }
@@ -174,6 +188,14 @@ tr:last-child > td { border-bottom: 0; }
 .gchip b { font: var(--w-semi) var(--t-24)/1 var(--display); white-space: nowrap; }
 .gchip span { font-size: var(--t-12); color: var(--muted); }
 .gchip.low b { color: var(--warn); }
+/* 7-day sparkline under each number: shaded band = your usual range (28-day mean ± 1 SD), dot = this day */
+.spark { display: block; width: 100%; height: var(--s5); margin: var(--s2) 0 var(--s1); overflow: visible; }
+.spark .band { fill: var(--soft); stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.spark .zero { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 2 2; vector-effect: non-scaling-stroke; }
+.spark .ln { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.spark .pt { stroke: var(--fg); stroke-width: 6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.gchip.low .spark .pt { stroke: var(--warn); }
+.tlink { display: inline-flex; align-items: center; min-height: var(--tap); }
 /* sessions */
 .sess { border-left: var(--bar) solid var(--sc, var(--line-strong)); }
 .sess.swim { --sc: var(--swim); } .sess.bike, .sess.brick { --sc: var(--bike); } .sess.run { --sc: var(--run); } .sess.lift { --sc: var(--lift); } .sess.key { --sc: var(--key); }
@@ -183,8 +205,8 @@ tr:last-child > td { border-bottom: 0; }
 .donebtn { display: flex; align-items: center; justify-content: center; gap: var(--s2); min-height: var(--tap); padding: var(--s3) var(--s4); border: 1.5px solid var(--line-strong); border-radius: var(--r-ctl); cursor: pointer; font: var(--w-semi) var(--t-17)/1 var(--display); }
 .donebtn input { width: var(--s5); height: var(--s5); margin: 0; accent-color: var(--good); }
 .donebtn .d1, .sess.is-done .donebtn .d0 { display: none; } .sess.is-done .donebtn .d1 { display: inline; }
-.sess.is-done .donebtn { background: var(--good); border-color: var(--good); color: var(--card); }
-.sess.is-done .donebtn input { accent-color: var(--card); }
+.sess.is-done .donebtn { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+.sess.is-done .donebtn input { accent-color: var(--good); }
 .logrow { display: flex; flex-wrap: wrap; align-items: end; gap: var(--s3); }
 .logrow .field { flex: 0 0 auto; } .logrow .field.rpe { flex: 1 1 100%; } .logrow .field input { width: calc(var(--tap) * 2); }
 .sess:not(.is-done) .sbody > summary { display: none; }
@@ -195,8 +217,40 @@ tr:last-child > td { border-bottom: 0; }
 .prio.top { --pc: var(--bad); --pcs: var(--bad-soft); } .prio.cap { --pc: var(--warn); --pcs: var(--warn-soft); }
 .coachnote { background: var(--accent-soft); border-radius: var(--r-ctl); padding: var(--s2) var(--s3); }
 .coachnote .stale { display: block; margin: var(--s1) 0; }
+.coachnote .btn { display: flex; width: max-content; margin-top: var(--s2); }
 .routes, .review { display: flex; flex-direction: column; gap: var(--s1); font-size: var(--t-13); background: var(--soft); padding: var(--s2) var(--s3); border-left: var(--bar) solid var(--line-strong); }
 .review .ok { color: var(--good); } .review .bad { color: var(--warn); }
+/* structured workout: summary, profile (bars = steps, width = time, height = intensity, shade = zone), step table */
+.wo { display: flex; flex-direction: column; gap: var(--s2); }
+.wo-sum { font-size: var(--t-13); color: var(--muted); font-weight: var(--w-med); }
+.prof svg { display: block; width: 100%; height: var(--s16); background: var(--soft); border-bottom: var(--hair) solid var(--line-strong); }
+.prof rect, .zs { fill: var(--pc); background: var(--pc); }
+.prof .swim, .zs.swim { --pc: var(--swim); } .prof .bike, .zs.bike { --pc: var(--bike); } .prof .run, .zs.run { --pc: var(--run); }
+.prof .z1, .zs.z1 { opacity: .3; } .prof .z2, .zs.z2 { opacity: .5; } .prof .z3, .zs.z3 { opacity: .7; } .prof .z4, .zs.z4 { opacity: .87; } .zs.rest { opacity: .15; }
+.prof .thr { stroke: var(--fg); stroke-width: 1; stroke-dasharray: 3 3; opacity: .45; vector-effect: non-scaling-stroke; }
+.prof .t2 { stroke: var(--fg); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.prof-ax { position: relative; height: var(--s5); font-size: var(--t-12); color: var(--faint); }
+.prof-ax span { position: absolute; top: 2px; left: var(--x); transform: translateX(-50%); white-space: nowrap; }
+.prof-ax span:first-child { transform: none; } .prof-ax span:last-child { transform: translateX(-100%); }
+.zs { display: inline-block; width: var(--s2); height: var(--s3); margin-right: var(--s2); vertical-align: -1px; }
+.stab td:nth-child(2) { white-space: nowrap; }
+.stab tr.in td:first-child { padding-left: var(--s6); }
+.stab tr.reph td { background: var(--soft); color: var(--fg); }
+.stab tr.t2r td { font-weight: var(--w-semi); border-top: 2px solid var(--fg); }
+/* compliance: green within 20% of plan, yellow 20–50% off or wrong intensity, red more than 50% off or missed */
+.cpb { display: inline-flex; align-items: center; font-size: var(--t-12); font-weight: var(--w-semi); padding: 0 var(--s2); border-radius: var(--r-pill); background: var(--cps); color: var(--cpc); white-space: nowrap; }
+.cpb.green, .cpv.green, .review.cp-green, .cpkey .green { --cpc: var(--good); --cps: var(--good-soft); } .cpb.yellow, .cpv.yellow, .review.cp-yellow, .cpkey .yellow { --cpc: var(--warn); --cps: var(--warn-soft); }
+.cpb.red, .cpv.red, .review.cp-red, .cpkey .red { --cpc: var(--bad); --cps: var(--bad-soft); } .cpb.logged, .review.cp-logged, .cpkey .logged { --cpc: var(--muted); --cps: var(--line); }
+.review[class*="cp-"] { border-left-color: var(--cpc); gap: var(--s2); }
+.cp-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s2); }
+.cp-head .cpb { font-size: var(--t-13); }
+.cp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--col-sm), 1fr)); gap: var(--s2) var(--s3); margin: 0; }
+.cp-grid dt { font-size: var(--t-12); color: var(--muted); } .cp-grid dd { margin: 0; font: var(--w-semi) var(--t-17)/1.2 var(--display); color: var(--fg); }
+.cpv { font: var(--w-semi) var(--t-12)/1 var(--body); color: var(--cpc); margin-left: var(--s1); }
+.hrz { display: flex; height: var(--s2); background: var(--line); overflow: hidden; } .hrz i { display: block; height: 100%; }
+.hrz .h1 { background: var(--line-strong); } .hrz .h2 { background: var(--swim); } .hrz .h3 { background: var(--run); } .hrz .h4 { background: var(--warn); } .hrz .h5, .hrz .h6, .hrz .h7 { background: var(--bad); }
+.cpkey { display: inline-flex; flex-wrap: wrap; gap: var(--s1) var(--s3); } .cpkey i { display: inline-block; width: var(--s2); height: var(--s2); border-radius: 50%; background: var(--cpc); margin-right: var(--s1); }
+.cell .cpb { margin-left: var(--s1); } .cell.done .cpb { text-decoration: none; color: var(--cpc); }
 .lifts { font-size: var(--t-15); } .lifts td, .lifts th { padding: var(--s1); vertical-align: middle; }
 .lifts .grp { font: var(--w-semi) var(--t-15)/1 var(--display); color: var(--lift); } .lifts .tgt { color: var(--muted); font-size: var(--t-13); }
 .lifts .cw { width: calc(var(--tap) + var(--s6)); } .lifts .cr { width: calc(var(--tap) * 2 + var(--s6)); }
@@ -219,6 +273,39 @@ tr:last-child > td { border-bottom: 0; }
 .habit .meter b { display: block; height: 100%; background: var(--hc); } .habit .meter i { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--fg); }
 .cchange { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); align-items: center; justify-content: space-between; border-top: var(--hair) solid var(--line); padding-top: var(--s2); }
 .cchange > div { flex: 1 1 var(--col-md); min-width: 0; }
+/* "Doing something different?": ask the coach to replan a day */
+.ask { gap: var(--s2); }
+.ask-l { font: var(--w-semi) var(--t-17)/1.2 var(--display); color: var(--fg); }
+/* one row until you start typing, so today's call stays on the first screen */
+.ask-row { display: flex; gap: var(--s2); align-items: flex-end; }
+.ask-row textarea { flex: 1 1 auto; min-width: 0; min-height: var(--tap); height: var(--tap); padding-block: 10px; resize: none; }
+.ask-row textarea:focus, .ask-row textarea:not(:placeholder-shown) { height: calc(var(--tap) * 2); resize: vertical; }
+.ask-row .btn { flex: none; }
+.ask-row textarea:placeholder-shown + .btn:not(:disabled) { background: var(--card); border-color: var(--line-strong); color: var(--fg); } /* secondary until you type */
+.ask .you { color: var(--muted); font-style: italic; }
+/* card header: title (and a status line) on the left, the card's one action on the right */
+.cardhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s2) var(--s3); }
+.cardhead > div { display: flex; flex-direction: column; min-width: 0; }
+.card > div:empty { display: none; } /* empty status slots must not add gap space */
+.coachsum { border-left: var(--bar) solid var(--accent); padding-left: var(--s3); }
+.notes-l { color: var(--muted); } .notes-l b { font: var(--w-semi) var(--t-17)/1.2 var(--display); color: var(--fg); }
+/* weather: outdoor verdict on each bike/run session, official alerts above the sessions */
+.wx { display: flex; flex-direction: column; gap: var(--s1); padding: var(--s2) var(--s3); border-left: var(--bar) solid var(--wc); background: var(--ws); font-size: var(--t-13); }
+.wx.go { --wc: var(--good); --ws: var(--good-soft); } .wx.caution { --wc: var(--warn); --ws: var(--warn-soft); } .wx.indoor { --wc: var(--bad); --ws: var(--bad-soft); } .wx.none { --wc: var(--line-strong); --ws: var(--soft); }
+.wx-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s2); }
+.wx-h b { font: var(--w-semi) var(--t-15)/1.3 var(--display); color: var(--wc); }
+.wx-n { color: var(--fg); font-variant-numeric: tabular-nums; }
+.wx ul { margin: 0; padding-left: var(--s4); display: flex; flex-direction: column; gap: 2px; }
+.wx .btn { align-self: flex-start; margin-top: var(--s1); }
+.wxbar { display: flex; flex-direction: column; gap: var(--s2); }
+.wxalert { padding: var(--s2) var(--s3); border-left: var(--bar) solid var(--ac); background: var(--as); font-size: var(--t-13); }
+.wxalert b { display: block; font: var(--w-semi) var(--t-15)/1.3 var(--display); color: var(--ac); }
+.wxalert.sev { --ac: var(--bad); --as: var(--bad-soft); } .wxalert.mod { --ac: var(--warn); --as: var(--warn-soft); }
+.wxloc { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s3); font-size: var(--t-12); color: var(--muted); }
+.wxloc .st-meta { font-size: var(--t-12); }
+.wxp { display: inline-flex; margin-left: var(--s1); font-size: var(--t-12); font-weight: var(--w-semi); padding: 0 var(--s2); border-radius: var(--r-pill); color: var(--wc); background: var(--ws); white-space: nowrap; }
+.wxp.go { --wc: var(--good); --ws: var(--good-soft); } .wxp.caution { --wc: var(--warn); --ws: var(--warn-soft); } .wxp.indoor { --wc: var(--bad); --ws: var(--bad-soft); }
+.cell.done .wxp { display: none; }
 
 /* ---------- Week ---------- */
 .whero .v, .stat .v { font: var(--w-bold) var(--t-30)/1.1 var(--display); }
@@ -232,7 +319,8 @@ tr:last-child > td { border-bottom: 0; }
 .wtable a[data-open] { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: var(--w-semi); }
 .cell { display: flex; gap: var(--s2); align-items: center; min-height: var(--tap); padding: var(--s1) 0; cursor: pointer; }
 .cell input { width: var(--s5); height: var(--s5); margin: 0; accent-color: var(--good); flex: none; }
-.cell.done span { text-decoration: line-through; color: var(--muted); }
+.cell.done span { color: var(--muted); } /* done reads as muted, not struck through, so its grade stays legible */
+.cell-rest { display: flex; align-items: center; min-height: var(--tap); }
 .xtra { display: block; font-size: var(--t-12); color: var(--warn); }
 
 /* ---------- Progress ---------- */
@@ -288,8 +376,8 @@ tr:last-child > td { border-bottom: 0; }
 .cs-key i.ok { background: var(--good); } .cs-key i.mid { background: var(--warn); } .cs-key i.low { background: var(--bad); }
 .streak { color: var(--fg); font-weight: var(--w-semi); }
 /* collapsible sections: heading, headline number, Show or Hide */
-.sec > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s3); padding: var(--s3) 0; border-bottom: var(--hair) solid var(--line-strong); }
-.sec > summary h3 { font-size: var(--t-20); }
+.sec > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s3); padding: var(--s5) 0 var(--s3); border-bottom: 2px solid var(--line-strong); }
+.sec > summary h3 { font-size: var(--t-24); }
 .sec > summary .hb-num { flex: 1 1 auto; text-align: right; }
 .sec > summary::after { content: "Show"; font-size: var(--t-13); font-weight: var(--w-med); color: var(--accent); } .sec[open] > summary::after { content: "Hide"; }
 .sec-in { display: flex; flex-direction: column; gap: var(--s4); padding-top: var(--s4); }
@@ -300,13 +388,15 @@ tr:last-child > td { border-bottom: 0; }
 @media (max-width: 600px) {
   /* race facts and the storage line move to the foot of the page, so today's call starts the screen */
   header.top { display: contents; }
-  header.top > .eyebrow, header.top > .dist, header.top > .sync { order: 9; }
-  h1 { font-size: var(--t-20); }
+  header.top > .dist, header.top > .sync { order: 9; }
+  h1 { font-size: var(--t-20); line-height: 1.1; }
+  .mark { width: var(--s6); height: var(--s6); } .count { font-size: var(--t-24); }
+  .wide-only { display: none; }
   /* tabs become a bottom bar within thumb reach; the status pill keeps the sticky bar at the top */
   nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--bg); border-top: var(--hair) solid var(--line); overflow: visible;
     padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
   nav.tabs button { flex: 1 1 0; min-width: 0; min-height: calc(var(--tap) + var(--s1)); padding: 0 2px; border-bottom: 0; border-top: 2px solid transparent; }
-  nav.tabs button[aria-selected="true"] { border-top-color: var(--fg); }
+  nav.tabs .ti { top: -1px; bottom: auto; }
   .wrap { padding-bottom: calc(var(--s16) * 2); }
   .status[data-state="fail"] .st-meta, .status[data-state="off"] .st-meta { display: none; }
   .status[data-state="fail"] { flex-wrap: nowrap; } .status[data-state="fail"] .st-save { flex: 1 1 0; min-width: 0; line-height: 1.3; }
@@ -330,53 +420,93 @@ tr:last-child > td { border-bottom: 0; }
   .wtable td, .wtable td:first-child { min-width: 0; border-bottom: 0; padding: 0 var(--s3); white-space: normal; }
   .wtable td[data-l] { display: grid; grid-template-columns: var(--tap) minmax(0, 1fr); align-items: center; min-height: var(--tap); }
   .wtable td[data-l]::before { content: attr(data-l); font-size: var(--t-12); font-weight: var(--w-semi); color: var(--muted); }
+  /* week rows: the sport and first lines of the session; the full prescription is on Today */
+  .wdet { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  /* guide reference tables: one stacked block per row, each value under its column name */
+  #p-guide .scroll table, #p-guide .scroll tbody, #p-guide .scroll tr, #p-guide .scroll td { display: block; }
+  #p-guide .scroll tr:first-child:has(th) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  #p-guide .scroll tr { padding: var(--s2) 0; border-bottom: var(--hair) solid var(--line); }
+  #p-guide .scroll td { border: 0; padding: 2px var(--s3); }
+  #p-guide .scroll td[data-l]::before { content: attr(data-l); display: block; font-size: var(--t-12); font-weight: var(--w-semi); color: var(--muted); }
 }
 
-/* ---------- motion: skipped entirely when the device asks for reduced motion ---------- */
+/* ---------- motion ----------
+   Navigation flows: changing tab, day or week runs a view transition. The outgoing view steps back and fades,
+   the new one arrives from the direction you moved, and what persists (the tab line, the selected-day pill,
+   the date header) glides or stays put instead of jumping. Names exist only while a transition runs (html[data-vt]).
+   Everything else is restraint: press feedback, short colour transitions, content that appears fades up once,
+   one entrance moment on Progress (the 5:00 bars). No loops, no count-ups, no staggered lists.
+   All of it is off when the device asks for reduced motion (JS also skips the transitions). */
+:root { --ease-out: cubic-bezier(.2, .8, .2, 1); --ease-in: cubic-bezier(.4, 0, 1, 1); --t-fast: 120ms; --t-move: 220ms; --t-exit: 100ms; }
+html[data-vt="tab"] .panel:not([hidden]), html[data-vt="day"] .panel:not([hidden]), html[data-vt="week"] .panel:not([hidden]) { view-transition-name: panel; }
+html[data-vt] .appbar { view-transition-name: appbar; }
+html[data-vt] nav.tabs { view-transition-name: tabs; }
+html[data-vt] nav.tabs [aria-selected="true"] .ti { view-transition-name: tab-line; }
+html[data-vt="day"] .panel:not([hidden]) .daynav, html[data-vt="week"] .panel:not([hidden]) .daynav { view-transition-name: daynav; }
+html[data-vt="day"] .strip { view-transition-name: strip; }
+html[data-vt="day"] .strip button.sel { view-transition-name: day-pill; }
+html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="swap"] #sess-pm { view-transition-name: sess-pm; }
 @media (prefers-reduced-motion: no-preference) {
-  :root { --ease: cubic-bezier(.2, .8, .2, 1); }
-  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  @keyframes from-right { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
-  @keyframes from-left { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
-  @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-  @keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.3); } 100% { transform: scale(1); } }
-  @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-  @keyframes bar-rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-  @keyframes fill-up { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-  @keyframes stpulse { 50% { opacity: .35; } }
-  #sessions[data-dir="next"] > .card { animation: from-right .25s var(--ease) both; }
-  #sessions[data-dir="prev"] > .card { animation: from-left .25s var(--ease) both; }
-  /* the one load moment: the season profile's bars rise in, left to right */
-  .hb-profile.rise rect.bar { transform-box: fill-box; transform-origin: bottom; animation: bar-rise .6s var(--ease) both; animation-delay: calc(var(--n) * 18ms); }
-  .goal5.enter .g5-fill { animation: grow .9s var(--ease) both; animation-delay: calc(var(--n) * 110ms + .15s); }
-  .consist.enter .cs-weeks i b { animation: fill-up .5s var(--ease) both; animation-delay: calc(var(--n) * 22ms + .3s); }
-  .chart.draw polyline { stroke-dasharray: 1; animation: draw 1.1s var(--ease) both .1s; }
-  .hb-track .seg { transition: flex-basis .6s var(--ease); } .g5-fill { transition: width .6s var(--ease); }
-  .btn, .strip button, .donebtn, .pick button { transition: background-color .15s, border-color .15s, color .15s; }
-  .donebtn input:checked { animation: pop .35s var(--ease); }
-  .status[data-state="busy"] .st-save::before, .state.load b::before { animation: stpulse 1s ease-in-out infinite; }
+  @keyframes vt-in-next { from { opacity: 0; transform: translateX(12px); } }
+  @keyframes vt-in-prev { from { opacity: 0; transform: translateX(-12px); } }
+  @keyframes vt-out-next { to { opacity: 0; transform: translateX(-6px); } }
+  @keyframes vt-out-prev { to { opacity: 0; transform: translateX(6px); } }
+  @keyframes vt-fade-out { to { opacity: 0; } }
+  @keyframes vt-fade-in { from { opacity: 0; } }
+  ::view-transition-group(*) { animation-duration: var(--t-move); animation-timing-function: var(--ease-out); }
+  ::view-transition-old(root) { animation: vt-fade-out var(--t-exit) var(--ease-in) both; }
+  ::view-transition-new(root) { animation: vt-fade-in var(--t-move) var(--ease-out) both; }
+  /* the view arrives from the side you moved toward; the exit is smaller and quicker than the entrance */
+  html[data-dir="next"]::view-transition-old(panel) { animation: vt-out-next var(--t-exit) var(--ease-in) both; }
+  html[data-dir="next"]::view-transition-new(panel) { animation: vt-in-next var(--t-move) var(--ease-out) both; }
+  html[data-dir="prev"]::view-transition-old(panel) { animation: vt-out-prev var(--t-exit) var(--ease-in) both; }
+  html[data-dir="prev"]::view-transition-new(panel) { animation: vt-in-prev var(--t-move) var(--ease-out) both; }
+  /* persistent chrome does not cross-fade; the tab line and day pill glide (group animation only) */
+  ::view-transition-old(appbar), ::view-transition-old(tabs), ::view-transition-old(strip), ::view-transition-old(tab-line) { animation: none; opacity: 0; }
+  ::view-transition-new(appbar), ::view-transition-new(tabs), ::view-transition-new(strip), ::view-transition-new(tab-line) { animation: none; }
+  ::view-transition-old(day-pill), ::view-transition-new(day-pill) { animation-duration: var(--t-move); height: 100%; }
+  /* press feedback (Emil): tactile, fast, interruptible because it is a transition */
+  .btn, .pick button, .donebtn, .strip button, nav.tabs button { transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
+  .btn:active:not(:disabled), .pick button:active, .donebtn:active, .strip button:active { transform: scale(.97); }
+  /* small data bars change smoothly when a value changes (small, isolated surfaces) */
+  .hb-track .seg { transition: flex-basis 300ms var(--ease-out); } .g5-fill { transition: width 300ms var(--ease-out); }
+  /* Progress has one entrance moment: the 5:00 bars grow the first time you open it; the stripes follow */
+  @keyframes grow { from { transform: scaleX(.02); } }
+  @keyframes appear { from { opacity: 0; } }
+  .goal5.enter .g5-fill { animation: grow 450ms var(--ease-out) both 120ms; }
+  .goal5.enter .g5-over { animation: appear 200ms var(--ease-out) both 520ms; }
 }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }
 </style>
 
 <a class="skip" href="#main">Skip to the training plan</a>
+<svg class="vh" aria-hidden="true" focusable="false">
+  <symbol id="g-swim" viewBox="0 0 16 16"><circle cx="11.5" cy="3.5" r="1.6"/><path d="M3 7.5l3.5-2 2.5 2.5"/><path d="M1 11q1.75-1.6 3.5 0t3.5 0 3.5 0 3.5 0M1 14.5q1.75-1.6 3.5 0t3.5 0 3.5 0 3.5 0"/></symbol>
+  <symbol id="g-bike" viewBox="0 0 16 16"><circle cx="3.75" cy="11" r="2.9"/><circle cx="12.25" cy="11" r="2.9"/><path d="M3.75 11L6.5 5.5h4.75l1 5.5M6.5 5.5L9 11h3.25M5.5 3.5h2.25"/></symbol>
+  <symbol id="g-run" viewBox="0 0 16 16"><circle cx="10.5" cy="2.5" r="1.6"/><path d="M4 7l3.5-2 3 1.5 1.5 2.5 2.5.5M7.5 5L6 9.5l3 2-1 3.5M6 9.5l-2.5 3.5H1.5"/></symbol>
+  <symbol id="g-lift" viewBox="0 0 16 16"><path d="M1.5 8h13M3.5 5.5v5M5.5 4v8M10.5 4v8M12.5 5.5v5"/></symbol>
+  <symbol id="g-key" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="2.5"/></symbol>
+</svg>
 <main class="wrap" id="main" tabindex="-1">
   <header class="top">
-    <span class="eyebrow">34-week plan, October 19 to race morning</span>
     <div class="toprow">
-      <h1>IRONMAN 70.3 Lake George</h1>
-      <span class="count" id="count"></span>
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="m-sw" x="2" y="5" width="28" height="6" rx="3"/><rect class="m-bk" x="2" y="13" width="21" height="6" rx="3"/><rect class="m-rn" x="2" y="21" width="14" height="6" rx="3"/></svg>
+        <div><h1>IRONMAN 70.3 Lake George</h1><span class="phase" id="phase"></span></div>
+      </div>
+      <div class="countdown"><span class="count num" id="count"></span><span class="cl" id="countL">days to race day</span></div>
     </div>
-    <div class="dist"><span>1.2 mi swim</span><span>56 mi bike</span><span>13.1 mi run</span><span>Sunday, June 13, 2027</span><span id="phase"></span></div>
-    <span class="sync" id="sync"></span>
+    <div class="dist"><span>Sunday, June 13, 2027</span><span>1.2 mi swim</span><span>56 mi bike</span><span>13.1 mi run</span><span>34-week plan from October 19</span></div>
+    <span class="sync" id="sync" hidden></span>
   </header>
 
   <div class="appbar">
   <nav class="tabs" role="tablist" aria-label="Sections">
-    <button role="tab" id="tab-today" aria-selected="true" aria-controls="p-today" tabindex="0" data-tab="today">Today</button>
-    <button role="tab" id="tab-week" aria-selected="false" aria-controls="p-week" tabindex="-1" data-tab="week">Week</button>
-    <button role="tab" id="tab-season" aria-selected="false" aria-controls="p-season" tabindex="-1" data-tab="season">Progress</button>
-    <button role="tab" id="tab-history" aria-selected="false" aria-controls="p-history" tabindex="-1" data-tab="history">History</button>
-    <button role="tab" id="tab-guide" aria-selected="false" aria-controls="p-guide" tabindex="-1" data-tab="guide">Guide</button>
+    <button role="tab" id="tab-today" aria-selected="true" aria-controls="p-today" tabindex="0" data-tab="today">Today<span class="ti" aria-hidden="true"></span></button>
+    <button role="tab" id="tab-week" aria-selected="false" aria-controls="p-week" tabindex="-1" data-tab="week">Week<span class="ti" aria-hidden="true"></span></button>
+    <button role="tab" id="tab-season" aria-selected="false" aria-controls="p-season" tabindex="-1" data-tab="season">Progress<span class="ti" aria-hidden="true"></span></button>
+    <button role="tab" id="tab-history" aria-selected="false" aria-controls="p-history" tabindex="-1" data-tab="history">History<span class="ti" aria-hidden="true"></span></button>
+    <button role="tab" id="tab-guide" aria-selected="false" aria-controls="p-guide" tabindex="-1" data-tab="guide">Guide<span class="ti" aria-hidden="true"></span></button>
   </nav>
   <div class="status" id="status" data-state="busy">
     <span class="st-save" id="st-save" role="status" aria-live="polite">Loading your log…</span>
@@ -404,10 +534,22 @@ tr:last-child > td { border-bottom: 0; }
     </div>
     <div class="strip" id="strip"></div>
 
+    <!-- Doing something different? The coach replans the selected day; nothing changes until you tap Accept -->
+    <form class="card ask" id="askForm" hidden>
+      <label class="ask-l" for="askText">Doing something different?</label>
+      <div class="ask-row">
+        <textarea id="askText" name="ask" rows="1" maxlength="500" autocomplete="off" placeholder="e.g. Riding with friends instead…"></textarea>
+        <button class="btn primary" id="askGo" type="submit"><span>Suggest<span class="wide-only"> a workout</span></span></button>
+      </div>
+      <span class="small" id="askFor"></span>
+      <div id="askState" aria-live="polite"></div>
+      <div id="askBody" aria-live="polite"></div>
+    </form>
+
     <!-- Today's call: the verdict, the numbers behind it, and the check-in that feeds it -->
     <div class="call" id="ckcard">
       <div class="advice" id="advice" aria-live="polite"></div>
-      <label class="field ready" id="readyField">Training readiness, from your watch<input id="ck-ready" name="ck-ready" type="number" min="0" max="100" data-slot="ck" data-f="ready" inputmode="numeric" autocomplete="off"><span class="src" id="src-ready"></span></label>
+      <label class="field ready" id="readyField">Training readiness, from your watch<input id="ck-ready" name="ck-ready" type="number" min="0" max="100" data-slot="ck" data-f="ready" inputmode="numeric" autocomplete="off" placeholder="e.g. 62…"><span class="src" id="src-ready"></span></label>
       <details class="ckedit" id="ckEdit">
         <summary><div class="gchips" id="gchips" hidden></div><span class="small">Edit check-in</span></summary>
         <div class="ckbody">
@@ -426,27 +568,27 @@ tr:last-child > td { border-bottom: 0; }
       </details>
     </div>
 
+    <div class="wxbar" id="wxBar" hidden></div>
     <div class="grid2" id="sessions"></div>
 
     <div class="card" id="notesCard">
-      <label class="field" for="notes">Notes: how it felt, splits, what to change</label>
+      <label class="field notes-l" for="notes"><b>Notes</b>How it felt, splits, what to change</label>
       <textarea id="notes" name="notes" data-slot="notes"></textarea>
     </div>
 
     <div class="habits" id="habits" hidden aria-label="This week's fixes"></div>
     <div class="weeknote" id="weekNote" hidden></div>
     <div class="card" id="coachCard" hidden>
-      <div class="formrow"><h3>Coach</h3><button class="btn" id="coachAsk">Review again</button></div>
-      <p class="small">Claude reads your last 7 days (Garmin, check-ins, lift logs, notes) and suggests changes to the next few days. Nothing changes until you accept.</p>
-      <p class="small" id="coachStat"></p>
+      <div class="cardhead"><div><h3>Coach review</h3><span class="small" id="coachStat"></span></div><button class="btn" id="coachAsk">Review again</button></div>
       <div id="coachState"></div>
       <div id="coachBody"></div>
+      <p class="src">Claude reads your last 7 days (Garmin, check-ins, lift logs, notes) and suggests changes to the next few days. Nothing changes until you accept.</p>
     </div>
 
     <div class="card" id="actsCard" hidden>
       <h3>Everything you did</h3>
       <p class="small">Every activity from Garmin and Strava for this day. Anything not on the plan counts as extra and goes into your weekly hours and load.</p>
-      <div class="scroll" id="actsScroll"><table id="actsList"></table></div>
+      <div class="scroll" id="actsScroll" tabindex="0" role="region" aria-label="Activities this day"><table id="actsList"></table></div>
       <div id="actsEmpty"></div>
     </div>
   </section>
@@ -468,6 +610,7 @@ tr:last-child > td { border-bottom: 0; }
 
   <!-- SEASON -->
   <section class="panel" id="p-season" role="tabpanel" aria-labelledby="tab-season" hidden>
+    <h2 class="vh">Progress</h2>
     <div class="goal5" id="goal5" aria-label="Road to a 5-hour finish">
       <div class="g5-head">
         <div class="g5-target"><span class="g5-eye">The goal</span><span class="g5-big">5:00</span></div>
@@ -578,6 +721,7 @@ tr:last-child > td { border-bottom: 0; }
 
   <!-- GUIDE -->
   <section class="panel" id="p-guide" role="tabpanel" aria-labelledby="tab-guide" hidden>
+    <h2 class="vh">Guide</h2>
     <div class="grid3">
       <div class="card"><h3><span class="bk">Bike</span> · strength</h3><ul class="list">
         <li>Garmin FTP 266 W at 77.1 kg ≈ 3.45 W/kg; VO2max 57–58.</li>
@@ -673,7 +817,7 @@ tr:last-child > td { border-bottom: 0; }
         <li><strong>Appalachian Gap</strong> (VT-17): harder; save for late Build.</li>
         <li><strong>Lincoln Gap</strong>: very steep, closed in winter. Strength work, not race-pace practice.</li>
       </ul>
-      <p class="small">The Today tab suggests routes from your own past rides that match each long ride's length (hilly sessions favor your hilliest ones). For new routes, build them in <a href="https://ridewithgps.com/routes/new" target="_blank" rel="noopener">Ride with GPS</a> or the Strava route builder and send them to your Garmin.</p>
+      <p class="small">The Today tab suggests routes from your own past rides that match each long ride's length (hilly sessions favor your hilliest ones). For new routes, build them in <a class="tlink" href="https://ridewithgps.com/routes/new" target="_blank" rel="noopener">Ride with GPS</a> or the Strava route builder and send them to your Garmin.</p>
     </div>
 
     <div class="card">
@@ -685,7 +829,7 @@ tr:last-child > td { border-bottom: 0; }
         <li><strong>Transitions:</strong> rehearse T1 and T2 at home once a month.</li>
         <li><strong>Check-ins:</strong> ask Claude to review this dashboard's log at each recovery week. Your entries here are readable for that.</li>
       </ul>
-      <p class="small">Sources: Garmin Connect export (activities through Oct 11, 2026); race date from <a href="https://forum.slowtwitch.com/t/ironman-70-3-lake-george-ny-june-2027/1300325" target="_blank" rel="noopener">Slowtwitch: IRONMAN 70.3 Lake George, June 2027</a>.</p>
+      <p class="small">Sources: Garmin Connect export (activities through Oct 11, 2026); race date from <a class="tlink" href="https://forum.slowtwitch.com/t/ironman-70-3-lake-george-ny-june-2027/1300325" target="_blank" rel="noopener">Slowtwitch: IRONMAN 70.3 Lake George, June 2027</a>.</p>
     </div>
   </section>
 </main>
@@ -697,9 +841,9 @@ for (const e of document.querySelectorAll("body > title, body > meta, body > lin
 const START = new Date(2026, 9, 19), RACE = new Date(2027, 5, 13);
 const DEF = { ftp: 266, css: 150, gp: 525, rhr: 52, tests: [] };
 const LIFTS = {
-  fA: { name: "Lift A · pull + legs", m: 45, items: ["A: RDL ↔ Pull-ups", "B: Reverse lunge ↔ Cable row", "C: Quad extension ↔ Rear delt fly", "D: DB curl ↔ Hanging leg raise ↔ Wall angels"] },
-  fB: { name: "Lift B · push + legs", m: 45, items: ["A: Front squat ↔ Flat DB bench", "B: Bulgarian split squat ↔ DB shoulder press", "C: Hamstring curl ↔ Lateral raise", "D: Diamond push-ups ↔ Ab roller ↔ Dead bugs"] },
-  fC: { name: "Lift C · upper", m: 45, items: ["A: Incline DB bench ↔ Lat pulldown", "B: Cable fly ↔ Cable row", "C: Lateral raise ↔ Rear delt fly", "D: Biceps curl ↔ OH triceps extension", "E: Pallof press ↔ Bear hold"] },
+  fA: { name: "Lift A · pull + legs", m: 45, items: ["A: RDL ↔ Pull-ups", "B: Reverse lunge ↔ One-arm DB row", "C: Heel-elevated goblet squat ↔ DB rear delt fly", "D: DB curl ↔ Hanging leg raise ↔ Wall angels"] },
+  fB: { name: "Lift B · push + legs", m: 45, items: ["A: Front squat ↔ Flat DB bench", "B: Bulgarian split squat ↔ DB shoulder press", "C: Single-leg DB RDL ↔ DB lateral raise", "D: Diamond push-ups ↔ Ab roller ↔ Dead bugs"] },
+  fC: { name: "Lift C · upper", m: 45, items: ["A: Incline DB bench ↔ DB pullover", "B: DB fly ↔ Chest-supported DB row", "C: DB lateral raise ↔ DB rear delt fly", "D: DB curl ↔ DB overhead triceps extension", "E: Renegade row ↔ Bear hold"] },
   bu: { name: "Lift · maintenance", m: 30, items: ["Deadlift or squat 3×4 (heavy, crisp)", "Calf raise 3×10", "Pogo hops 2×20", "Core 2 rounds"] },
   pk: { name: "Lift · short", m: 20, items: ["Main lift 2×3", "Calf raise 2×10", "Core 1 round"] }
 };
@@ -857,6 +1001,183 @@ function weekPlan(r) {
     [B(be), R("30 min easy ≤144 bpm" + (ph === "Build" ? " (optional 2nd lift Wed AM)" : ""), 30)], [S(s2), ph === "Build" ? R("40 min easy ≤144 bpm") : OFF()],
     [BR(lr, br), null], [R(typeof lrun === "number" ? `Long run ${lrun} min easy ≤144 bpm` : "Long run " + lrun, typeof lrun === "number" ? lrun : 105), SUNSWIM_B.has(n) ? S("30 min: easy recovery swim, loosen the legs") : null]];
 }
+// ---------- coached workout library: structured swim, bike and run sessions from Nov 17, 2026 ----------
+// Each session keeps the plan's day, length and hard/easy role; what changes is what's inside it. Built on:
+//  · 80/20 intensity (Seiler; Fitzgerald on TrainingPeaks; IRONMAN's 70.3 guide): easy stays easy, ~20% hard.
+//  · Swim, Swim Smooth's three sessions: technique (each drill straight into freestyle), endurance "red mist"
+//    (200–500 m reps at CSS +4–6 s with one short rest), CSS development ("Goldilocks": 4×100 + a longer rep at CSS);
+//    plus race-start surges (Sheaff, Triathlete) and the paddles strength set breathing 3/5/7 (IRONMAN).
+//  · Bike: cadence skills and low-cadence strength at endurance watts in base; IRONMAN's 8×5 min hard in build;
+//    long rides that prove race power after low-cadence work (Freeman, Triathlete).
+//  · Run: strides and short hill sprints in base, tempo + hills and 70.3-pace repeats off the bike (Lance Watson).
+// Swim reps are sized for the slot at a 2:30/100 m CSS; as CSS improves the same set simply takes less time.
+const hmT = m => m >= 60 ? `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}` : m + " min"; // durTxt is defined later
+const UPGRADE_FROM = "2026-11-17", BASE_CSS = 150;
+const SWP = { EZ: [20, .62, "Easy, long strokes"], DR: [25, .58, null], AE: [10, .7, "Relaxed; count strokes per length"], PD: [6, .76, "Pull buoy + paddles"],
+  ST: [5, .8, null], RP: [4, .85, null], CSS: [0, .9, null], FST: [-5, 1, "Fast but smooth"], SP: [-8, 1.05, "Sprint"] };
+const swT = (m, k, rest = 0) => m / 100 * (BASE_CSS + SWP[k][0]) / 60 + rest / 60; // planning minutes at the baseline CSS
+const SWS = (m, k, lbl, tgt) => { const [off, z, t] = SWP[k], p = settings.css + off;
+  return { min: m / 100 * p / 60, lbl, sp: "swim", z, tgt: (tgt ? tgt + " · " : "") + (t && !tgt ? t : `${pace(p)}/100 m`), dist: m.toLocaleString() + " m", m }; };
+const REST = s => ({ min: s / 60, lbl: "Rest", sp: "swim", z: 0, tgt: `${s} s`, dist: "" });
+const fill = (M, used) => Math.max(0, Math.floor((M + 1 - used) / swT(100, "AE", 15))); // relaxed 100s to fill the slot
+const fillBlk = k => k ? [blk("Aerobic", k, [SWS(100, "AE", "Relaxed 100"), REST(15)])] : [];
+const fitN = (lo, hi, total, M) => { let n = lo; for (let k = lo; k <= hi; k++) if (total(k) <= M + 1.5) n = k; return n; };
+const SW_FOCUS = [["Alignment", "Kick on side with fins", "long body, eyes down, hips high"],
+  ["Rotation and breathing", "6-1-6 with fins (6 kicks, 1 stroke, rotate)", "rotate from the hips; breathe every 3, exhale fully underwater"],
+  ["Catch", "Scull, then doggy paddle, pull buoy (12.5 m each)", "fingertips below wrist below elbow; press the water back, not down"],
+  ["Rhythm and timing", "Catch-up (front hand waits)", "one continuous rhythm, no pause at the front"]];
+function swTech(M, wk) {
+  const [focus, drill, cue] = SW_FOCUS[wk % 4], fixed = swT(200, "EZ") + swT(100, "EZ");
+  const n = Math.max(4, Math.min(8, Math.round((M - fixed) * .45 / (swT(25, "DR", 0) + swT(25, "EZ", 15))))), pairs = n * (swT(25, "DR") + swT(25, "EZ", 15));
+  const k = Math.max(2, Math.min(10, Math.floor((M - fixed - pairs) / swT(100, "AE", 15))));
+  return { kind: "tech", t: `${M} min technique, ${focus.toLowerCase()}: 200 easy · ${n}×(25 ${drill.split(" (")[0].toLowerCase()} + 25 swim) · ${k}×100 relaxed · 100 easy`,
+    why: `Technique: ${focus.toLowerCase()}. Go straight from each drill into freestyle and keep the feeling: ${cue}. Easy effort; the drill is the work.`,
+    build: () => [blk("Warm-up", 1, [SWS(200, "EZ", "Easy, mixed breathing")]), blk("Drill into swim", n, [SWS(25, "DR", drill, cue), SWS(25, "EZ", "Swim, same feeling"), REST(15)]),
+      blk("Aerobic", k, [SWS(100, "AE", "Relaxed 100"), REST(15)]), blk("Cool-down", 1, [SWS(100, "EZ", "Easy")])] };
+}
+function swEndurance(M, wk, ph) {
+  const strength = ph === "Build" || ph === "Peak", rep = ph === "Foundation" ? 200 : ph === "Base" ? (wk < 13 ? 300 : 400) : 400, fixed = swT(200, "EZ") + 4 * swT(50, "AE", 10) + swT(100, "EZ");
+  let pd = 0, n = 1;
+  for (const p of strength ? [3, 2, 0] : [0]) { const k = fitN(1, 10, k => fixed + p * swT(400, "PD", 20) + k * swT(rep, "ST", 20), M); if (fixed + p * swT(400, "PD", 20) + k * swT(rep, "ST", 20) <= M + 1.5) { pd = p; n = k; break; } }
+  const fl = fill(M, fixed + pd * swT(400, "PD", 20) + n * swT(rep, "ST", 20));
+  return { kind: "end", t: `${M} min endurance: 200 easy · 4×50 build · ${pd ? `${pd}×400 pull + paddles, breathe 3/5/7 · ` : ""}${n}×${rep} steady at CSS +5 s, 20 s rest${fl ? ` · ${fl}×100 relaxed` : ""} · 100 easy`,
+    why: `Endurance at CSS +4–6 s per 100 (Swim Smooth's "red mist"): steady, never easy, with short rests so the fitness builds. Same stroke count every length.${pd ? " The paddles set builds pulling strength for the wetsuit swim." : ""}`,
+    build: () => [blk("Warm-up", 1, [SWS(200, "EZ", "Easy")]), blk("Build", 4, [SWS(50, "AE", "Build each 50"), REST(10)]),
+      ...(pd ? [blk("Strength", pd, [SWS(400, "PD", "Pull + paddles", "breathe every 3, then 5, then 7 strokes by 100"), REST(20)])] : []),
+      blk("Main set", n, [SWS(rep, "ST", `${rep} steady`, "CSS +5 s"), REST(20)]), ...fillBlk(fl), blk("Cool-down", 1, [SWS(100, "EZ", "Easy")])] };
+}
+function swCSS(M, wk, ph) {
+  const fixed = swT(300, "EZ") + 4 * swT(50, "FST", 15) + swT(100, "EZ");
+  let main, txt;
+  if (ph === "Foundation") { const n = fitN(4, 12, k => fixed + k * swT(100, "CSS", 15), M); main = () => [blk("CSS", n, [SWS(100, "CSS", "100 at CSS"), REST(15)])]; txt = `${n}×100 @ {CSS}, 15 s rest`; }
+  else if (ph === "Base") { // Goldilocks: rounds of 4×100 + a longer rep, 200 → 300 → 400
+    let best = [0, 4, 1]; // [minutes, 100s per round, rounds]
+    for (const h of [4, 3]) for (let r = 1; r <= 3; r++) { const t = fixed + [200, 300, 400].slice(0, r).reduce((a, L) => a + h * swT(100, "CSS", 15) + swT(L, "CSS", 30), 0); if (t <= M + 1.5 && t > best[0]) best = [t, h, r]; }
+    const [used, h, r] = best[0] ? best : [fixed + 3 * swT(100, "CSS", 15) + swT(200, "CSS", 30), 3, 1], Ls = [200, 300, 400].slice(0, r), fl = fill(M, used);
+    main = () => [...Ls.map(L => blk(`Goldilocks ${L}`, 1, [...Array.from({ length: h }, () => [SWS(100, "CSS", "100 at CSS"), REST(15)]).flat(), SWS(L, "CSS", `${L} at CSS`), REST(30)])), ...fillBlk(fl)];
+    txt = `Goldilocks: ${Ls.map(L => `${h}×100 + ${L}`).join(", ")} @ {CSS}, 15 s rest${fl ? ` · ${fl}×100 relaxed` : ""}`; }
+  else { const n = fitN(3, 8, k => fixed + k * swT(200, "CSS", 20) + 4 * swT(25, "SP", 20), M);
+    main = () => [blk("CSS", n, [SWS(200, "CSS", "200 at CSS"), REST(20)]), blk("Speed", 4, [SWS(25, "SP", "25 fast"), REST(20)])]; txt = `${n}×200 @ {CSS}, 20 s rest · 4×25 fast`; }
+  return { kind: "css", t: `${M} min CSS: 300 easy · 4×50 (25 easy, 25 fast) · ${txt} · 100 easy`,
+    why: "Threshold swimming at your CSS pace: even splits, the last rep as fast as the first. This is the set that lowers CSS (and every swim target with it).",
+    build: () => [blk("Warm-up", 1, [SWS(300, "EZ", "Easy")]), blk("Wake-up", 4, [SWS(50, "FST", "25 easy, 25 fast"), REST(15)]), ...main(), blk("Cool-down", 1, [SWS(100, "EZ", "Easy")])] };
+}
+function swRace(M) {
+  const fixed = swT(300, "EZ") + swT(100, "EZ"), n = fitN(3, 10, k => fixed + k * (swT(50, "FST", 10) + swT(150, "RP", 20)), M);
+  return { kind: "race", t: `${M} min race pace: 300 easy · ${n}×(50 fast start + 150 at race pace, sight every 6 strokes) · 100 easy`,
+    why: "Race-start practice: surge for 50 to get clear water, then settle straight into race pace and lift your eyes to sight. Recover while still swimming, as on race day.",
+    build: () => [blk("Warm-up", 1, [SWS(300, "EZ", "Easy")]), blk("Surge and settle", n, [SWS(50, "FST", "Fast start"), REST(10), SWS(150, "RP", "Race pace", "sight every 6 strokes"), REST(20)]), blk("Cool-down", 1, [SWS(100, "EZ", "Easy")])] };
+}
+// Bike: the plan's quality set is kept (same zone, reps, minutes); the session around it is new.
+const B_E = (m, lbl, note) => BS(m, lbl, .56, .75, note), B_W = m => BS(m, "Warm-up", .5, .65), B_C = m => BS(m, "Cool-down", .45, .55);
+const spinUps = () => blk("Spin-ups", 3, [BS(1, "High cadence", .6, .7, "100+ rpm, quiet hips"), BS(1, "Easy", .5, .6)]);
+function bkQuality(o, wk, ph) {
+  const rep = o.t.match(/(\d+)×(\d+) min/), tok = (o.t.match(/\{(SSH|SS|TEMPO|RP10|RP)\}/) || [])[1];
+  if (!rep || !tok) return null;
+  const n = +rep[1], len = +rep[2], restM = +((o.t.match(/(\d+) min easy between/) || [])[1] || Math.min(5, Math.max(3, Math.round(len / 3)))), M = o.m;
+  const thr = ph === "Build" && (wk === 22 || wk === 26), low = ph === "Base" && wk % 2 === 0;
+  if (thr) { // IRONMAN race-specific block: 8×5 min hard, 2 min easy
+    const cd = Math.max(5, M - 8 - 6 - 56);
+    return { t: `${M} min: threshold 8×5 min @ {TH}, 2 min easy between`, why: "Threshold intervals (IRONMAN's race-specific block): raise FTP so race power feels easier. Hold the watts; don't creep above them.",
+      build: () => [blk("Warm-up", 1, [B_W(8)]), spinUps(), blk("Threshold", 8, [BS(5, "Threshold", .95, 1), BS(2, "Easy", .45, .55)]), blk("Cool-down", 1, [B_C(cd)])] };
+  }
+  const main = n * (len + restM), cd = Math.max(5, M - 8 - 6 - main), name = { SSH: "Sweet spot (low)", SS: "Sweet spot", TEMPO: "Tempo", RP: "Race power", RP10: "Race power +10 W" }[tok];
+  return { t: `${M} min: ${n}×${len} min ${low ? "low-cadence " : ""}${name.toLowerCase()} {${tok}}${low ? " at 60–70 rpm" : ""}, ${restM} min easy between`,
+    why: low ? "Strength-endurance: the same watts in a big gear, seated, 60–70 rpm. Builds force for climbs without extra intensity; keep the upper body quiet."
+      : tok === "RP" || tok === "RP10" ? "Race power in race position: aero, fueling as on race day. These watts should feel controlled; you'll hold them for 2:40." : "Builds FTP and the ability to hold race power. Hit the watts, never above them; smooth pedaling, no surges.",
+    build: () => { const [a, b2] = bzone(tok); return [blk("Warm-up", 1, [B_W(8)]), spinUps(), blk("Main set", n, [BS(len, name + (low ? " · low cadence" : ""), a, b2, low ? "60–70 rpm, seated" : ""), BS(restM, "Easy", .45, .55)]), blk("Cool-down", 1, [B_C(cd)])]; } };
+}
+const keepAlt = t => (t.match(/(, or (?:squash|off.*)|;? if home;.*)$/) || [""])[0].replace(/^;/, ";");
+function bkEasy(o, wk, ph) {
+  const M = o.m, aero = o.t.match(/(\d+)×(\d+) min in aero|(\d+) min in aero|in aero/), single = ph !== "Build" && ph !== "Peak" && M >= 60;
+  const aeroMin = aero ? (aero[1] ? +aero[1] * +aero[2] : aero[3] ? +aero[3] : Math.round(M * .5)) : 0;
+  const rest = M - 10 - 8 - (single ? 6 : 0) - aeroMin - 5;
+  if (rest < 5) return null;
+  return { t: `${M} min endurance {Z2}: 10 min easy · 4×1 min high cadence${single ? " · single-leg drill 3×(30 s each leg)" : ""}${aeroMin ? ` · ${aeroMin} min in aero` : ""} · steady Z2${keepAlt(o.t)}`,
+    why: `Easy endurance with pedaling skills: smooth circles at high cadence${single ? ", single-leg drills on the trainer (unclip the other foot)" : ""}. Stay under the Z2 ceiling the whole ride.`,
+    build: () => [blk("Warm-up", 1, [B_W(10)]), blk("High cadence", 4, [BS(1, "High cadence", .56, .7, "100–110 rpm"), BS(1, "Endurance", .56, .7)]),
+      ...(single ? [blk("Single-leg", 3, [BS(.5, "Left leg only", .45, .55, "trainer"), BS(.5, "Right leg only", .45, .55, "trainer"), BS(1, "Both legs", .5, .6)])] : []),
+      ...(aeroMin ? [blk("Aero", 1, [B_E(aeroMin, "Endurance in aero", "relaxed shoulders")])] : []), blk("Endurance", 1, [B_E(rest, "Steady Z2")]), blk("Cool-down", 1, [B_C(5)])] };
+}
+function bkLong(t, M, wk, ph) {
+  const rpBlocks = t.match(/(\d+)×(\d+) min (?:at|@) race power/), lastHour = /last hour at race power/.test(t), rp60 = t.match(/with (\d+) min at race power/), mix = /mix of Z2 and race power|race-power blocks/.test(t);
+  let rp = rpBlocks ? +rpBlocks[1] * +rpBlocks[2] : lastHour ? 60 : rp60 ? +rp60[1] : mix ? 60 : 0;
+  const hilly = /hill/.test(t), z2t = (t.match(/last (\d+) min at \{Z2T\}/) || [])[1];
+  if (/never over \{FTP\}|course-like/.test(t)) return null; // hilly course rides keep their own instructions
+  if (rp && rp < 30 && rpBlocks) { // short race-power blocks (taper): the plan's reps inside steady Z2
+    const n = +rpBlocks[1], L = +rpBlocks[2], pre = Math.max(15, M - 20 - n * (L + 5) - 10);
+    return { t: `${hmT(M)}: 20 min warm-up · ${hmT(pre)} Z2 {Z2} · ${n}×${L} min @ race power {RP}, 5 min easy between · fuel every 20 min`, why: "Sharpening: a short taste of race power to keep the legs snappy. Easy everywhere else.",
+      build: () => [blk("Warm-up", 1, [B_W(20)]), blk("Endurance", 1, [B_E(pre, "Steady Z2")]), blk("Race power", n, [BS(L, "Race power", .76, .81, "aero"), BS(5, "Easy", .5, .6)]), blk("Cool-down", 1, [B_C(10)])] };
+  }
+  if (rp) { // prove race power after low-cadence work (Freeman): k × (15 low cadence + 30 race power)
+    const k = Math.max(1, Math.round(rp / 30)), L = Math.round(rp / k), work = k * (15 + L), pre = Math.max(20, M - 20 - work - 10);
+    return { t: `${hmT(M)} race-specific: 20 min warm-up · ${hmT(pre)} Z2 {Z2} · ${k}×(15 min low cadence + ${L} min at race power {RP}) · fuel every 20 min${keepAlt(t)}`,
+      why: `Proves race power on tired legs: low-cadence endurance blocks, then race power at your natural cadence in aero. The last block should feel demanding but repeatable. Fuel exactly as on race day.${hilly ? " Hold the same watts uphill; no surges." : ""}`,
+      build: () => [blk("Warm-up", 1, [B_W(20)]), blk("Endurance", 1, [B_E(pre, "Steady Z2", "fuel every 20 min")]),
+        blk("Race block", k, [BS(15, "Low cadence", .63, .7, "65–75 rpm"), BS(L, "Race power", .76, .81, "aero, natural cadence")]), blk("Cool-down", 1, [B_C(10)])] };
+  }
+  const skills = M >= 120 && (ph === "Base" || ph === "Build"), steps = ph === "Base" && wk >= 17 && M >= 165;
+  const skillMin = skills ? 40 : 0, stepMin = steps ? 40 : z2t ? +z2t : 0, main = Math.max(20, M - 20 - skillMin - stepMin - 10);
+  return { t: `${hmT(M)} endurance: 20 min warm-up · ${hmT(main)} Z2 {Z2}${skills ? " · 2×(10 min low cadence + 10 min high cadence)" : ""}${steps ? " · finish 20 min at {Z2T}, 20 min at {RP}" : stepMin ? ` · last ${stepMin} min at {Z2T}` : ""} · fuel every 20 min${keepAlt(t)}`,
+    why: `The long ride builds the engine for 56 miles. Ride it smooth: normalized power within 5% of average, fuel every 20 minutes from the start.${skills ? " Cadence blocks: big gear seated, then light and quick." : ""}${steps ? " The last 40 minutes step up so you practice holding race effort on tired legs." : ""}`,
+    build: () => [blk("Warm-up", 1, [B_W(20)]), blk("Endurance", 1, [B_E(main, "Steady Z2", "fuel every 20 min")]),
+      ...(skills ? [blk("Cadence", 2, [BS(10, "Low cadence", .63, .72, "65–75 rpm, seated"), BS(10, "High cadence", .56, .68, "95+ rpm")])] : []),
+      ...(steps ? [blk("Step up", 1, [BS(20, "Upper endurance", .72, .77), BS(20, "Race power", .76, .81, "aero")])] : stepMin ? [blk("Step up", 1, [BS(stepMin, "Upper endurance", .72, .77)])] : []),
+      blk("Cool-down", 1, [B_C(10)])] };
+}
+// Run: easy stays easy (≤144 bpm); quality gets a real warm-up and form drills; bricks practice the first minutes off the bike.
+const R_DRILLS = () => blk("Form drills", 1, [{ ...RS(5, "A-skip, B-skip, high knees, butt kicks", "jog"), tgt: "2×20 m each, walk back" }]);
+function rnEasy(o, wk, ph) {
+  if (/run-walk/.test(o.t) || /time trial|or off if tired/.test(o.t)) return null; // Foundation run-walk and test runs stay as written
+  const M = o.m, strides = /strides/.test(o.t), hillW = ph === "Base" && wk >= 13 && wk % 2 === 1, long = /^Long run/.test(o.t) && !/goal pace/.test(o.t);
+  if (/goal pace|tempo|\{/.test(o.t)) return null;
+  const tail = strides ? (hillW ? 8 : 6) : 0, body = M - 10 - tail - (long ? 0 : 0);
+  return { t: `${long ? "Long run " : ""}${M} min easy ≤144 bpm: first 10 min slower than easy${strides ? hillW ? " + 6×10 s hill sprints" : " + 6×20 s strides" : ""}${long && M >= 75 ? " · gel every 30 min" : ""}${(o.t.match(/ \(optional[^)]*\)/) || [""])[0]}`,
+    why: long ? `Durability: the long run is what holds your pace in the last 5K of the race. Under 144 bpm the whole way; walk 1 minute any time it drifts over.${M >= 75 ? " Practice fueling: a gel at 30 min and every 30 after." : ""}`
+      : `Easy aerobic run under 144 bpm.${strides ? hillW ? " Hill sprints: 10 s up a steep hill at near-max effort, walk down fully. Builds power with almost no fatigue." : " Strides: 20 s fast and relaxed, walk back. Keeps your stride quick without adding fatigue." : ""}`,
+    build: () => [blk("Easy start", 1, [{ ...RS(10, "Slower than easy", "easy"), tgt: "≤135 bpm" }]), blk(long ? "Long run" : "Easy", 1, [RS(body, "Easy", "easy")]),
+      ...(strides ? [hillW ? blk("Hill sprints", 6, [{ ...RS(1 / 6, "Hill sprint", "stride"), tgt: "Near max, steep hill" }, RS(1, "Walk down", "walk")]) : blk("Strides", 6, [RS(1 / 3, "Stride", "stride"), RS(2 / 3, "Walk back", "walk")])] : [])] };
+}
+function rnQuality(o, wk, ph) {
+  const M = o.m;
+  if (wk === 23 && /tempo/.test(o.t)) { // tempo + hills (Lance Watson)
+    const cd = M - 12 - 5 - 15 - 3 - 16;
+    return { t: `${M} min tempo + hills: 12 min easy · drills · 15 min tempo (~165 bpm) · 4×2 min uphill at the same heart rate, jog down · ${cd} min easy`,
+      why: "Tempo + hills: threshold fitness and leg strength in one session. Uphill reps at your tempo heart rate, not faster pace.",
+      build: () => [blk("Warm-up", 1, [RS(12, "Easy", "easy")]), R_DRILLS(), blk("Tempo", 1, [RS(15, "Tempo", "tempo")]), blk("Jog", 1, [RS(3, "Easy jog", "jog")]),
+        blk("Hills", 4, [{ ...RS(2, "Uphill", "tempo"), tgt: "~165 bpm, 4–6% grade" }, RS(2, "Jog down", "jog")]), blk("Cool-down", 1, [RS(cd, "Easy", "easy")])] };
+  }
+  if (!/goal pace|tempo|half-marathon/.test(o.t) || /last \d+ min at/.test(o.t)) return null;
+  const phrase = o.t.replace(/^\d+ min(?::| with) /, "");
+  return { t: `${M} min: 12 min easy, drills, 3 strides · ${phrase} · easy to finish`, why: /goal pace/.test(o.t) ? "Goal-pace work: learn exactly what 70.3 pace feels like. Run the reps at goal pace, never faster." : "Threshold run: controlled and even. Finish feeling you had one more rep.",
+    build: () => { const st = runStruct(o.t, M), wu = st[0]; return [blk("Warm-up", 1, [RS(Math.max(5, (wu.steps[0].min || 15) - 8), "Easy", "easy")]), R_DRILLS(), blk("Strides", 3, [RS(1 / 3, "Stride", "stride"), RS(2 / 3, "Walk back", "walk")]), ...st.slice(1)]; } };
+}
+function brickRun(run, M) {
+  const gp = /goal pace/.test(run), mi0 = 525 / 60; // plan-time sizing at the baseline 8:45/mi; the build uses your current goal pace
+  if (!gp) return { t: `${M} min off the bike: first 5 min short quick steps, then easy ≤144 bpm`,
+    build: () => [blk("Off the bike", 1, [{ ...RS(5, "Short, quick steps", "easy"), tgt: "cadence 170+, ≤144 bpm" }, RS(M - 5, "Easy", "easy")])] };
+  const n = Math.max(2, Math.round((M - 5) / (mi0 + .5))); // 1 mi at goal pace + 30 s walk (Lance Watson's 70.3-pace brick run, ≈ 9.25 min at 8:45/mi)
+  return { t: `${M} min off the bike: 5 min settle · ${n}×1 mi at goal pace {GP}, 30 s walk`,
+    build: () => { const mi = settings.gp / 60, rest = Math.max(0, M - 5 - n * (mi + .5)); return [blk("Settle", 1, [{ ...RS(5, "Settle in", "easy"), tgt: "short quick steps" }]), blk("70.3 pace", n, [{ ...RS(mi, "1 mi at goal pace", "gp"), dist: "1 mi" }, RS(.5, "Walk", "walk")]), ...(rest >= 1 ? [blk("Easy", 1, [RS(rest, "Easy", "easy")])] : [])]; } };
+}
+// Turn one planned session into its structured version (or leave it as written when it's a test, open water, race or run-walk).
+function upgrade(s, wk, ph) {
+  if (!s || !["swim", "bike", "run", "brick"].includes(s.s) || /^Test:|FTP test|time trial|open water|Lake George|recovery swim|final bike check|race setup|1,900 m|Note what/i.test(s.t)) return s;
+  const hard = isHard(s.t); let w = null;
+  if (s.s === "swim") w = /\{CSS/.test(s.t) ? swCSS(s.m, wk, ph) : hard ? swRace(s.m) : /\d+×\d{3}|continuous|steady|\d,\d{3}|\d{4} m/.test(s.t) && !/easy recovery/.test(s.t) ? swEndurance(s.m, wk, ph) : swTech(s.m, wk);
+  else if (s.s === "bike") w = /^Long ride|^\d:\d\d/.test(s.t) ? bkLong(s.t.replace(/^Long ride /, ""), s.m, wk, ph) : hard ? bkQuality(s, wk, ph) : bkEasy(s, wk, ph);
+  else if (s.s === "run") w = hard ? rnQuality(s, wk, ph) : rnEasy(s, wk, ph);
+  else { // brick: long ride + run off the bike
+    const rm = durOf(s.ride, "bike"), ride = bkLong(s.ride, rm, wk, ph), run = brickRun(s.run, s.m - rm);
+    if (!ride) return s;
+    const out = mk("brick", "Long ride " + ride.t + " → brick run " + run.t, s.m, { ride: ride.t, run: run.t, why: ride.why + " Then straight out the door: the first 5 minutes feel bad; that's normal.",
+      build: () => { const r = run.build(); r[0] = Object.assign({}, r[0], { t2: true }); return ride.build().concat(r); } });
+    return isHard(out.t) === hard ? out : s;
+  }
+  if (!w) return s;
+  const out = mk(s.s, w.t, s.m, { build: w.build, why: w.why, coach: s.coach });
+  return isHard(out.t) === hard ? out : s; // never turn an easy day hard (or the reverse)
+}
 const DAYNAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const pad = v => String(v).padStart(2, "0");
 const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -888,6 +1209,7 @@ for (const r of D) {
     const day = { key: keyOf(d), date: d, i, wk: r[0], ph: r[1], am: pair[0], pm: pair[1] };
     // Lifts go in the morning from Nov 4, 2026 on (earlier days keep their logged AM/PM slots).
     if (day.key >= LIFT_AM_FROM && day.pm && day.pm.s === "lift") [day.am, day.pm] = [day.pm, day.am];
+    if (day.key >= UPGRADE_FROM) { day.am = upgrade(day.am, r[0], r[1]); day.pm = upgrade(day.pm, r[0], r[1]); } // coached structured sessions
     DAYS.push(day); WEEKS[r[0]].days.push(day);
   });
 }
@@ -921,7 +1243,7 @@ const pace = s => `${Math.floor(s / 60)}:${pad(Math.round(s % 60))}`;
 function toks(st = settings) {
   const f = st.ftp, w = (a, b) => `${Math.round(a * f)}–${Math.round(b * f)} W`;
   return {
-    Z2: w(.56, .75), Z2T: w(.72, .77), TEMPO: w(.77, .86), SS: w(.88, .94), SSH: w(.85, .90), RP: w(.76, .81),
+    Z2: w(.56, .75), TH: w(.95, 1), Z2T: w(.72, .77), TEMPO: w(.77, .86), SS: w(.88, .94), SSH: w(.85, .90), RP: w(.76, .81),
     RP10: `${Math.round(.76 * f) + 10}–${Math.round(.81 * f) + 10} W`, FTP: `${f} W`,
     CSS: pace(st.css) + "/100 m", CSS2: pace(st.css + 2) + "/100 m", CSS3: pace(st.css + 3) + "/100 m", CSS5: pace(st.css + 5) + "/100 m",
     GP: pace(st.gp) + "/mi"
@@ -943,7 +1265,7 @@ const inflight = new Set();                 // ids being sent right now (memory 
 const lastConfirm = {};                     // "day|2026-11-11" or "settings" -> time the server confirmed it
 let online = true, signedOut = false, stateLoaded = false, storageErr = "", sendErr = "", lateAt = 0, savedAt = 0;
 let pumping = false, pumpAgain = false, pumpTimer = 0, retryN = 0, retryAt = 0;
-function setSync(t) { document.getElementById("sync").textContent = t; } // storage-mode line under the title
+function setSync(t) { const e = document.getElementById("sync"); e.textContent = t; e.hidden = /^Synced to/.test(t); } // storage line: shown only when something is wrong
 function obxRead() {
   try { const j = JSON.parse(localStorage.getItem(OBX) || "null"); if (j && Array.isArray(j.items)) outbox = j; }
   catch (e) { storageErr = "This device can't keep unsaved logs: storage is blocked."; }
@@ -1059,7 +1381,7 @@ const ready = (async () => {
     setSync(s === "ok" ? "Synced to your Cloudflare site" : s === "locked" ? "Signed out" : s === "down" ? "Couldn't load your log. Retrying." : "Offline. Your log loads when you reconnect.");
     if (s !== "ok") overlayOutbox(); // offline or signed out: still show what's waiting to be sent
     render();
-    if (s === "ok") { loadGarmin(); pump(); }
+    if (s === "ok") { loadGarmin(); loadWeather(); pump(); }
     return;
   }
   try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
@@ -1091,7 +1413,7 @@ async function resume() {
   if (mode === "worker" && (Date.now() - lastResume > 30e3 || dayChanged || !stateLoaded)) {
     lastResume = Date.now();
     const s = await loadState();
-    if (s === "ok") { retryN = 0; retryAt = 0; if (sendErr.startsWith("Couldn't load")) sendErr = ""; setSync("Synced to your Cloudflare site"); if (!GA || Date.now() - (gFetchedAt || 0) > 15 * 60e3) loadGarmin(); }
+    if (s === "ok") { retryN = 0; retryAt = 0; if (sendErr.startsWith("Couldn't load")) sendErr = ""; setSync("Synced to your Cloudflare site"); loadWeather(); if (!GA || Date.now() - (gFetchedAt || 0) > 15 * 60e3) loadGarmin(); }
     if (s === "locked") setSync("Signed out");
     if (s === "down") { sendErr = "Couldn't load your log: the server returned an error."; retryLater(); }
     if (s === "offline") retryLater();
@@ -1239,7 +1561,7 @@ async function loadGarmin(force) {
     for (const a of j.activities || []) {
       const x = { id: a.id, date: a.start_date_local.slice(0, 10), time: a.start_date_local.slice(11, 16), type: a.type || "", name: a.name || a.type || "Activity",
         mins: Math.round((a.moving_time || a.elapsed_time || 0) / 60), hr: a.average_heartrate, w: a.icu_average_watts, np: a.icu_weighted_avg_watts,
-        load: a.icu_training_load, km: (a.distance || 0) / 1000, elev: a.total_elevation_gain, sport: sportOf(a.type || "") };
+        load: a.icu_training_load, km: (a.distance || 0) / 1000, elev: a.total_elevation_gain, sport: sportOf(a.type || ""), dec: a.decoupling, hrz: a.icu_hr_zone_times };
       (GA.acts[x.date] = GA.acts[x.date] || []).push(x);
     }
     computeAuto();
@@ -1249,30 +1571,278 @@ async function loadGarmin(force) {
   } catch (e) { gState = GA ? "ok" : "offline"; gNote = "Garmin offline"; g.textContent = "Garmin sync failed. Check your connection and try again."; render(); }
   finally { if (!coachStarted) { coachStarted = true; loadCoach(); } }
 }
-const PCT = { Z2T: "72-77%", TEMPO: "77-86%", SS: "88-94%", SSH: "85-90%", RP: "76-81%", RP10: "80-85%" };
-function bikeDoc(t, m) {
-  if (/FTP test/.test(t)) return "Warmup\n- 15m 55%\n- 5m 105%\n- 10m 55%\n\nTest\n- 20m 100%\n\nCooldown\n- 10m 50%";
-  const tok = (t.match(/\{(SSH|SS|TEMPO|RP10|RP|Z2T)\}/) || [])[1], rep = t.match(/(\d+)×(\d+) min/);
-  if (tok && rep) {
-    const n = +rep[1], len = +rep[2], rest = +((t.match(/(\d+) min easy between/) || [])[1] || Math.min(5, Math.max(3, Math.round(len / 3))));
-    return `Warmup\n- 15m 55%\n\nMain set ${n}x\n- ${len}m ${PCT[tok]}\n- ${rest}m 55%\n\nCooldown\n- ${Math.max(5, m - 15 - n * (len + rest))}m 50%`;
-  }
-  const blk = /last hour at/.test(t) ? 60 : +((t.match(/(?:last|with) (\d+) min at/) || [])[1] || 0);
-  if (tok && blk) return `- ${m - blk}m 56-75%\n- ${blk}m ${PCT[tok]}`;
-  return `- ${m}m 56-75%`;
+// ---------- weather: should this run or ride go outside? ----------
+// Forecast and official alerts come from the National Weather Service through /api/weather (US only).
+// Each bike or run session is judged over its own time window (slot time + duration) against coaching rules:
+//   Ride indoors: thunderstorms, freezing rain or ice, an NWS warning, feels like 25°F or colder, near-freezing roads
+//     that are or were wet, gusts 40 mph+, rain at feels-like below 35°F, or soaking rain (0.1 in+) below 50°F.
+//   Run indoors: thunderstorms, freezing rain or ice, an NWS warning, feels like -5°F or colder, or 100°F or hotter.
+//   Care (go, but adjust): cold that needs gear, rain likely, strong gusts, heat, icy footing, darkness, advisories.
+// Thresholds follow NWS wind-chill (frostbite) and heat-index guidance, padded for the wind a rider makes.
+const WX_HOME = { lat: 44.0153, lon: -73.1673, name: "Middlebury, VT" };
+let WX = null, wxState = "", wxAt = 0;
+const wxLoc = () => { try { return JSON.parse(localStorage.getItem("lg703-wxloc")) || WX_HOME; } catch (e) { return WX_HOME; } };
+async function loadWeather(force) {
+  if (mode !== "worker" || (!force && WX && Date.now() - wxAt < 30 * 60e3)) return;
+  const L = wxLoc(); wxState = WX ? wxState : "loading";
+  try {
+    const r = await fetch(`/api/weather?lat=${L.lat}&lon=${L.lon}`, { credentials: "same-origin" }), j = await r.json();
+    if (!r.ok) throw new Error(j.detail || j.error || r.status);
+    WX = j; wxAt = Date.now(); wxState = j.error === "outside_us" ? "outside" : "ok";
+  } catch (e) { wxState = WX ? "ok" : "error"; }
+  render();
 }
-function runDoc(t, m) {
-  if (/time trial/i.test(t)) return "";
+function sunTimes(key, lat, lon) { // sunrise equation (NOAA/Wikipedia); within a minute or two of published times
+  const rad = Math.PI / 180, J = Date.parse(key + "T12:00:00Z") / 864e5 + 2440587.5, n = Math.round(J - 2451545 + .0008);
+  const Js = n - lon / 360, M = (357.5291 + .98560028 * Js) % 360, C = 1.9148 * Math.sin(M * rad) + .02 * Math.sin(2 * M * rad) + .0003 * Math.sin(3 * M * rad);
+  const Lg = (M + C + 180 + 102.9372) % 360, Jt = 2451545 + Js + .0053 * Math.sin(M * rad) - .0069 * Math.sin(2 * Lg * rad);
+  const dec = Math.asin(Math.sin(Lg * rad) * Math.sin(23.44 * rad)), cw = (Math.sin(-.833 * rad) - Math.sin(lat * rad) * Math.sin(dec)) / (Math.cos(lat * rad) * Math.cos(dec));
+  if (Math.abs(cw) > 1) return null;
+  const w = Math.acos(cw) / rad / 360, ms = j => (j - 2440587.5) * 864e5;
+  return { rise: ms(Jt - w), set: ms(Jt + w) };
+}
+// The outdoor parts of a session: [sport rules, minutes from the slot start, minutes long]. Swims and lifts have none.
+function outdoorOf(s) {
+  if (!s) return null;
+  if (s.s === "bike") return [["bike", 0, s.m]];
+  if (s.s === "run") return [["run", 0, s.m]];
+  if (s.s === "brick") { const rm = durOf(s.ride, "bike"); return [["bike", 0, rm], ["run", rm, s.m - rm]]; }
+  if (s.s === "key" && !/^Shakeout/.test(s.t)) return [["bike", 0, s.m]];
+  return null;
+}
+const hm2 = t => new Date(t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+function wxVerdict(dayKey, slot, s) {
+  const parts = outdoorOf(s), d = BYKEY[dayKey]; if (!parts || !WX || !WX.temp || !d) return null;
+  const t0 = +new Date(`${dayKey}T${slotTime(d, slot)}:00`), end = t0 + s.m * 60e3, hard = isHard(s.t), at = t => Math.floor((t - WX.start) / 3600e3);
+  if (at(t0) < 0 || at(end - 1) >= WX.temp.length || WX.temp[at(end - 1)] == null) return { c: "none", head: "Forecast not out yet", reasons: [], stats: "" };
+  const reasons = [], sev = { go: 0, caution: 1, indoor: 2 }; let c = "go", dress = "";
+  const flag = (lvl, why, first) => { if (sev[lvl] > sev[c]) c = lvl; reasons.push([sev[lvl] + (first ? .5 : 0), why]); }; // official alerts lead their level
+  let all = { tMin: 99, tMax: -99, fMin: 99, fMax: -99, gust: 0, wind: 0, pop: 0, rain: 0, ice: 0, snow: 0, wx: new Set() };
+  for (const [sp, off, mins] of parts) {
+    const a = t0 + off * 60e3, b = a + mins * 60e3, hs = []; for (let i = at(a); i <= at(b - 1); i++) hs.push(i);
+    const pick = k => hs.map(i => WX[k][i]).filter(v => v != null);
+    const tmp = pick("temp"), fl = pick("feels").length ? pick("feels") : tmp, tMin = Math.min(...tmp), tMax = Math.max(...tmp), fMin = Math.min(...fl), fMax = Math.max(...fl);
+    const gust = Math.max(0, ...pick("gust"), ...pick("wind")), pop = Math.max(0, ...pick("pop")), rain = pick("rain").reduce((x, y) => x + y, 0), ice = pick("ice").reduce((x, y) => x + y, 0);
+    const snow = pick("snow").reduce((x, y) => x + y, 0), kinds = new Set(hs.flatMap(i => WX.wx[i] || []).map(k => k.replace(/^(light|moderate|heavy|very_light) /, "")));
+    const before = []; for (let i = Math.max(0, at(a) - 12); i < at(a); i++) before.push(i);
+    const wetBefore = before.reduce((x, i) => x + (WX.rain[i] || 0) + (WX.snow[i] || 0), 0) > .02;
+    const thunder = kinds.has("thunderstorms"), freezing = ice > 0 || ["freezing_rain", "freezing_drizzle", "sleet", "freezing_fog"].some(k => kinds.has(k));
+    const snowing = snow > 0 || ["snow", "snow_showers", "blowing_snow"].some(k => kinds.has(k)), name = sp === "bike" ? "ride" : "run";
+    if (thunder) flag("indoor", `Thunderstorms in the forecast during the ${name}. Lightning risk: train indoors.`);
+    if (freezing) flag("indoor", `Freezing rain or ice expected: roads and paths glaze.`);
+    if (sp === "bike") {
+      if (fMin <= 25) flag("indoor", `Feels like ${fMin}°F, and riding adds ~15 mph of wind: frostbite risk for hands and feet.`);
+      else if (tMin <= 34 && (rain > .01 || snowing || wetBefore)) flag("indoor", `${tMin}°F with ${rain > .01 || snowing ? "precipitation" : "wet roads from earlier precipitation"}: black-ice risk on descents and shade.`);
+      if (gust >= 40) flag("indoor", `Gusts to ${gust} mph: hard to control the bike.`); else if (gust >= 25) flag("caution", `Gusts to ${gust} mph: ride a sheltered route${hard ? "; power targets are hard to hold, so the trainer suits this session" : ""}.`);
+      if ((rain > .02 || pop >= 70) && fMin < 35) flag("indoor", `Cold rain (${pop}%${rain > .01 ? `, ${rain.toFixed(2)} in` : ""}) at feels-like ${fMin}°F: wet and cold on a bike is a hypothermia risk.`);
+      else if (rain >= .1 && tMax < 50) flag("indoor", `${rain.toFixed(2)} in of rain at ${tMax}°F: cold and soaked is a risk, not training.`);
+      else if (rain > .01 || pop >= 40) flag("caution", `${pop}% chance of rain${rain > .01 ? `, about ${rain.toFixed(2)} in` : ""}: mudguards, rain jacket${hard ? "; consider the trainer for the intervals" : ""}.`);
+      if (fMin > 25 && fMin < 40) flag("caution", `Feels like ${fMin}°F: cold-weather kit.`);
+      if (fMax >= 90) flag("caution", `Feels like ${fMax}°F: carry 2 bottles with electrolytes, ride early or late.`);
+      if (fMin < 50) dress = fMin < 35 ? "Thermal tights, winter gloves, shoe covers, windproof jacket, skull cap." : fMin < 45 ? "Tights or knee warmers, full-finger gloves, shoe covers, wind vest." : "Arm and knee warmers, light gloves.";
+    } else {
+      if (fMin <= -5) flag("indoor", `Feels like ${fMin}°F: frostbite risk on exposed skin within 30 minutes.`);
+      else if (fMin < 20) flag("caution", `Feels like ${fMin}°F: layer up, cover ears and hands.`);
+      if (fMax >= 100) flag("indoor", `Feels like ${fMax}°F: dangerous heat. Treadmill, or before 7 AM.`);
+      else if (fMax >= 85) flag("caution", `Feels like ${fMax}°F: heart rate runs higher in heat. Walk to stay ≤144 bpm, carry water.`);
+      if (!freezing && tMin <= 32 && (rain > .01 || snowing || wetBefore)) flag("caution", `${tMin}°F after precipitation: icy footing. Shorter stride${hard ? "; do the quality on a treadmill" : ""}.`);
+      if (rain >= .1) flag("caution", `About ${rain.toFixed(2)} in of rain: fine for an easy run, wear a cap.`);
+      if (gust >= 30) flag("caution", `Gusts to ${gust} mph: start into the wind, finish with it at your back.`);
+      if (fMin < 45) dress = fMin < 20 ? "Thermal tights, base layer + windproof jacket, mittens, hat, neck gaiter." : fMin < 35 ? "Tights, long sleeve + light jacket, gloves, hat." : "Long sleeve, light gloves.";
+    }
+    all = { tMin: Math.min(all.tMin, tMin), tMax: Math.max(all.tMax, tMax), fMin: Math.min(all.fMin, fMin), fMax: Math.max(all.fMax, fMax), gust: Math.max(all.gust, gust), wind: Math.max(all.wind, ...pick("wind")), pop: Math.max(all.pop, pop), rain: all.rain + rain, ice: all.ice + ice, snow: all.snow + snow, wx: new Set([...all.wx, ...kinds]) };
+  }
+  // darkness: minutes of the session before sunrise or after sunset
+  const L = WX.place || WX_HOME, sun = sunTimes(dayKey, L.lat, L.lon);
+  if (sun) { const dark = Math.max(0, Math.min(end, sun.rise) - t0) + Math.max(0, end - Math.max(t0, sun.set));
+    if (dark >= 10) flag("caution", `${Math.round(dark / 60e3)} min in the dark (${t0 < sun.rise ? `sunrise ${hm2(sun.rise)}` : `sunset ${hm2(sun.set)}`}): front and rear lights${parts.some(p => p[0] === "run") ? ", reflective layer" : ""}.`); }
+  for (const a of WX.alerts || []) {
+    const on = Date.parse(a.onset) || 0, off = Date.parse(a.ends) || Infinity; if (off < t0 || on > end) continue;
+    flag(/Warning/.test(a.event) || /Severe|Extreme/.test(a.severity) ? "indoor" : "caution", `NWS ${a.event}.`, true);
+  }
+  const what = parts.length > 1 ? "Ride and run" : parts[0][0] === "bike" ? "Ride" : "Run";
+  const head = c === "indoor" ? `${what} indoors` : c === "caution" ? `${what} outside, with care` : `${what} outside`;
+  const deg = (a, b) => a === b ? `${a}°F` : `${a}–${b}°F`;
+  const stats = [deg(all.tMin, all.tMax), all.fMin !== all.tMin || all.fMax !== all.tMax ? `feels ${deg(all.fMin, all.fMax)}` : "", `wind ${all.wind} mph${all.gust > all.wind + 4 ? `, gusts ${all.gust}` : ""}`, `rain ${all.pop}%`].filter(Boolean).join(" · ");
+  return { c, head, stats, dress, reasons: reasons.filter(r => c !== "indoor" || r[0] >= 1.5).sort((x, y) => y[0] - x[0]).map(r => r[1]).slice(0, 3) }; // indoors: only why, not outdoor kit
+}
+function renderWx() {
+  const bar = document.getElementById("wxBar"), d = BYKEY[sel], outdoor = sessions(d).some(o => outdoorOf(o.s));
+  const show = mode === "worker" && sel >= TODAY && (outdoor || (WX && (WX.alerts || []).length));
+  bar.hidden = !show;
+  if (show) {
+    const dayEnd = +new Date(`${sel}T23:59:59`), dayStart = +new Date(`${sel}T00:00:00`);
+    const al = (WX && WX.alerts || []).filter(a => (Date.parse(a.ends) || Infinity) >= dayStart && (Date.parse(a.onset) || 0) <= dayEnd);
+    const L = wxLoc(), custom = L !== WX_HOME && L.lat !== WX_HOME.lat;
+    setHTML(bar, al.map(a => `<div class="wxalert ${/Warning/.test(a.event) || /Severe|Extreme/.test(a.severity) ? "sev" : "mod"}" role="note"><b>${esc(a.event)}</b>${esc(a.headline || "")}</div>`).join("") +
+      `<div class="wxloc"><span>${wxState === "loading" ? "Loading the forecast…" : wxState === "error" ? "Weather unavailable right now." : wxState === "outside" ? "Weather covers US locations only." : `Weather for ${esc((WX && WX.place && WX.place.name) || L.name || "your location")}, National Weather Service${WX && WX.updated ? ` · updated ${hm2(WX.updated)}` : ""}`}</span>` +
+      `<button class="st-meta" type="button" data-wxloc="${custom ? "home" : "here"}">${custom ? "Use Middlebury" : "Use my location"}</button></div>`);
+  }
+  for (const slot of ["am", "pm"]) {
+    const el = document.getElementById("wx-" + slot), s = d[slot]; if (!el) continue;
+    const v = show && WX && !WX.error ? wxVerdict(sel, slot, s) : null; el.hidden = !v;
+    el.className = "wx " + (v ? v.c : "");
+    setHTML(el, v ? `<div class="wx-h"><b>${esc(v.head)}</b>${v.stats ? `<span class="wx-n">${esc(v.stats)}</span>` : ""}</div>` +
+      (v.reasons.length ? `<ul>${v.reasons.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "") + (v.dress && v.c !== "indoor" ? `<span>Dress: ${esc(v.dress)}</span>` : "") +
+      (v.c === "caution" || v.c === "indoor" ? `<button class="btn" type="button" data-wxask="${slot}">Ask coach for an indoor version</button>` : "") : "");
+  }
+}
+// "Ask coach for an indoor version": fills the Doing-something-different box with the weather reason, ready to send.
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-wxask],[data-wxloc]"); if (!b) return;
+  if (b.dataset.wxloc === "home") { try { localStorage.removeItem("lg703-wxloc"); } catch (x) {} loadWeather(true); return; }
+  if (b.dataset.wxloc === "here") {
+    if (!navigator.geolocation) { flashNote("This browser can't share your location."); return; }
+    navigator.geolocation.getCurrentPosition(p => { try { localStorage.setItem("lg703-wxloc", JSON.stringify({ lat: +p.coords.latitude.toFixed(2), lon: +p.coords.longitude.toFixed(2), name: "" })); } catch (x) {} loadWeather(true); },
+      () => flashNote("Location not shared. Still using Middlebury."), { maximumAge: 30 * 60e3, timeout: 10e3 });
+    return;
+  }
+  const slot = b.dataset.wxask, s = BYKEY[sel][slot], v = wxVerdict(sel, slot, s), t = document.getElementById("askText");
+  t.value = `Weather: ${v ? v.reasons.join(" ") : ""} Give me an indoor version of the ${slot.toUpperCase()} ${ST[s.s].toLowerCase()}.`.slice(0, 500);
+  t.scrollIntoView({ block: "center" }); t.focus({ preventScroll: true });
+});
+
+// ---------- structured workouts ----------
+// One model per session: blocks (optionally repeated) of steps, each with minutes, intensity z (fraction of threshold),
+// the target you see and the intervals.icu target the watch gets. It drives the profile graphic, the step table,
+// the planned load, and the workout text sent to the watch, so the card and the watch always agree.
+const ZNAME = { TH: "Threshold", Z2: "Endurance", Z2T: "Upper endurance", TEMPO: "Tempo", SS: "Sweet spot", SSH: "Sweet spot (low)", RP: "Race power", RP10: "Race power +10 W", FTP: "Threshold" };
+function bzone(tok) { const f = settings.ftp; return tok === "RP10" ? [.76 + 10 / f, .81 + 10 / f] : ({ TH: [.95, 1], Z2: [.56, .75], Z2T: [.72, .77], TEMPO: [.77, .86], SS: [.88, .94], SSH: [.85, .90], RP: [.76, .81], FTP: [.95, 1] })[tok] || [.56, .75]; }
+const BS = (min, lbl, lo, hi, note) => ({ min, lbl, sp: "bike", z: (lo + hi) / 2, tgt: `${Math.round(lo * settings.ftp)}–${Math.round(hi * settings.ftp)} W${note ? " · " + note : ""}`, doc: `${Math.round(lo * 100)}-${Math.round(hi * 100)}%` });
+const RUNK = { easy: [.7, "≤144 bpm", "Z2 HR"], walk: [.45, "Walk", "Z1 HR"], jog: [.6, "Easy jog", "Z1 HR"], gp: [.86, null, "Z3 HR"], tempo: [.9, "~165 bpm", "Z3 HR"], steady: [.78, "≤155 bpm", "Z2 HR"], stride: [1.1, "Fast and relaxed", "Z5 HR"], tt: [1.02, "All-out, even pacing", "Z5 HR"] };
+const RS = (min, lbl, k) => ({ min, lbl, sp: "run", z: RUNK[k][0], tgt: RUNK[k][1] || pace(settings.gp) + "/mi", doc: RUNK[k][2] });
+const blk = (lbl, n, steps) => ({ lbl, n, steps });
+function bikeStruct(t, m) {
+  if (/FTP test/.test(t)) return [blk("Warm-up", 1, [BS(15, "Warm-up", .5, .65), BS(5, "Hard", 1, 1.05), BS(10, "Easy", .45, .55)]),
+    blk("Test", 1, [Object.assign(BS(20, "20 min all-out", 1, 1.1), { tgt: "All-out, even. FTP = 95% of the average" })]), blk("Cool-down", 1, [BS(10, "Cool-down", .45, .55)])];
+  const tok = (t.match(/\{(SSH|SS|TEMPO|RP10|RP|Z2T)\}/) || [])[1], [lo, hi] = bzone(tok), Z = (min, lbl = "Endurance") => BS(min, lbl, .56, .75);
+  const rep = t.match(/(\d+)×(\d+) min(?! (?:high cadence|openers|in aero))/), spike = t.match(/(\d+)×(\d+)\s*(min|s) (high cadence|openers|pickups)/);
+  if (tok && rep) { // intervals: long rides put the set in the middle, shorter ones after a 15 min warm-up
+    const n = +rep[1], len = +rep[2], rest = +((t.match(/(\d+) min easy between/) || [])[1] || Math.min(5, Math.max(3, Math.round(len / 3)))), set = n * (len + rest);
+    const wu = m >= 100 ? Math.max(15, Math.round((m - set) / 2)) : 15, cd = Math.max(5, m - wu - set);
+    return [blk(m >= 100 ? "Endurance" : "Warm-up", 1, [m >= 100 ? Z(wu) : BS(wu, "Warm-up", .5, .65)]), blk("Main set", n, [BS(len, ZNAME[tok], lo, hi), BS(rest, "Easy", .45, .55)]), blk(m >= 100 ? "Endurance" : "Cool-down", 1, [m >= 100 ? Z(cd) : BS(cd, "Cool-down", .45, .55)])];
+  }
+  const last = /last hour at/.test(t) ? 60 : +((t.match(/(?:last|with) (\d+) min at/) || [])[1] || 0);
+  if (tok && last) return [blk("Endurance", 1, [Z(m - last)]), blk(ZNAME[tok], 1, [BS(last, ZNAME[tok], lo, hi)])];
+  if (spike) { // openers, pickups or high-cadence efforts in the middle of an easy ride
+    const n = +spike[1], len = spike[3] === "s" ? +spike[2] / 60 : +spike[2], cad = spike[4] === "high cadence", pre = Math.round(m * .4);
+    const one = cad ? BS(len, "High cadence", .65, .75, "100+ rpm") : BS(len, spike[4] === "openers" ? "Opener" : "Pickup", 1.05, 1.2);
+    return [blk("Endurance", 1, [Z(pre)]), blk(cad ? "High cadence" : spike[4][0].toUpperCase() + spike[4].slice(1), n, [one, Z(cad ? 2 : 1, "Easy")]), blk("Endurance", 1, [Z(Math.max(5, m - pre - n * (len + (cad ? 2 : 1))))])];
+  }
+  if (tok && /hilly, course-like roads at/.test(t)) return [blk("Warm-up", 1, [Z(20, "Warm-up")]), blk("Race power", 1, [BS(m - 30, "Race power, course-like roads", lo, hi)]), blk("Cool-down", 1, [Z(10, "Cool-down")])];
+  if (tok === "RP") return [blk("Endurance", 1, [Object.assign(Z(m), { z: .7, tgt: `${X("{Z2}")}; race-power blocks at ${X("{RP}")}` })])]; // "mix of Z2 and race power": blocks are yours to place
+  if (/never over \{FTP\}/.test(t)) return [blk("Endurance", 1, [Object.assign(Z(m), { tgt: `${X("{Z2}")}; steady on climbs, never over ${settings.ftp} W` })])];
+  return [blk("Endurance", 1, [Z(m, /recovery|spin|final bike check/i.test(t) ? "Easy spin" : "Endurance")])];
+}
+function runStruct(t, m) {
+  const gpMin = settings.gp / 60;
+  if (/time trial/i.test(t)) return [blk("Warm-up", 1, [RS(15, "Warm-up", "easy")]), blk("5K time trial", 1, [RS(Math.round(3.107 * gpMin * .95), "5K all-out", "tt")]), blk("Cool-down", 1, [RS(10, "Cool-down", "easy")])];
+  const kind = /goal pace|\{GP\}/.test(t) ? "gp" : /tempo|half-marathon/.test(t) ? "tempo" : null, steadyM = +((t.match(/(\d+) min steady/) || [])[1] || 0);
   const rep = t.match(/(\d+)×(\d+) (min|mi)\b/);
-  if (rep && !/strides/.test(t)) {
-    const n = +rep[1], len = rep[3] === "mi" ? (+rep[2] * 1.6).toFixed(1) + "km" : rep[2] + "m", work = rep[3] === "mi" ? +rep[2] * 9 : +rep[2];
-    return `Warmup\n- 15m Z2 HR\n\nMain set ${n}x\n- ${len} Z3 HR\n- 3m Z1 HR\n\nCooldown\n- ${Math.max(5, m - 15 - n * (work + 3))}m Z2 HR`;
+  if (kind && rep) {
+    const n = +rep[1], len = rep[3] === "mi" ? +rep[2] * gpMin : +rep[2], rest = len <= 2 ? 1 : 2, lbl = kind === "gp" ? `${rep[3] === "mi" ? rep[2] + " mi" : "Goal pace"} at goal pace` : "Tempo";
+    const work = n * (len + rest), wu = Math.max(10, Math.min(15, Math.round((m - work - steadyM - 5) * .6))), cd = Math.max(5, Math.round(m - wu - work - steadyM));
+    return [blk("Warm-up", 1, [RS(wu, "Warm-up", "easy")]), blk("Main set", n, [Object.assign(RS(len, lbl, kind), rep[3] === "mi" ? { doc: `${(+rep[2] * 1.609).toFixed(1)}km Z3 HR`, dist: rep[2] + " mi" } : {}), RS(rest, "Easy jog", "jog")]),
+      ...(steadyM ? [blk("Steady", 1, [RS(steadyM, "Steady", "steady")])] : []), blk("Cool-down", 1, [RS(cd, "Cool-down", "easy")])];
   }
-  const tempo = t.match(/(\d+) min tempo/), last = t.match(/last (\d+) min at/);
-  if (tempo) return `- 15m Z2 HR\n- ${tempo[1]}m Z3 HR\n- ${Math.max(5, m - 15 - +tempo[1])}m Z2 HR`;
-  if (last) return `- ${m - +last[1]}m Z2 HR\n- ${last[1]}m Z3 HR`;
-  return `- ${m}m Z2 HR`;
+  const tempo = t.match(/with (\d+) min tempo/), last = t.match(/last (\d+) min at/);
+  if (tempo) return [blk("Warm-up", 1, [RS(15, "Warm-up", "easy")]), blk("Tempo", 1, [RS(+tempo[1], "Tempo", "tempo")]), blk("Cool-down", 1, [RS(Math.max(5, m - 15 - +tempo[1]), "Cool-down", "easy")])];
+  if (last) return [blk("Easy", 1, [RS(m - +last[1], "Easy", "easy")]), blk("Goal pace", 1, [RS(+last[1], "Goal pace", "gp")])];
+  // easy runs: optional run-walk cycles and strides at the end
+  const st = t.match(/(\d+)×20 s strides/), rw = t.match(/(\d+) min run \/ (\d+) min walk/), strideMin = st ? +st[1] * (1 / 3 + 1) : 0, body = Math.max(5, m - strideMin), out = [];
+  if (rw) { const r = +rw[1], w = +rw[2], n = Math.floor(body / (r + w)), left = body - n * (r + w); out.push(blk("Run-walk", n, [RS(r, "Run", "easy"), RS(w, "Walk", "walk")])); if (left >= 1) out.push(blk("Easy", 1, [RS(left, "Easy", "easy")])); }
+  else out.push(blk("Easy", 1, [RS(body, "Easy", "easy")]));
+  if (st) out.push(blk("Strides", +st[1], [RS(1 / 3, "Stride", "stride"), RS(1, "Walk back", "walk")]));
+  return out;
 }
+// Swim sets are written in meters; time per step comes from your CSS pace with an offset for the kind of swimming.
+const SWK = [[/time trial|all-out/, 1, -3, "All-out, even"], [/fast|quick/, .95, -2, null], [/\{CSS(\d?)\}/, .9, null, null], [/race (?:pace|effort)/, .85, 5, null], [/open water/, .72, 12, "Steady, sight every 6–8 strokes"],
+  [/build/, .78, 8, "Build each length"], [/kick/, .6, 30, "Kick, fins on"], [/drill|sighting|technique/, .6, 22, "Technique, not speed"], [/easy|recovery|warm|loosen/, .62, 20, "Easy, long strokes"], [/relaxed|smooth|aerobic/, .68, 14, "Relaxed, long strokes"], [/steady|continuous|pull|timed/, .75, 8, null]];
+function swimStep(lbl, meters, minutes) {
+  const k = SWK.find(([re]) => re.test(lbl)) || [null, .75, 8, null], css = lbl.match(/\{CSS(\d?)\}/), off = css ? +(css[1] || 0) : k[2], p = settings.css + off;
+  const min = meters ? meters / 100 * p / 60 : minutes, name = X(lbl).replace(/@\s*/, "at ").replace(/^\s*[,·+]\s*|\s*[,·+]\s*$/g, "").trim() || "Swim";
+  return { min, lbl: name[0].toUpperCase() + name.slice(1), sp: "swim", z: k[1], tgt: k[3] && !css ? k[3] : `${pace(p)}/100 m`, dist: meters ? meters.toLocaleString() + " m" : "", m: meters || 0 };
+}
+function swimStruct(t, m) {
+  const parts = t.replace(/^\s*(?:(?:\d+:\d\d|\d+ min)[^:·]{0,30}|Test|Optional)\s*:\s*/, "").split(" · "), out = [], fill = [];
+  for (const raw of parts) {
+    const p = raw.trim(); let x;
+    if ((x = p.match(/^(\d+) min\b\s*(.*)$/))) out.push(blk("", 1, [swimStep(x[2] || "easy", 0, +x[1])]));
+    else if ((x = p.match(/^(.*?)(\d+)×([\d,]+)\s*(?:m\b)?\s*(.*)$/))) {
+      const n = +x[2], d = +x[3].replace(/,/g, ""), rs = (x[4].match(/,?\s*(\d+) s rest/) || [])[1], lbl = (x[1] + " " + x[4].replace(/,?\s*\d+ s rest/, "")).trim() || "steady";
+      const rest = +(rs || (d >= 50 ? 15 : 10));
+      out.push(blk(`${n}×${d}`, n, [swimStep(lbl, d), { min: rest / 60, lbl: "Rest", sp: "swim", z: 0, tgt: `${rest} s${rs ? "" : " (suggested)"}`, dist: "" }]));
+    } else if ((x = p.match(/^(.*?)(\d{1,2},\d{3}|\d{2,4})\s*(?:m\b)?\s*(.*)$/)) && +x[2].replace(/,/g, "") >= 25) out.push(blk("", 1, [swimStep((x[1] + " " + x[3]).trim() || "continuous", +x[2].replace(/,/g, ""))]));
+    else if (/easy|drill|technique|aerobic|sighting|kick|pull|steady|open water|recovery|smooth|relaxed/.test(p)) { const b = blk("", 1, [swimStep(p, 0, 0)]); out.push(b); fill.push(b); }
+  }
+  if (!out.length) return [blk("", 1, [swimStep("easy", 0, m)])];
+  const used = out.filter(b => !fill.includes(b)).reduce((a, b) => a + b.n * b.steps.reduce((s, x) => s + x.min, 0), 0);
+  for (const b of fill) b.steps[0].min = Math.max(3, Math.round((m - used) / fill.length)); // untimed parts ("easy drills") share the time left
+  // A set that leaves more than 4 min of the slot free gets an easy warm-up and cool-down around it.
+  if (!fill.length && m - used > 4 && !/warm-up/.test(t)) { const half = Math.max(2, Math.round((m - used) / 2)); out.unshift(blk("", 1, [swimStep("easy warm-up", 0, half)])); out.push(blk("", 1, [swimStep("easy cool-down", 0, half)])); }
+  return out;
+}
+// Key sessions: one step per part, when each part says how long it is.
+function keyStruct(t) {
+  const out = [];
+  for (const p of t.split(/ · |, straight into | → /)) {
+    const sp = /swim/.test(p) ? "swim" : /bike|mi at race power|race power/.test(p) ? "bike" : /run|goal pace/.test(p) ? "run" : null;
+    const h = p.match(/(\d+):(\d\d)/), mm = p.match(/(\d+) min/), mi = p.match(/(\d+) mi\b/), mt = p.match(/([\d,]+) m swim/);
+    // distance first: "56 mi at race power, nutrition every 20 min" is a 56-mile ride, not a 20-minute one
+    const min = mi && sp === "run" ? +mi[1] * settings.gp / 60 : mi && sp === "bike" ? +mi[1] / 18.5 * 60 : mt ? +mt[1].replace(/,/g, "") / 100 * (settings.css + 8) / 60 : h ? +h[1] * 60 + +h[2] : mm ? +mm[1] : 0;
+    if (!sp || !min) continue;
+    const z = /race power|\{RP\}/.test(p) ? .785 : /goal pace|\{GP\}/.test(p) ? .86 : /pickups/.test(p) ? .72 : .62;
+    out.push(blk("", 1, [{ min, lbl: X(p).replace(/^(Shakeout|Tune-up|Race rehearsal \([^)]*\)):\s*/, ""), sp, z, tgt: sp === "bike" && z > .7 ? X("{RP}") : sp === "run" && z > .8 ? X("{GP}") : "Easy", dist: mt ? mt[1] + " m" : mi ? mi[1] + " mi" : "" }]));
+  }
+  return out.length >= 2 ? out : null;
+}
+function structOf(s) {
+  if (!s) return null;
+  if (s.build) return s.build(); // coached library session: structure is explicit
+  if (s.s === "bike") return bikeStruct(s.t, s.m);
+  if (s.s === "run") return runStruct(s.t, s.m);
+  if (s.s === "swim") return swimStruct(s.t, s.m);
+  if (s.s === "brick") { const rm = durOf(s.ride, "bike"), b = bikeStruct(s.ride, rm), r = runStruct(s.run, s.m - rm); r[0] = Object.assign({}, r[0], { t2: true }); return b.concat(r); }
+  if (s.s === "key" && !/RACE DAY/.test(s.t)) return keyStruct(s.t);
+  return null;
+}
+const stepsFlat = st => st.flatMap(b => Array.from({ length: b.n }, () => b.steps).flat());
+const minsOf = st => stepsFlat(st).reduce((a, x) => a + x.min, 0);
+const loadOf = st => Math.round(stepsFlat(st).reduce((a, x) => a + x.min / 60 * x.z * x.z * 100, 0)); // TSS-style: hours × intensity² × 100
+const metersOf = st => stepsFlat(st).reduce((a, x) => a + (x.m || 0), 0);
+const zcls = z => z < .6 ? "z1" : z < .76 ? "z2" : z < .88 ? "z3" : z < .98 ? "z4" : "z5";
+const dmin = v => v < 1 ? Math.round(v * 60) + " s" : Math.abs(v - Math.round(v)) < .05 ? Math.round(v) + " min" : `${Math.floor(v)}:${pad(Math.round(v % 1 * 60))} min`;
+// intervals.icu workout text (what the watch gets): "- 15m 50-65%", repeats as "Main set 3x".
+function docOf(st) {
+  const d = v => v < 1 ? Math.round(v * 60) + "s" : Math.abs(v - Math.round(v)) < .05 ? Math.round(v) + "m" : `${Math.floor(v)}m${Math.round(v % 1 * 60)}s`;
+  return st.map(b => (b.n > 1 ? `${b.lbl.replace(/\d+×\d+/, "Set") || "Set"} ${b.n}x\n` : b.lbl ? b.lbl + "\n" : "") + b.steps.map(x => `- ${x.doc && /km /.test(x.doc) ? x.doc : d(x.min) + " " + x.doc}`).join("\n")).join("\n\n");
+}
+// Profile: one bar per step, width = time, height = intensity, colored by sport and shaded by zone. Dashed line = threshold.
+function profileOf(st, label) {
+  const steps = stepsFlat(st), T = steps.reduce((a, x) => a + x.min, 0); if (!T) return "";
+  const W = 600, H = 64, zmax = Math.max(1.15, ...steps.map(x => x.z)), y = z => H - Math.max(.05, z / zmax) * (H - 4);
+  let x = 0, t2 = null;
+  const bars = steps.map(s => { const w = s.min / T * W, r = s.z ? `<rect class="${s.sp} ${zcls(s.z)}" x="${x.toFixed(1)}" y="${y(s.z).toFixed(1)}" width="${Math.max(.8, w - .6).toFixed(1)}" height="${(H - y(s.z)).toFixed(1)}"/>` : ""; x += w; return r; }).join("");
+  let acc = 0; for (const b of st) { if (b.t2) t2 = acc / T * W; acc += b.n * b.steps.reduce((a, s) => a + s.min, 0); }
+  const every = T <= 50 ? 10 : T <= 100 ? 15 : T <= 200 ? 30 : 60, ticks = []; for (let m = every; m < T - every * .6; m += every) ticks.push(m);
+  return `<div class="prof"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(label)}">${bars}<line class="thr" x1="0" x2="${W}" y1="${y(1).toFixed(1)}" y2="${y(1).toFixed(1)}"/>${t2 != null ? `<line class="t2" x1="${t2.toFixed(1)}" x2="${t2.toFixed(1)}" y1="0" y2="${H}"/>` : ""}</svg>` +
+    `<div class="prof-ax" aria-hidden="true"><span style="--x:0%">0</span>${ticks.map(m => `<span style="--x:${(m / T * 100).toFixed(1)}%">${m >= 60 ? durTxt(m) : m + "′"}</span>`).join("")}<span style="--x:100%">${durTxt(Math.round(T))}</span></div></div>`;
+}
+function workoutHTML(s) {
+  const st = structOf(s); if (!st) return "";
+  const T = Math.round(minsOf(st)), L = loadOf(st), M = metersOf(st), names = { swim: "Swim", bike: "Bike", run: "Run" };
+  const over = (s.s === "swim" || s.s === "run") && T > s.m * 1.15; // the plan assumes your paces keep improving; say so when the set outgrows the slot
+  const sum = [durTxt(T), M ? "≈" + M.toLocaleString() + " m" : "", s.s !== "swim" ? `planned load ≈${L}` : ""].filter(Boolean).join(" · ") + (over ? (s.s === "swim" ? ` at your current CSS (${pace(settings.css)}/100 m)` : ` at your goal pace (${pace(settings.gp)}/mi)`) + `; the plan allows ${s.m} min. Do what fits and stop on time` : "");
+  const row = (x, cls) => `<tr class="${cls || ""}"><td><i class="zs ${x.sp} ${x.z ? zcls(x.z) : "rest"}" aria-hidden="true"></i>${esc(x.lbl)}</td><td class="num">${x.dist || dmin(x.min)}</td><td>${esc(x.tgt)}</td></tr>`;
+  const rows = st.map(b => (b.t2 ? `<tr class="t2r"><td colspan="3">T2: off the bike, straight into the run</td></tr>` : "") +
+    (b.n > 1 ? `<tr class="reph"><td colspan="3"><b>${b.n}×</b> ${esc(/^\d+×\d+$/.test(b.lbl) ? "" : b.lbl)}</td></tr>` + b.steps.map(x => row(x, "in")).join("") : b.steps.map(x => row(x)).join(""))).join("");
+  return `<div class="wo"><p class="wo-sum num">${sum}</p>${profileOf(st, `Workout profile, ${sum}: ` + st.map(b => (b.n > 1 ? b.n + " × " : "") + b.steps.map(x => `${x.lbl} ${x.dist || dmin(x.min)}`).join(" + ")).join(", "))}
+    <div class="scroll"><table class="stab"><caption class="vh">${names[s.s] || "Session"} steps and targets</caption><tr><th>Step</th><th>${s.s === "swim" ? "Distance" : "Time"}</th><th>Target</th></tr>${rows}</table></div></div>`;
+}
+// The ride part of a brick (blocks before the T2 marker).
+const rideOf = (s, rm) => s.build ? (st => st.slice(0, Math.max(0, st.findIndex(b => b.t2))))(s.build()) : bikeStruct(s.ride, rm);
+// Swim structure as text lines for the watch's workout notes.
+const swimDoc = st => st.map(b => `${b.n > 1 ? b.n + "× " : ""}${b.steps.filter(x => x.z).map(x => `${x.dist} ${x.lbl} (${x.tgt})`).join(" + ")}${(b.steps.find(x => !x.z) || {}).tgt ? `, ${b.steps.find(x => !x.z).tgt} rest` : ""}`).join("\n");
 function eventsFor(fromKey, n) {
   const out = [], i0 = Math.max(0, DAYS.findIndex(d => d.key >= fromKey));
   for (const d of DAYS.slice(i0, i0 + n)) for (const slot of ["am", "pm"]) {
@@ -1280,14 +1850,14 @@ function eventsFor(fromKey, n) {
     const at = d.key + "T" + slotTime(d, slot) + ":00";
     const ev = (type, name, desc, m, suf) => out.push({ category: "WORKOUT", start_date_local: at, type, name, description: desc, moving_time: m * 60, external_id: `lg703-${d.key}-${slot}${suf || ""}` });
     const plain = X(s.t);
-    if (s.s === "bike") ev("Ride", "Bike · " + durTxt(s.m), plain + "\n\n" + bikeDoc(s.t, s.m), s.m);
-    else if (s.s === "run") ev("Run", "Run · " + durTxt(s.m), plain + "\n\n" + runDoc(s.t, s.m), s.m);
-    else if (s.s === "swim") ev("Swim", "Swim · " + durTxt(s.m), plain.replace(/ · /g, "\n"), s.m);
+    if (s.s === "bike") ev("Ride", "Bike · " + durTxt(s.m), plain + "\n\n" + docOf(s.build ? s.build() : bikeStruct(s.t, s.m)), s.m);
+    else if (s.s === "run") ev("Run", "Run · " + durTxt(s.m), plain + (/time trial/i.test(s.t) ? "" : "\n\n" + docOf(s.build ? s.build() : runStruct(s.t, s.m))), s.m);
+    else if (s.s === "swim") ev("Swim", "Swim · " + durTxt(s.m), s.build ? swimDoc(s.build()) : plain.replace(/ · /g, "\n"), s.m);
     else if (s.s === "lift") ev("WeightTraining", s.t, s.items.join("\n"), s.m);
     else if (s.s === "brick") {
-      const rm = durOf(s.ride, "bike"), rn = s.m - rm;
-      ev("Ride", "Long ride · " + durTxt(rm), X(s.ride) + "\n\n" + bikeDoc(s.ride, rm), rm);
-      ev("Run", "Brick run · " + rn + " min", X(s.run) + "\n\n" + runDoc(s.run, rn), rn, "-run");
+      const rm = durOf(s.ride, "bike"), rn = s.m - rm, st = s.build && s.build(), i = st ? st.findIndex(b => b.t2) : -1;
+      ev("Ride", "Long ride · " + durTxt(rm), X(s.ride) + "\n\n" + docOf(st ? st.slice(0, i) : bikeStruct(s.ride, rm)), rm);
+      ev("Run", "Brick run · " + rn + " min", X(s.run) + "\n\n" + docOf(st ? st.slice(i) : runStruct(s.run, rn)), rn, "-run");
     } else ev("Ride", "Key session", plain, s.m);
   }
   return out;
@@ -1308,10 +1878,13 @@ async function pushWorkouts() {
 const BW = /pull-up|push-up|leg raise|dead bug|wall angel|bear hold|ab roller/i;
 const exOf = s => s && s.s === "lift" ? (s.items || []).flatMap(it => { const m = it.match(/^([A-Z]):\s*(.+)$/); return m && m[2].includes("↔") ? m[2].split("↔").map(n => ({ g: m[1], n: n.trim() })) : []; }) : [];
 const repsOf = r => String(r || "").split(/\D+/).filter(Boolean).map(Number);
+// All lifts are free weights (no cables or machines). Moves that only gained a "DB" in their name keep their
+// history under the old name; replaced moves (cable row → DB row and so on) start fresh, since loads differ.
+const LIFT_WAS = { "DB lateral raise": "Lateral raise", "DB rear delt fly": "Rear delt fly", "DB curl": "Biceps curl", "DB overhead triceps extension": "OH triceps extension" };
 function lastLift(name, before) {
   for (const k of Object.keys(logs).filter(k => k < before).sort().reverse())
     for (const slot of ["am", "pm"]) {
-      const x = logs[k][slot] && logs[k][slot].lifts && logs[k][slot].lifts[name];
+      const L = logs[k][slot] && logs[k][slot].lifts, x = L && (L[name] || L[LIFT_WAS[name]]);
       if (x && repsOf(x.r).length) return { k, w: +x.w || 0, r: repsOf(x.r) };
     }
   return null;
@@ -1328,10 +1901,10 @@ function liftTarget(name, before, half) {
 }
 function liftTable(slot, s) {
   const ex = exOf(s);
-  return `<p class="small" id="${slot}-lgen" hidden></p><table class="lifts"><tr><th></th><th>Exercise · target</th><th>lb</th><th>Reps per set</th></tr>` + ex.map((x, i) => `<tr>
+  return `<p class="small" id="${slot}-lgen" hidden></p><table class="lifts"><tr><th><span class="vh">Superset</span></th><th>Exercise · target</th><th>lb</th><th>Reps per set</th></tr>` + ex.map((x, i) => `<tr>
     <td class="grp">${x.g}</td><td>${esc(x.n)}<br><span class="tgt" id="${slot}-lt-${i}"></span></td>
-    <td class="cw"><input id="${slot}-lw-${i}" name="${slot}-lw-${i}" type="number" min="0" max="999" step="2.5" inputmode="decimal" placeholder="${BW.test(x.n) ? "BW" : ""}" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="w"></td>
-    <td class="cr"><input id="${slot}-lr-${i}" name="${slot}-lr-${i}" type="text" inputmode="numeric" placeholder="10,10,9" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="r"></td></tr>`).join("") + `</table>`;
+    <td class="cw"><input id="${slot}-lw-${i}" name="${slot}-lw-${i}" type="number" min="0" max="999" step="2.5" inputmode="decimal" placeholder="${BW.test(x.n) ? "BW" : ""}" aria-label="${esc(x.n)}: weight in lb" autocomplete="off" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="w"></td>
+    <td class="cr"><input id="${slot}-lr-${i}" name="${slot}-lr-${i}" type="text" inputmode="numeric" placeholder="10,10,9" aria-label="${esc(x.n)}: reps per set" autocomplete="off" data-lift="${esc(x.n)}" data-lslot="${slot}" data-lf="r"></td></tr>`).join("") + `</table>`;
 }
 function fillLifts(slot, s, L) {
   const half = /half the sets/.test(s.t), act = document.activeElement, generic = [];
@@ -1348,6 +1921,7 @@ function fillLifts(slot, s, L) {
 
 // ---------- AI coach ----------
 // The Worker asks Claude to review the last 7 days and propose changes to the next few. Nothing changes until you tap Accept.
+let coachNew = false;
 let COACH = null, coachBusy = false, coachStarted = false, coachErr = null, ovrSig = ""; // coachErr: { kind: nokey | limit | offline | fail, detail }
 function fromCoach(c) {
   if (c.sport === "rest") return Object.assign(OFF(c.details || "Off"), { coach: c });
@@ -1368,10 +1942,10 @@ function applyOverrides() {
   }
   computeAuto(); builtFor = null;
 }
-function coachCtx() {
+function coachCtx(reqDate) {
   const i0 = Math.max(0, DAYS.findIndex(d => d.key >= TODAY));
   const plan = s => !s || s.s === "rest" ? null : { sport: s.s, minutes: s.m, plan: s.s === "lift" ? s.t + ": " + (s.items || []).join(" | ") : X(s.t), coachChanged: !!s.coach };
-  const act = a => a && { sport: a.sport, type: a.type, name: a.name, minutes: a.mins, avgHR: a.hr && Math.round(a.hr), avgW: a.w && Math.round(a.w), normW: a.np && Math.round(a.np), load: a.load != null ? Math.round(a.load) : null, km: +a.km.toFixed(1), substitute: a.sub || undefined };
+  const act = a => a && { sport: a.sport, type: a.type, name: a.name, minutes: a.mins, avgHR: a.hr && Math.round(a.hr), avgW: a.w && Math.round(a.w), normW: a.np && Math.round(a.np), load: a.load != null ? Math.round(a.load) : null, km: +a.km.toFixed(1), decouplingPct: a.dec != null ? +a.dec.toFixed(1) : undefined, substitute: a.sub || undefined };
   const past = DAYS.slice(Math.max(0, i0 - 7), i0 + 1).map(d => {
     const L = logs[d.key] || {}, w = wellOn(d.key) || {};
     const slot = k => { const p = plan(d[k]); if (!p) return null; const v = L[k] || {}; return Object.assign(p, { done: isDone(d.key, k), rpe: v.rpe || null, actualMin: v.min || null, garmin: act(AUTO[d.key] && AUTO[d.key][k]), lifts: v.lifts || undefined }); };
@@ -1379,7 +1953,11 @@ function coachCtx() {
       wellness: { sleepH: w.sleepSecs ? +(w.sleepSecs / 3600).toFixed(1) : null, hrv: w.hrv ?? null, restingHR: w.restingHR ?? null, readiness: w.readiness ?? null, fitnessCTL: w.ctl != null ? Math.round(w.ctl) : null, fatigueATL: w.atl != null ? Math.round(w.atl) : null },
       notes: (L.notes || "").slice(0, 400) || undefined };
   });
-  const next = DAYS.slice(i0, i0 + 4).map(d => ({ date: d.key, day: DAYNAMES[d.i], week: d.wk, phase: d.ph, am: plan(d.am), pm: plan(d.pm), done: { am: isDone(d.key, "am"), pm: isDone(d.key, "pm") } }));
+  // A request for a later day widens the window so that day (and the two after it) can change.
+  const nd = DAYS.slice(i0, i0 + 4), rd = reqDate && BYKEY[reqDate];
+  if (rd && !nd.includes(rd)) { const j = DAYS.indexOf(rd); nd.push(...DAYS.slice(j, j + 3).filter(d => !nd.includes(d))); }
+  const wxOf = (d, k) => { const v = d[k] && wxVerdict(d.key, k, d[k]); return v && v.c !== "none" ? { outdoor: v.c, why: v.reasons } : undefined; };
+  const next = nd.map(d => ({ date: d.key, day: DAYNAMES[d.i], week: d.wk, phase: d.ph, am: plan(d.am), pm: plan(d.pm), done: { am: isDone(d.key, "am"), pm: isDone(d.key, "pm") }, weather: (wxOf(d, "am") || wxOf(d, "pm")) ? { am: wxOf(d, "am"), pm: wxOf(d, "pm") } : undefined }));
   const H = weekHours(WEEKS[curWk]);
   return { today: TODAY, athlete: { ftpW: settings.ftp, cssPer100m: pace(settings.css), goalRunPacePerMi: pace(settings.gp), restingHR: settings.rhr, zones: toks() },
     thisWeek: { week: curWk, phase: WEEKS[curWk].ph, plannedH: +hh(H.plan), doneH: +hh(H.done), plannedToDateH: +hh(H.planTo) },
@@ -1396,10 +1974,11 @@ async function loadCoach(force) {
       const r = await fetch("/api/coach", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify(coachCtx()) });
       const j = await r.json();
       coachErr = r.ok ? null : { kind: j.error === "no_ai_key" ? "nokey" : j.error === "daily_limit" ? "limit" : "fail", detail: String(j.detail || j.error || r.status) };
-      if (r.ok) COACH = j;
+      if (r.ok) { COACH = j; coachNew = true; }
     }
   } catch (e) { coachErr = { kind: "offline", detail: "" }; }
   coachBusy = false; renderCoach(); paintStatus();
+  if (coachNew) { coachNew = false; reveal(document.getElementById("coachBody")); }
 }
 function coachState(has) {
   if (coachBusy) return stateBox("load", "Coach is reviewing your last 7 days…", "This takes a few seconds. Nothing changes until you accept.");
@@ -1410,37 +1989,74 @@ function coachState(has) {
   if (e.kind === "offline") return stateBox("err", "Coach needs a connection", "Try again when you're back online." + last, { retry: "coach" });
   return stateBox("err", "Coach couldn't run", "The review didn't finish. Nothing in your plan changed." + last, { retry: "coach", fix: esc(e.detail), fixLabel: "Details" });
 }
+// Change rows shared by the daily review and "Doing something different?". `src` says which reply an Accept belongs to.
+function changeRows(c, src) {
+  const ovr = settings.ovr || {};
+  const live = c.changes.map((x, i) => ({ x, i })).filter(({ x }) => x.date >= TODAY && BYKEY[x.date]);
+  if (!live.length) return `<p class="small">No changes: train as planned.</p>`;
+  const isOn = x => { const o = ovr[x.date + "|" + x.slot]; return o && o.createdAt === c.createdAt && o.details === x.details; };
+  const pend = live.filter(({ x }) => !isOn(x));
+  return live.map(({ x, i }) => { const d = BYKEY[x.date], on = isOn(x), stale = coachStale(Object.assign({ createdAt: c.createdAt }, x)); return `<div class="cchange"><div><strong>${DAYNAMES[d.i]} ${fmt(d.date)} · ${x.slot.toUpperCase()}</strong> → <span class="wtag ${tagCls[x.sport]}">${glyph(x.sport)}${ST[x.sport]}</span>${x.minutes ? " · " + durTxt(x.minutes) : ""}: ${esc(X(x.details))}<br><span class="small">${esc(x.reason)}</span>${stale ? `<br><span class="small"><span class="badge extra">Out of date</span> ${esc(stale)}</span>` : ""}</div>` +
+    (on ? `<span><span class="badge plan">Accepted</span> <button type="button" class="btn" data-cundo="${x.date}|${x.slot}">Undo</button></span>` : `<button type="button" class="btn primary" data-cacc="${i}" data-src="${src}">Accept</button>`) + `</div>`; }).join("") +
+    (pend.length > 1 ? `<div class="formrow"><button type="button" class="btn primary" data-caccall="1" data-src="${src}">Accept all ${pend.length}</button></div>` : "");
+}
 function renderCoach() {
   const card = document.getElementById("coachCard"); card.hidden = mode !== "worker";
   if (card.hidden) return;
   document.getElementById("coachAsk").disabled = coachBusy;
-  const c = COACH && COACH.createdAt ? COACH : null, ovr = settings.ovr || {};
+  const c = COACH && COACH.createdAt ? COACH : null;
   document.getElementById("coachStat").textContent = c ? `Reviewed ${new Date(c.createdAt).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })}${c.forDate !== TODAY ? " (not today's review yet)" : ""}` : coachBusy || coachErr ? "" : "No review yet. Tap Review again to get one.";
   setHTML(document.getElementById("coachState"), coachState(!!c));
-  if (!c) { setHTML(document.getElementById("coachBody"), ""); return; }
-  const live = c.changes.map((x, i) => ({ x, i })).filter(({ x }) => x.date >= TODAY && BYKEY[x.date]);
-  const isOn = x => { const o = ovr[x.date + "|" + x.slot]; return o && o.createdAt === c.createdAt && o.details === x.details; };
-  const pend = live.filter(({ x }) => !isOn(x));
-  setHTML(document.getElementById("coachBody"), `<p>${esc(c.summary)}</p>${c.lifts ? `<p class="small"><strong class="lf">Strength:</strong> ${esc(c.lifts)}</p>` : ""}` +
-    (live.length ? live.map(({ x, i }) => { const d = BYKEY[x.date], on = isOn(x), stale = coachStale(Object.assign({ createdAt: c.createdAt }, x)); return `<div class="cchange"><div><strong>${DAYNAMES[d.i]} ${fmt(d.date)} · ${x.slot.toUpperCase()}</strong> → <span class="${tagCls[x.sport]}">${ST[x.sport]}</span>${x.minutes ? " · " + durTxt(x.minutes) : ""}: ${esc(X(x.details))}<br><span class="small">${esc(x.reason)}</span>${stale ? `<br><span class="small"><span class="badge extra">Out of date</span> ${esc(stale)}</span>` : ""}</div>` +
-      (on ? `<span><span class="badge plan">Accepted</span> <button class="btn" data-cundo="${x.date}|${x.slot}">Undo</button></span>` : `<button class="btn primary" data-cacc="${i}">Accept</button>`) + `</div>`; }).join("") +
-      (pend.length > 1 ? `<div class="formrow"><button class="btn primary" data-caccall="1">Accept all ${pend.length}</button></div>` : "")
-      : `<p class="small">No changes: train as planned.</p>`));
+  setHTML(document.getElementById("coachBody"), c ? `<p class="coachsum">${esc(c.summary)}</p>${c.lifts ? `<p class="small"><strong class="lf">Strength:</strong> ${esc(c.lifts)}</p>` : ""}` + changeRows(c, "review") : "");
 }
-function acceptCoach(list) {
+// "Doing something different?": you describe the change in your own words; the coach replans that day (and the next ones if the week needs it).
+let ASK = null, askBusy = false, askErr = null, askNew = false; // askErr: { kind: empty | nokey | limit | offline | fail, detail }
+async function askCoach() {
+  const t = document.getElementById("askText"), text = t.value.trim();
+  if (askBusy) return;
+  if (!text) { askErr = { kind: "empty" }; renderAsk(); t.focus(); return; }
+  askBusy = true; askErr = null; ASK = null; renderAsk();
+  try {
+    const r = await fetch("/api/coach", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify(Object.assign(coachCtx(sel), { request: { text, date: sel } })) });
+    const j = await r.json();
+    if (r.ok) { ASK = Object.assign(j, { request: text }); t.value = ""; askNew = true; }
+    else askErr = { kind: j.error === "no_ai_key" ? "nokey" : j.error === "daily_limit" ? "limit" : "fail", detail: String(j.detail || j.error || r.status) };
+  } catch (e) { askErr = { kind: "offline", detail: "" }; }
+  askBusy = false; renderAsk();
+}
+function renderAsk() {
+  const f = document.getElementById("askForm"); f.hidden = mode !== "worker" || sel < TODAY;
+  if (f.hidden) return;
+  const d = BYKEY[sel], go = document.getElementById("askGo"), e = askErr;
+  document.getElementById("askFor").textContent = `For ${sel === TODAY ? "today" : `${DAYNAMES[d.i]} ${fmt(d.date)}`}. Nothing changes until you accept.`;
+  go.disabled = askBusy; go.innerHTML = askBusy ? "<span>Asking<span class=\"wide-only\"> the coach</span>…</span>" : "<span>Suggest<span class=\"wide-only\"> a workout</span></span>";
+  setHTML(document.getElementById("askState"), askBusy ? stateBox("load", "Coach is replanning…", "This takes a few seconds.")
+    : !e ? "" : e.kind === "empty" ? `<p class="small" role="alert">Type what you're doing instead first, e.g. “riding 90 min with friends instead of the swim”.</p>`
+    : e.kind === "nokey" ? stateBox("err", "Coach is off", "The site has no Claude key, so it can't suggest a workout.", { fix: "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put ANTHROPIC_API_KEY</code>, then try again." })
+    : e.kind === "limit" ? stateBox("empty", "Request limit reached for today", "15 requests a day. It resets tomorrow.")
+    : e.kind === "offline" ? stateBox("err", "Coach needs a connection", "Try again when you're back online. Your plan didn't change.", { retry: "ask" })
+    : stateBox("err", "Coach couldn't answer", "Nothing in your plan changed.", { retry: "ask", fix: esc(e.detail), fixLabel: "Details" }));
+  const ab = document.getElementById("askBody"); if (askNew) { askNew = false; requestAnimationFrame(() => reveal(ab)); }
+  setHTML(ab, ASK ? `<p class="small you">You: “${esc(ASK.request)}”</p><p>${esc(ASK.summary)}</p>` + changeRows(ASK, "ask") : "");
+}
+document.getElementById("askForm").addEventListener("submit", e => { e.preventDefault(); askCoach(); });
+document.getElementById("askText").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); askCoach(); } });
+function acceptCoach(list, c) {
   if (settingsLocked()) { flashNote(NEEDS_NET); return; }
   const o = Object.assign({}, settings.ovr || {}), cut = keyOf(new Date(today.getTime() - 30 * 864e5));
   for (const k of Object.keys(o)) if (k < cut) delete o[k];
-  for (const x of list) o[x.date + "|" + x.slot] = Object.assign({}, x, { createdAt: COACH.createdAt });
+  // A change that replaces an earlier accepted one keeps it (one level deep) so Undo goes back to it, not to the original plan.
+  for (const x of list) { const k = x.date + "|" + x.slot, was = o[k]; o[k] = Object.assign({}, x, { createdAt: c.createdAt }, was && was.createdAt !== c.createdAt ? { prev: Object.assign({}, was, { prev: undefined }) } : was && was.prev ? { prev: was.prev } : {}); }
   settings.ovr = o; saveSettings(); render();
 }
-function undoCoach(k) { if (settingsLocked()) { flashNote(NEEDS_NET); return; } const o = Object.assign({}, settings.ovr || {}); delete o[k]; settings.ovr = o; saveSettings(); render(); }
+function undoCoach(k) { if (settingsLocked()) { flashNote(NEEDS_NET); return; } const o = Object.assign({}, settings.ovr || {}); if (o[k] && o[k].prev) o[k] = o[k].prev; else delete o[k]; settings.ovr = o; saveSettings(); render(); }
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-cacc],[data-caccall],[data-cundo],#coachAsk"); if (!b) return;
   if (b.id === "coachAsk") return loadCoach(true);
-  if (b.dataset.cundo) return undoCoach(b.dataset.cundo);
-  const live = COACH.changes.filter(x => x.date >= TODAY && BYKEY[x.date]);
-  acceptCoach(b.dataset.caccall ? live : [COACH.changes[+b.dataset.cacc]]);
+  if (b.dataset.cundo) return flow("swap", "", () => undoCoach(b.dataset.cundo), e);
+  const c = b.dataset.src === "ask" ? ASK : COACH; if (!c) return;
+  const live = c.changes.filter(x => x.date >= TODAY && BYKEY[x.date]);
+  flow("swap", "", () => acceptCoach(b.dataset.caccall ? live : [c.changes[+b.dataset.cacc]], c), e);
 });
 function dayStatus(d) {
   const ss = sessions(d), done = ss.filter(x => isDone(d.key, x.slot)).length;
@@ -1505,6 +2121,7 @@ function feelOf(s) {
   return "Feel: RPE 3–4/10. You can talk in full sentences.";
 }
 function whyOf(s, hard) {
+  if (s.why) return s.why;
   if (s.s === "bike") return hard ? WHY.bikeH : WHY.bikeE;
   if (s.s === "run") return hard ? WHY.runH : WHY.runE;
   return WHY[s.s];
@@ -1516,18 +2133,19 @@ function fuelOf(s) {
 }
 const durTxt = m => m >= 60 ? `${Math.floor(m / 60)}:${pad(m % 60)}` : m + " min";
 const tagCls = { swim: "sw", bike: "bk", run: "rn", lift: "lf", brick: "bk", key: "ky", rest: "" };
+const GLYPH = { swim: "swim", bike: "bike", brick: "bike", run: "run", lift: "lift", key: "key" };
+const glyph = s => GLYPH[s] ? `<svg class="gl" aria-hidden="true" focusable="false"><use href="#g-${GLYPH[s]}"/></svg>` : "";
 
 // ---------- render: Today ----------
 let builtFor = null;
 function buildToday() {
   const d = BYKEY[sel], wk = WEEKS[d.wk];
   const dl = o => d.date.toLocaleDateString("en-US", o);
-  document.getElementById("dayTitle").innerHTML = `<span class="dl">${dl({ weekday: "long", month: "long", day: "numeric" })}</span><span class="ds">${dl({ weekday: "short", month: "short", day: "numeric" })}</span><span class="sub">Week ${d.wk} of 34, ${esc(d.ph)}${d.key === TODAY ? " · today" : ""}</span>`;
+  document.getElementById("dayTitle").innerHTML = `<span class="dl">${dl({ weekday: "long", month: "long", day: "numeric" })}</span><span class="ds">${dl({ weekday: "short", month: "short", day: "numeric" })}</span><span class="sub">${d.wk === curWk ? (d.key === TODAY ? "Today" : d.key === prevKey(TODAY) ? "Yesterday" : prevKey(d.key) === TODAY ? "Tomorrow" : "This week") : `Week ${d.wk} of 34, ${esc(d.ph)}`}</span>`;
   const wn = document.getElementById("weekNote"), fo = FOCUS[d.wk];
   wn.innerHTML = (fo ? `<strong>This week's focus:</strong> ${esc(fo[0])}<br><strong>Habit:</strong> ${esc(fo[1])}` : "") + (wk.note ? `<br><span class="small">${esc(wk.note)}</span>` : "") + `<span id="swimCount" class="swimcount"></span>`;
   wn.hidden = false;
   const box = document.getElementById("sessions"); box.innerHTML = "";
-  box.dataset.dir = dayDir; dayDir = "";
   [["am", d.am], ["pm", d.pm]].forEach(([slot, s], i) => {
     const el = document.createElement("article");
     el.style.setProperty("--i", i);
@@ -1537,19 +2155,20 @@ function buildToday() {
     const title = s.s === "lift" ? esc(s.t) : s.s === "rest" ? "Rest" : `${ST[s.s]} · ${durTxt(s.m)}`;
     const made = s.coach && s.coach.createdAt ? new Date(s.coach.createdAt).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
     // Order: what it is, the Mark done control, then (once done) the log row and Garmin's review, then the session itself.
-    el.innerHTML = `<div class="sesshead"><span class="slot">${slot.toUpperCase()}</span><span class="chip">${ST[s.s]}</span><h3>${title}</h3>${hard ? '<span class="hard">Hard</span>' : ""}</div>
+    el.innerHTML = `<div class="sesshead"><span class="slot">${slot.toUpperCase()}</span><span class="chip">${glyph(s.s)}${ST[s.s]}</span><h3>${title}</h3>${hard ? '<span class="hard">Hard</span>' : ""}</div>
+      ${outdoorOf(s) ? `<div class="wx" id="wx-${slot}" hidden></div>` : ""}
       ${s.s === "rest" ? "" : `<label class="donebtn big"><input type="checkbox" id="${slot}-done" data-slot="${slot}" data-f="done"><span class="d0">Mark done</span><span class="d1">Done</span></label>
+      <p class="small" id="g-${slot}" hidden></p>
+      <div class="review" id="rv-${slot}" hidden></div>
       <div class="logrow" id="${slot}-log" hidden>
         <div class="field rpe">Effort (RPE)<div class="pick" role="group" aria-label="Effort, RPE 1 to 10" id="${slot}-rpe" data-slot="${slot}" data-f="rpe">${[1,2,3,4,5,6,7,8,9,10].map(v => `<button type="button" data-v="${v}" aria-pressed="false">${v}</button>`).join("")}</div></div>
         <label class="field">Actual min<input id="${slot}-min" name="${slot}-min" type="number" min="0" max="600" inputmode="numeric" autocomplete="off" placeholder="${s.m}" data-slot="${slot}" data-f="min"></label>
         <button class="btn" type="button" data-note="1">Add note</button>
       </div>`}
-      <p class="small" id="g-${slot}" hidden></p>
-      <div class="review" id="rv-${slot}" hidden></div>
       <details class="sbody" id="${slot}-body" open><summary>Session details</summary><div class="sbody-in">
       <p class="prio" id="pr-${slot}" hidden></p>
       ${s.coach ? `<p class="small coachnote"><strong>Coach change${made ? `, suggested ${esc(made)}` : ""}:</strong> ${esc(s.coach.reason)} <span class="stale" id="cs-${slot}" hidden></span> <button class="btn" data-cundo="${sel}|${slot}">Undo</button></p>` : ""}
-      ${exOf(s).length ? liftTable(slot, s) : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
+      ${exOf(s).length ? liftTable(slot, s) : workoutHTML(s) ? `<p class="small">Plan: ${esc(X(s.t))}</p>${workoutHTML(s)}` : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
       ${feelOf(s) ? `<p class="why"><strong>${esc(feelOf(s))}</strong></p>` : ""}
       <p class="why">${esc(whyOf(s, hard))}</p>${fuel ? `<p class="fuel">${esc(fuel)}</p>` : ""}
       <div class="routes" id="r-${slot}" hidden></div>
@@ -1625,11 +2244,13 @@ function fillToday() {
     const sb = document.getElementById(slot + "-body"); if (sb && sb.dataset.done !== String(dn) && !sb.contains(act)) { sb.open = !dn; sb.dataset.done = String(dn); }
     const gl = document.getElementById("g-" + slot);
     const rv = document.getElementById("rv-" + slot);
-    if (rv) { const g = au && !au.sub && d[slot] ? grade(d[slot], au) : []; rv.hidden = !g.length; rv.innerHTML = g.length ? "<strong>Review</strong>" + g.map(([ok, t]) => `<span class="${ok === 1 ? "ok" : ok === 0 ? "bad" : ""}">${ok === 1 ? "✓" : ok === 0 ? "⚠" : "•"} ${esc(t)}</span>`).join("") : ""; }
+    // The review fades up when it appears because you ticked Done; not when the day is first drawn.
+    if (rv) { const cp = d[slot] ? compliance(sel, slot) : null; if (rv.dataset.drawn && rv.hidden && cp) reveal(rv); rv.dataset.drawn = "1"; rv.hidden = !cp; rv.className = "review" + (cp ? " cp-" + cp.c : ""); setHTML(rv, cp ? complianceHTML(cp) : ""); }
     if (gl) { gl.hidden = !au; if (au) gl.textContent = "Garmin: " + [au.sub ? au.sub + " (counts as done)" : "", au.name, au.mins + " min", au.hr ? Math.round(au.hr) + " bpm avg" : "", au.w ? Math.round(au.w) + " W avg" : "", au.np ? Math.round(au.np) + " W normalized" : ""].filter(Boolean).join(" · "); }
     const cs = document.getElementById("cs-" + slot), stale = d[slot] && d[slot].coach ? coachStale(d[slot].coach) : null;
     if (cs) { cs.hidden = !stale; cs.innerHTML = stale ? `<span class="badge extra">Out of date</span> ${esc(stale)}` : ""; }
   }
+  renderWx();
   // routes from your own ride history
   for (const slot of ["am", "pm"]) {
     const re = document.getElementById("r-" + slot), s = d[slot]; if (!re || !s) continue;
@@ -1640,14 +2261,34 @@ function fillToday() {
   // The numbers behind the call, compact, each tagged with its source. Detail (sleep score, fitness and fatigue) is in the editor.
   const w = GA && GA.well[sel], wf = wellOn(sel), gc = document.getElementById("gchips"), eff = ckEff(sel);
   const form = wf && wf.ctl != null && wf.atl != null ? Math.round(wf.ctl - wf.atl) : null;
-  const chip = (v, l, low, src) => `<div class="gchip ${low ? "low" : ""}"><b>${v}</b><span>${l}</span><span class="src">${src}</span></div>`;
+  // 7-day line for one metric ending on this day, drawn over the athlete's usual range (28 days before it, mean ± 1 SD).
+  // `get` reads a wellness row; `today` is the effective value shown in the chip, so typed corrections move the dot too.
+  const spark = (get, today, opt = {}) => {
+    const ks = []; for (let k = sel, i = 0; i < 35; i++, k = prevKey(k)) ks.unshift(k);
+    const val = k => { const r = opt.carry ? wellOn(k) : GA && GA.well[k]; const v = r ? get(r) : null; return v != null && isFinite(v) ? +v : null; };
+    const last = ks.slice(-7).map((k, i) => i === 6 ? today : val(k)), base = ks.slice(0, 28).map(val).filter(v => v != null);
+    if (last.filter(v => v != null).length < 3) return "";
+    let band = null;
+    if (!opt.zero && base.length >= 7) { const m = base.reduce((a, b) => a + b, 0) / base.length, sd = Math.sqrt(base.reduce((a, b) => a + (b - m) ** 2, 0) / base.length); band = [m - sd, m + sd]; }
+    const all = last.filter(v => v != null).concat(band || [], opt.zero ? [0] : []), lo = Math.min(...all), hi = Math.max(...all), span = hi - lo || 1;
+    const W = 60, H = 20, X = i => (i * W / 6).toFixed(1), Y = v => (H - 1 - (v - lo) / span * (H - 2)).toFixed(1);
+    const pts = last.map((v, i) => v == null ? null : `${X(i)},${Y(v)}`).filter(Boolean).join(" ");
+    const svg = `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">` +
+      (band ? `<rect class="band" x="0" width="${W}" y="${Y(band[1])}" height="${(Y(band[0]) - Y(band[1])).toFixed(1)}"/>` : "") +
+      (opt.zero ? `<line class="zero" x1="0" x2="${W}" y1="${Y(0)}" y2="${Y(0)}"/>` : "") +
+      `<polyline class="ln" points="${pts}"/>` + (today != null ? `<line class="pt" x1="${X(6)}" x2="${X(6)}" y1="${Y(today)}" y2="${Y(today)}"/>` : "") + `</svg>`;
+    const f = opt.f || (v => Math.round(v)), first = last.find(v => v != null);
+    return svg + `<span class="vh">Last 7 days ${f(first)} to ${f(last[6] ?? last.filter(v => v != null).pop())}${band ? `; usual range ${f(band[0])} to ${f(band[1])}` : ""}.</span>`;
+  };
+  // The source only shows when you typed over Garmin's number; Garmin is the default.
+  const chip = (v, l, low, src, sp = "") => `<div class="gchip ${low ? "low" : ""}"><b>${v}</b>${sp}<span>${l}${src === "typed" ? " · typed" : ""}</span></div>`;
   const srcOf = f => has(f) ? "typed" : "Garmin", num = f => eff[f] != null && eff[f] !== "" && isFinite(+eff[f]) ? +eff[f] : null;
   const chips = [];
-  if (num("sleep") != null) chips.push(chip((has("sleep") || !w || !w.sleepSecs ? num("sleep") : w.sleepSecs / 3600).toFixed(1) + " h", "Sleep", num("sleep") < 7, srcOf("sleep")));
-  if (num("hrv") != null) chips.push(chip(Math.round(num("hrv")) + " ms", "HRV", num("hrv") < 30, srcOf("hrv")));
-  if (num("rhr") != null) chips.push(chip(Math.round(num("rhr")), "Rest HR", num("rhr") >= settings.rhr + 8, srcOf("rhr")));
-  if (num("ready") != null) chips.push(chip(Math.round(num("ready")), "Readiness", num("ready") < 50, srcOf("ready")));
-  if (form != null) chips.push(chip(`${form > 0 ? "+" : ""}${form}`, "Form", form <= -25, "Garmin"));
+  if (num("sleep") != null) { const sv = has("sleep") || !w || !w.sleepSecs ? num("sleep") : w.sleepSecs / 3600; chips.push(chip(sv.toFixed(1) + " h", "Sleep", num("sleep") < 7, srcOf("sleep"), spark(r => r.sleepSecs ? r.sleepSecs / 3600 : null, sv, { f: v => v.toFixed(1) + " h" }))); }
+  if (num("hrv") != null) chips.push(chip(Math.round(num("hrv")) + " ms", "HRV", num("hrv") < 30, srcOf("hrv"), spark(r => r.hrv, num("hrv"))));
+  if (num("rhr") != null) chips.push(chip(Math.round(num("rhr")), "Rest HR", num("rhr") >= settings.rhr + 8, srcOf("rhr"), spark(r => r.restingHR, num("rhr"))));
+  if (num("ready") != null) chips.push(chip(Math.round(num("ready")), "Readiness", num("ready") < 50, srcOf("ready"), spark(r => r.readiness, num("ready"))));
+  if (form != null) chips.push(chip(`${form > 0 ? "+" : ""}${form}`, "Form", form <= -25, "Garmin", spark(r => r.ctl != null && r.atl != null ? r.ctl - r.atl : null, form, { carry: true, zero: true })));
   gc.hidden = !chips.length; setHTML(gc, chips.join(""));
   const det = [w && w.sleepSecs ? `sleep ${(w.sleepSecs / 3600).toFixed(1)} h${w.sleepScore ? ` · score ${w.sleepScore}` : ""}` : "", w && w.hrv ? `HRV ${Math.round(w.hrv)} ms` : "", w && w.restingHR ? `resting HR ${w.restingHR}` : "", w && w.readiness ? `readiness ${Math.round(w.readiness)}` : "",
     form != null ? `form ${form > 0 ? "+" : ""}${form} · fitness ${Math.round(wf.ctl)} / fatigue ${Math.round(wf.atl)}` : ""].filter(Boolean);
@@ -1657,7 +2298,7 @@ function fillToday() {
   ac2.hidden = !all.length && !none;
   document.getElementById("actsScroll").hidden = !all.length;
   setHTML(document.getElementById("actsEmpty"), none ? stateBox("empty", "Nothing from Garmin for this day", sel === TODAY ? "Activities show here after your watch syncs. Use Sync Garmin in the status bar to check now." : "No activity was recorded on your watch.") : "");
-  if (all.length) document.getElementById("actsList").innerHTML = `<tr><th>Time</th><th>Activity</th><th>Time</th><th>Avg HR</th><th>Load</th><th></th></tr>` + all.map(a =>
+  if (all.length) document.getElementById("actsList").innerHTML = `<tr><th>Time</th><th>Activity</th><th>Time</th><th>Avg HR</th><th>Load</th><th><span class="vh">Plan or extra</span></th></tr>` + all.map(a =>
     `<tr><td class="num">${esc(a.time)}</td><td>${esc(a.name)} <span class="small">${esc(a.type)}${a.km ? " · " + (a.km / 1.609).toFixed(1) + " mi" : ""}</span></td><td class="num">${durTxt(a.mins)}</td><td class="num">${a.hr ? Math.round(a.hr) : "—"}</td><td class="num">${a.load != null ? Math.round(a.load) : "—"}</td><td>${a.matched ? `<span class="badge plan">plan · ${a.matched.toUpperCase()}${a.sub ? " · " + esc(a.sub.toLowerCase()) : ""}</span>` : '<span class="badge extra">extra</span>'}</td></tr>`).join("");
   // adaptive context: yesterday's extras, week over plan
   const yExtra = extrasOf(prevKey(sel)).reduce((t, a) => t + (a.load || a.mins * .6), 0);
@@ -1679,8 +2320,9 @@ function fillToday() {
   const wk = WEEKS[d.wk], strip = document.getElementById("strip");
   strip.innerHTML = wk.days.map(x => {
     const st = dayStatus(x);
-    const dots = sessions(x).map(o => `<i class="${o.s.s} ${isDone(x.key, o.slot) ? "done" : st.past ? "miss" : ""}"></i>`).join("") || '<span class="small">rest</span>';
-    return `<button data-day="${x.key}" class="${x.key === sel ? "sel" : ""} ${x.key === TODAY ? "today" : ""}" aria-label="${DAYNAMES[x.i]} ${fmt(x.date)}"><span class="d"><span>${DAYNAMES[x.i]}</span> <span>${x.date.getDate()}</span></span><span class="dots">${dots}</span></button>`;
+    const ss = sessions(x), lab = ss.map(o => `${ST[o.s.s]} ${isDone(x.key, o.slot) ? "done" : st.past ? "missed" : "planned"}`).join(", ") || "rest day";
+    const dots = ss.map(o => `<i class="${o.s.s} ${isDone(x.key, o.slot) ? "done" : st.past ? "miss" : ""}">${glyph(o.s.s)}</i>`).join("") || '<span class="small">rest</span>';
+    return `<button data-day="${x.key}" class="${x.key === sel ? "sel" : ""} ${x.key === TODAY ? "today" : ""}" aria-label="${DAYNAMES[x.i]} ${fmt(x.date)}: ${lab}"><span class="d"><span>${DAYNAMES[x.i]}</span> <span>${x.date.getDate()}</span></span><span class="dots">${dots}</span></button>`;
   }).join("");
   document.getElementById("prevDay").disabled = sel === DAYS[0].key;
   document.getElementById("nextDay").disabled = sel === DAYS[DAYS.length - 1].key;
@@ -1697,10 +2339,10 @@ function renderWeek() {
   wn.innerHTML = (fo ? `<strong>Focus:</strong> ${esc(fo[0])}<br><strong>Habit:</strong> ${esc(fo[1])}` : "") + (wk.note ? `<br><span class="small">${esc(wk.note)}</span>` : "");
   const cell = (d, slot) => {
     const s = d[slot];
-    if (!s) return '<span class="small">—</span>';
-    if (s.s === "rest") return `<span class="small">${esc(X(s.t))}</span>`;
-    const dn = isDone(d.key, slot);
-    return `<label class="cell ${dn ? "done" : ""}"><input type="checkbox" id="w-${d.key}-${slot}" data-day="${d.key}" data-slot="${slot}" data-f="done" ${dn ? "checked" : ""}><span><span class="${tagCls[s.s]}">${ST[s.s]}</span> ${esc(X(s.t))}</span></label>`;
+    if (!s) return '<span class="small cell-rest">—</span>';
+    if (s.s === "rest") return `<span class="small cell-rest">${esc(X(s.t))}</span>`;
+    const dn = isDone(d.key, slot), cp = compliance(d.key, slot);
+    return `<label class="cell ${dn ? "done" : ""}"><input type="checkbox" id="w-${d.key}-${slot}" data-day="${d.key}" data-slot="${slot}" data-f="done" ${dn ? "checked" : ""}><span><span class="wtag ${tagCls[s.s]}">${glyph(s.s)}${ST[s.s]}</span> <span class="wdet">${esc(X(s.t))}</span>${cp ? `<span class="cpb ${cp.c}">${cp.h}</span>` : ""}${!dn && d.key >= TODAY ? (v => v && v.c !== "none" ? `<span class="wxp ${v.c}" title="${esc(v.reasons.join(" "))}">${v.c === "indoor" ? "Indoors" : v.c === "caution" ? "Outside, with care" : "Outside"}</span>` : "")(wxVerdict(d.key, slot, s)) : ""}</span></label>`;
   };
   document.getElementById("weekBody").innerHTML = wk.days.map(d => `<tr role="row" class="${d.key === TODAY ? "today" : ""}"><td role="cell"><a href="#/today/${d.key}" data-open="${d.key}">${DAYNAMES[d.i]} ${fmt(d.date)}</a>${extrasOf(d.key).map(a => `<span class="xtra">+ ${esc(a.name)} · ${durTxt(a.mins)}</span>`).join("")}</td><td role="cell" data-l="AM">${cell(d, "am")}</td><td role="cell" data-l="PM">${cell(d, "pm")}</td></tr>`).join("");
   const by = {}; let pl = 0, dn = 0, cnt = 0, cdn = 0;
@@ -1723,6 +2365,10 @@ function renderWeek() {
       <div class="hb-foot"><span>${!started ? `Starts ${fmt(first)}.` : (ended ? "Week finished. " : `Line = plan through today (${h(H.planTo)} h). `) + verdict}</span></div>
       <div class="hb-foot"><span class="hb-legend">${["swim", "bike", "run", "lift"].filter(k => by[k]).map(k => `<span><i class="${k}"></i>${ST[k]} ${h(by[k].d)} of ${h(by[k].p)} h</span>`).join("")}${xn ? `<span><i class="extra"></i>Extra ${h(xm)} h (${xn} unplanned)</span>` : ""}</span>${load ? `<span>Training load this week: ${Math.round(load)}</span>` : ""}</div>
     </div>`;
+  const tally = { green: 0, yellow: 0, red: 0 };
+  for (const d of wk.days) for (const o of sessions(d)) { const cp = compliance(d.key, o.slot); if (cp && tally[cp.c] != null) tally[cp.c]++; }
+  const graded = tally.green + tally.yellow + tally.red;
+  document.getElementById("weekStats").insertAdjacentHTML("beforeend", graded ? `<div class="hb-foot"><span class="cpkey"><b>Compliance ${Math.round(tally.green / graded * 100)}% green</b><span><i class="green"></i>${tally.green} on target</span><span><i class="yellow"></i>${tally.yellow} partly</span><span><i class="red"></i>${tally.red} off or missed</span></span></div>` : "");
   document.getElementById("weekGoals").innerHTML = weekGoals(selWeek).map(g => `<div class="goal ${g.c}"><span class="mk">${g.c === "ok" ? "✓" : g.c === "bad" ? "✗" : "○"}</span><span>${esc(g.t)}</span></div>`).join("");
   document.getElementById("prevWeek").disabled = selWeek === 1;
   document.getElementById("nextWeek").disabled = selWeek === 34;
@@ -1764,7 +2410,7 @@ function renderSeason() {
     if (w.n === curWk) svg += `<rect x="${x - 2}" y="${t}" width="${bw + 4}" height="${y(0) - t}" fill="none" stroke="var(--accent)" stroke-dasharray="3 3" rx="3"/>`;
   });
   chartDone(cv, Wd, Hd, svg,
-    wks.map((w, i) => ({ x: l + i * slotW + slotW / 2, w: slotW, y0: t, y1: y(0), text: `Week ${w.n}: ${w.p.toFixed(1)} h planned, ${w.d.toFixed(1)} h done${w.x > 0 ? `, ${w.x.toFixed(1)} h extra` : ""}` })),
+    wks.map((w, i) => ({ x: l + i * slotW + slotW / 2, w: slotW, y0: t, y1: y(0), now: w.n === curWk, text: `Week ${w.n}: ${w.p.toFixed(1)} h planned, ${w.d.toFixed(1)} h done${w.x > 0 ? `, ${w.x.toFixed(1)} h extra` : ""}` })),
     `<table><caption>Weekly hours, planned and done</caption><tr><th>Week</th><th>Planned hours</th><th>Done hours</th><th>Extra hours</th></tr>` + wks.map(w => `<tr><td>${w.n}</td><td>${w.p.toFixed(1)}</td><td>${w.d.toFixed(1)}</td><td>${w.x.toFixed(1)}</td></tr>`).join("") + `</table>`);
   // numbers
   const T = toks();
@@ -1789,6 +2435,43 @@ function renderGuide() {
   document.getElementById("raceRp").textContent = `Hold ${T.RP}, set from your week 28 FTP.`;
   const rows = [["Foundation · wk 1–8", "3×", ["fA", "fB", "fC"]], ["Base · wk 9–20", "2×", ["fA", "fB"]], ["Build · wk 21–28", "1–2×", ["bu"]], ["Peak / Taper", "1×", ["pk"]]];
   document.getElementById("liftTable").innerHTML = `<tr><th>Phase</th><th>Per week</th><th>Sessions</th></tr>` + rows.map(r => `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td>${r[2].map(k => `<strong>${LIFTS[k].name}:</strong> ${LIFTS[k].items.join(" · ")}`).join("<br>")}</td></tr>`).join("");
+  // Phones stack the guide's tables; each cell carries its column name for the stacked layout.
+  for (const t of document.querySelectorAll("#p-guide .scroll table")) {
+    const hs = [...((t.rows[0] && t.rows[0].querySelectorAll("th")) || [])].map(h => h.textContent.trim());
+    if (hs.length) for (const tr of [...t.rows].slice(1)) [...tr.cells].forEach((td, i) => { if (hs[i] && td.dataset.l !== hs[i]) td.dataset.l = hs[i]; });
+  }
+}
+
+// ---------- session compliance ----------
+// TrainingPeaks-style grade for one planned session: duration within 20% of plan is green, 20–50% off yellow, more than 50% off red.
+// Load far from plan, or an easy session done hard (or a quality one done light), keeps it from being green. Missed sessions are red.
+const CPL = { green: "On target", yellow: "Partly", red: "Off target" };
+function compliance(k, slot) {
+  const d = BYKEY[k], s = d && d[slot]; if (!s || s.s === "rest") return null;
+  const a = AUTO[k] && AUTO[k][slot], L = (logs[k] || {})[slot] || {};
+  if (!isDone(k, slot)) return k < TODAY ? { c: "red", h: "Missed", rows: [], notes: [] } : null;
+  if (a && a.sub) return { c: "yellow", h: "Swapped", note: a.sub + ". Counts as done; not the planned stimulus.", rows: [], notes: [] };
+  const pm = s.s === "brick" ? durOf(s.ride, "bike") : s.m, act = a ? a.mins : +L.min || 0;
+  if (!act) return { c: "logged", h: "Done", note: "Ticked by hand; Garmin has no activity to grade.", rows: [], notes: [] };
+  const band = r => r >= .8 && r <= 1.2 ? 2 : r >= .5 && r <= 1.5 ? 1 : 0, C = ["red", "yellow", "green"], pct = r => Math.round(r * 100) + "%";
+  let score = band(act / pm);
+  const rows = [{ l: "Duration", v: `${act} of ${pm} min`, s: pct(act / pm), c: C[band(act / pm)] }];
+  const st = s.s === "brick" ? rideOf(s, pm) : structOf(s), pl = st && s.s !== "swim" ? loadOf(st) : null;
+  if (pl && a && a.load != null) { const b = band(a.load / pl); score = Math.min(score, b + 1); rows.push({ l: "Load", v: `${Math.round(a.load)} of ≈${pl}`, s: pct(a.load / pl), c: C[b] }); }
+  const sp = s.s === "brick" ? "bike" : s.s;
+  if (a && sp === "bike" && (a.np || a.w)) rows.push({ l: "Normalized power", v: `${Math.round(a.np || a.w)} W`, s: ((a.np || a.w) / settings.ftp).toFixed(2) + " IF" });
+  if (a && a.hr && (sp === "run" || sp === "bike")) rows.push({ l: "Avg heart rate", v: `${Math.round(a.hr)} bpm` });
+  if (a && a.dec != null && act >= 45 && (sp === "run" || sp === "bike")) rows.push({ l: "Decoupling", v: a.dec.toFixed(1) + "%", s: a.dec < 5 ? "durable" : "HR drifting", c: a.dec < 5 ? "green" : a.dec < 8 ? "yellow" : "red" });
+  const notes = a ? grade(s, a).filter(([, t]) => !/^(Short|Duration)/.test(t)) : [];
+  if (notes.some(([ok]) => ok === 0)) score = Math.min(score, 1);
+  return { c: C[score], h: CPL[C[score]], rows, notes, hrz: a && Array.isArray(a.hrz) && a.hrz.some(Boolean) ? a.hrz : null };
+}
+function complianceHTML(cp) {
+  const tot = cp.hrz ? cp.hrz.reduce((x, y) => x + y, 0) : 0;
+  return `<div class="cp-head"><span class="cpb ${cp.c}">${cp.h}</span>${cp.note ? `<span>${esc(cp.note)}</span>` : ""}</div>` +
+    (cp.rows.length ? `<dl class="cp-grid">${cp.rows.map(r => `<div><dt>${r.l}</dt><dd class="num">${esc(r.v)}${r.s ? `<span class="cpv ${r.c || ""}">${esc(r.s)}</span>` : ""}</dd></div>`).join("")}</dl>` : "") +
+    (tot ? `<div><span class="small">Time in heart-rate zones</span><div class="hrz" role="img" aria-label="Time in heart-rate zones: ${cp.hrz.map((v, i) => `zone ${i + 1} ${Math.round(v / 60)} min`).join(", ")}">${cp.hrz.map((v, i) => v ? `<i class="h${i + 1}" style="flex:${v} 0 0"></i>` : "").join("")}</div><span class="small" aria-hidden="true">${cp.hrz.map((v, i) => v >= 60 ? `Z${i + 1} ${Math.round(v / 60)}′` : "").filter(Boolean).join(" · ")}</span></div>` : "") +
+    cp.notes.map(([ok, t]) => `<span class="${ok === 1 ? "ok" : ok === 0 ? "bad" : ""}">${ok === 1 ? "✓" : ok === 0 ? "⚠" : "•"} ${esc(t)}</span>`).join("");
 }
 
 // ---------- session grading ----------
@@ -1867,7 +2550,8 @@ function wireChart(svg) {
 function chartSelect(svg, i) {
   const items = svg._items || [], rd = document.getElementById(svg.id + "-read"), g = svg.querySelector(".cursor");
   svg._sel = i == null || !items[i] ? null : i;
-  if (svg._sel == null) { rd.textContent = items.length ? "Tap the chart, or use the arrow keys, to read a value." : ""; if (g) g.innerHTML = ""; return; }
+  // Idle, the readout shows where you are now (this week, or the latest day) and how to read the rest.
+  if (svg._sel == null) { const cur = items.find(x => x.now) || items[items.length - 1]; rd.textContent = cur ? `${cur.text} · tap or use ← → for others` : ""; if (g) g.innerHTML = ""; return; }
   const it = items[i]; rd.textContent = it.text;
   g.innerHTML = it.w ? `<rect x="${(it.x - it.w / 2).toFixed(1)}" y="${it.y0}" width="${it.w.toFixed(1)}" height="${it.y1 - it.y0}"/>`
     : `<line x1="${it.x.toFixed(1)}" x2="${it.x.toFixed(1)}" y1="${it.y0}" y2="${it.y1}"/>` + (it.dots || []).map(([y, c]) => `<circle cx="${it.x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="${c}"/>`).join("");
@@ -1911,7 +2595,6 @@ function lineChart(svgId, series, opts) {
   const table = `<table><caption>${esc(opts.caption || "")}</caption><tr><th>Date</th>${series.map(s => `<th>${esc(s.name || "Value")}</th>`).join("")}</tr>` +
     days.map(k => `<tr><td>${day(k)}</td>${vals(k).map(v => `<td>${v == null ? "" : f(v)}</td>`).join("")}</tr>`).join("") + `</table>`;
   chartDone(el, Wd, Hd, svg, items, table);
-  el.classList.add("draw"); // CSS draws the lines in when the Progress panel is shown
 }
 const MILES = [
   { id: "swim1000", t: "Swim 1,000 m continuous", auto: a => a.sport === "swim" && a.km * 1000 >= 1000 },
@@ -1988,7 +2671,6 @@ function weekHours(w) {
   return { by, plan, planTo, done: Object.values(by).reduce((a, b) => a + b, 0) };
 }
 const hh = m => (m / 60).toFixed(1);
-let profileRisen = false;
 function renderHourbar() {
   const wk = WEEKS[curWk], H = weekHours(wk), cap = Math.max(H.plan, H.done) || 1;
   document.getElementById("hbWeekNum").innerHTML = `<b>${hh(H.done)}</b> of ${hh(H.plan)} h · week ${curWk}`;
@@ -2009,7 +2691,7 @@ function renderHourbar() {
   let lastPh = "";
   all.forEach((w, i) => {
     const x = i * sw + 1.5;
-    svg += `<rect class="bar" style="--n:${i}" x="${x}" y="${y(w.plan)}" width="${bw}" height="${base - y(w.plan)}" rx="1.5" fill="var(--soft)" stroke="var(--line)"/>`;
+    svg += `<rect class="bar" style="--n:${i}" x="${x}" y="${y(w.plan)}" width="${bw}" height="${base - y(w.plan)}" rx="1.5" fill="var(--line)" stroke="var(--line-strong)"/>`;
     const core = w.done - w.by.extra;
     if (core > 0) svg += `<rect class="bar" style="--n:${i}" x="${x}" y="${y(core)}" width="${bw}" height="${base - y(core)}" rx="1.5" fill="var(--fg)"/>`;
     if (w.by.extra > 0) svg += `<rect x="${x}" y="${y(w.done)}" width="${bw}" height="${y(core) - y(w.done)}" rx="1.5" fill="var(--warn)"/>`;
@@ -2019,9 +2701,8 @@ function renderHourbar() {
   });
   svg += `<text class="strong" x="${Wd - 2}" y="${base + 15}" text-anchor="end">Race</text>`;
   chartDone(prof, Wd, Hp, svg,
-    all.map((w, i) => ({ x: i * sw + 1.5 + bw / 2, w: sw, y0: 0, y1: base, text: `Week ${w.n} (${w.ph}): ${hh(w.plan)} h planned, ${hh(w.done)} h done` })),
+    all.map((w, i) => ({ x: i * sw + 1.5 + bw / 2, w: sw, y0: 0, y1: base, now: w.n === curWk, text: `Week ${w.n} (${w.ph}): ${hh(w.plan)} h planned, ${hh(w.done)} h done` })),
     `<table><caption>Season hours by week</caption><tr><th>Week</th><th>Phase</th><th>Planned hours</th><th>Done hours</th></tr>` + all.map(w => `<tr><td>${w.n}</td><td>${w.ph}</td><td>${hh(w.plan)}</td><td>${hh(w.done)}</td></tr>`).join("") + `</table>`);
-  prof.classList.toggle("rise", !profileRisen); profileRisen = true;  prof.classList.toggle("rise", !profileRisen); profileRisen = true;
   const gapS = doneAll - planToAll;
   document.getElementById("hbSeasonNote").innerHTML = today < START ? "Plan starts Oct 19." :
     `${Math.round(doneAll / tot * 100)}% of season hours done · plan to date ${hh(planToAll)} h · ` + (Math.abs(gapS) < 30 ? '<span class="ahead">on track for June</span>' : gapS > 0 ? `<span class="ahead">${hh(gapS)} h ahead</span>` : `<span class="behind">${hh(-gapS)} h behind plan</span>`);
@@ -2076,7 +2757,6 @@ function renderHabits() {
 // ---------- Road to 5:00: projected splits (same model as Progress) vs a 5-hour budget ----------
 const GOAL = { swim: 40 * 60, tr: 6 * 60, bike: 160 * 60, run: 94 * 60 }; // 5:00:00 total
 const MI = 56, HM = 13.11;
-let goalEntered = false, csEntered = false;
 function projection(st = settings) {
   const aero = !!(st.ms || {}).aero;
   return { swim: 19.31 * (st.css + 5), tr: 7 * 60, bike: bikeSecs(.785 * st.ftp, aero), run: st.gp * HM };
@@ -2100,15 +2780,9 @@ function renderGoal() {
   const rEl = document.getElementById("g5Rows"); if (rEl.dataset.sig !== rowsHtml) { rEl.innerHTML = rowsHtml; rEl.dataset.sig = rowsHtml; }
   const nowEl = document.getElementById("g5Now");
   const show = v => nowEl.textContent = hms(Math.round(v / 60) * 60).replace(/:\d\d$/, ""); // rounded to the minute, so it agrees with "min to find"
-  if (goalEntered === "running") return;
-  if (!goalEntered && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
-    const t0 = performance.now(), from = gtot;
-    const tick = t => { const q = Math.min(1, (t - t0) / 1100), e = 1 - Math.pow(1 - q, 3); show(from + (tot - from) * e); if (q < 1) requestAnimationFrame(tick); else { goalEntered = true; renderGoal(); } };
-    requestAnimationFrame(tick);
-  } else show(tot);
-  document.getElementById("g5Gap").innerHTML = gap > 30 ? `<b>${Math.round(gap / 60)} min to find</b>Solid line = where you'd finish today. Black tick = the 5:00 budget. Shaded part = time to cut.` : `<b>On pace for sub-5</b>Every split is at or under budget. Hold it.`;
+  show(tot);
+  document.getElementById("g5Gap").innerHTML = gap > 30 ? `<b>${Math.round(gap / 60)} min to find</b>Solid bar = where you'd finish today. Tick = the 5:00 budget. Striped part = time to cut.` : `<b>On pace for sub-5</b>Every split is at or under budget. Hold it.`;
   document.getElementById("g5Foot").textContent = "Uses your latest tests (log them below). The bike is a physics estimate for a hilly course, and the 2027 course isn't published yet. The 34-week plan closes most of this gap. The rest comes from showing up every week.";
-  if (!goalEntered) { const box = document.getElementById("goal5"); box.classList.add("enter"); setTimeout(() => box.classList.remove("enter"), 2200); goalEntered = matchMedia("(prefers-reduced-motion: no-preference)").matches ? "running" : true; }
 }
 function renderConsistency() {
   let plan = 0, done = 0;
@@ -2135,27 +2809,21 @@ function renderConsistency() {
   const cw = cells[curWk - 1];
   document.getElementById("csNote").innerHTML = (streak ? `<span class="streak">${streak} ${streak === 1 ? "week" : "weeks"} in a row at 85%+.</span> ` : `<span class="streak">Build a streak: 85%+ of sessions every week.</span> `) +
     (cw && cw.p ? `This week ${cw.d}/${cw.p} so far.` : "");
-  if (!csEntered) { const box = document.getElementById("consist"); box.classList.add("enter"); setTimeout(() => box.classList.remove("enter"), 1800); csEntered = true; }
 }
 
 // ---------- header + master render ----------
-let countedUp = false;
 function renderHeader() {
   const days = Math.ceil((RACE - today) / 864e5);
   const cEl = document.getElementById("count");
-  if (days <= 0) cEl.textContent = "Race day has passed";
-  else if (!countedUp && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
-    countedUp = "running"; const t0 = performance.now();
-    const tick = t => { const p = Math.min(1, (t - t0) / 900), v = Math.round(days * (1 - Math.pow(1 - p, 3))); cEl.textContent = `${v} days to go`; if (p < 1) requestAnimationFrame(tick); else countedUp = true; };
-    requestAnimationFrame(tick);
-  } else if (countedUp !== "running") cEl.textContent = `${days} days to go`;
-  document.getElementById("phase").textContent = `Week ${curWk} of 34, ${WEEKS[curWk].ph}`;
+  document.getElementById("countL").textContent = days === 1 ? "day to race day" : days <= 0 ? "Race day has passed" : "days to race day";
+  cEl.textContent = days <= 0 ? "✓" : days;
+  document.getElementById("phase").textContent = `Week ${curWk} of 34 · ${WEEKS[curWk].ph}`;
 }
 function render() {
   const a = document.activeElement && document.activeElement.id;
   applyOverrides();
   if (builtFor !== sel + "|" + settings.ftp + "|" + settings.css + "|" + settings.gp) buildToday();
-  fillToday(); fillPriority(); renderWeek(); renderSeason(); renderProgress(); renderGuide(); renderHeader(); renderHourbar(); renderHabits(); renderCoach(); renderGoal(); renderConsistency(); paintStatus();
+  fillToday(); fillPriority(); renderWeek(); renderSeason(); renderProgress(); renderGuide(); renderHeader(); renderHourbar(); renderHabits(); renderCoach(); renderAsk(); renderGoal(); renderConsistency(); paintStatus();
   if (a) { const e = document.getElementById(a); if (e && document.activeElement !== e) e.focus(); }
 }
 
@@ -2188,13 +2856,36 @@ document.addEventListener("input", e => {
   if (t.dataset.slot === "ck") fillToday();
 });
 // ---------- tabs and routing: tab, day and week live in the URL hash (#/today/2026-11-12, #/week/4, #/progress) ----------
+// ---------- motion: views flow into each other ----------
+// Tab, day and week changes (and accepting a coach change) run inside a view transition; CSS decides what moves.
+// Skipped for keyboard-driven changes (speed over show), back/forward, reduced motion, and browsers without the API.
+const motionOK = () => matchMedia("(prefers-reduced-motion: no-preference)").matches;
+let vtNow = null;
+function flow(kind, dir, update, e) {
+  if (!document.startViewTransition || !motionOK() || (e && e.detail === 0) || document.visibilityState !== "visible") { update(); return; }
+  const h = document.documentElement; h.dataset.vt = kind; h.dataset.dir = dir || "";
+  const t = vtNow = document.startViewTransition(update);
+  t.finished.finally(() => { if (vtNow === t) { delete h.dataset.vt; delete h.dataset.dir; vtNow = null; } });
+}
+// Opening a section by tapping its header: the content fades up (the disclosure opens instantly; height is never
+// animated). Sections opened by the app (a new day, a session ticked done) or from the keyboard don't animate.
+let viaKeys = false;
+addEventListener("keydown", () => { viaKeys = true; }, true); addEventListener("pointerdown", () => { viaKeys = false; }, true);
+document.addEventListener("click", e => { const sm = e.target.closest("summary"); if (sm && e.detail > 0) sm.parentElement._tapped = true; }, true);
+document.addEventListener("toggle", e => { const d = e.target; if (!d._tapped) return; d._tapped = false; if (d.open) reveal(d.querySelector(".sec-in, .sbody-in, .ckbody")); }, true);
+// New content that appears in place (a coach reply, a session's review, an opened section) fades up once.
+function reveal(el) {
+  if (!el || !motionOK() || !el.animate) return;
+  el.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 220, easing: "cubic-bezier(.2, .8, .2, 1)" });
+}
 const TABS = ["today", "week", "season", "history", "guide"], SLUG = { season: "progress" }, UNSLUG = { progress: "season" };
-let curTab = "today";
+let curTab = "today", progressSeen = false;
 function showTab(name) {
   curTab = name;
   for (const b of document.querySelectorAll("nav.tabs button")) { const on = b.dataset.tab === name; b.setAttribute("aria-selected", on ? "true" : "false"); b.tabIndex = on ? 0 : -1; }
   for (const p of TABS) document.getElementById("p-" + p).hidden = p !== name;
   if (name === "history") { const f = document.getElementById("histFrame"); if (!f.src) f.src = "history.html"; }
+  if (name === "season" && !progressSeen && !viaKeys) { progressSeen = true; const g = document.getElementById("goal5"); g.classList.add("enter"); setTimeout(() => g.classList.remove("enter"), 1000); }
   try { localStorage.setItem("lg703-tab", name); } catch (e) {}
 }
 const routeHash = () => curTab === "today" ? "#/today" + (sel === TODAY ? "" : "/" + sel) : curTab === "week" ? "#/week/" + selWeek : "#/" + (SLUG[curTab] || curTab);
@@ -2202,13 +2893,14 @@ function syncHash(push) { const h = routeHash(); if (location.hash === h) return
 function applyHash() {
   const m = location.hash.match(/^#\/([a-z]+)(?:\/([\w-]+))?$/); if (!m) return false;
   const tab = UNSLUG[m[1]] || m[1]; if (!TABS.includes(tab)) return false;
-  if (tab === "today") { const k = m[2] && inPlan(m[2]) ? m[2] : inPlan(TODAY) ? TODAY : sel; if (k !== sel) { dayDir = k > sel ? "next" : "prev"; sel = k; selWeek = BYKEY[k].wk; } }
+  if (tab === "today") { const k = m[2] && inPlan(m[2]) ? m[2] : inPlan(TODAY) ? TODAY : sel; if (k !== sel) { sel = k; selWeek = BYKEY[k].wk; } }
   if (tab === "week" && +m[2] >= 1 && +m[2] <= 34) selWeek = Math.floor(+m[2]);
   showTab(tab); return true;
 }
 function goTab(name) { showTab(name); syncHash(true); render(); window.scrollTo(0, 0); } // render: charts are drawn at the width they now have
 window.addEventListener("popstate", () => { if (applyHash()) render(); });
-document.querySelector("nav.tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) goTab(b.dataset.tab); });
+document.querySelector("nav.tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b || b.dataset.tab === curTab) return;
+  flow("tab", TABS.indexOf(b.dataset.tab) > TABS.indexOf(curTab) ? "next" : "prev", () => goTab(b.dataset.tab), e); });
 // WAI-ARIA tabs: arrows, Home and End move between tabs (and select them); only the selected tab is in the Tab order.
 document.querySelector("nav.tabs").addEventListener("keydown", e => {
   const tabs = [...document.querySelectorAll('nav.tabs [role="tab"]')], i = tabs.indexOf(document.activeElement); if (i < 0) return;
@@ -2216,20 +2908,22 @@ document.querySelector("nav.tabs").addEventListener("keydown", e => {
   if (n < 0) return;
   e.preventDefault(); tabs[n].focus(); goTab(tabs[n].dataset.tab);
 });
-let dayDir = "";
-function selectDay(k) { if (!inPlan(k)) return; if (k !== sel) dayDir = k > sel ? "next" : "prev"; sel = k; selWeek = BYKEY[k].wk; render(); syncHash(true); }
-const step = n => { const i = DAYS.findIndex(d => d.key === sel) + n; if (DAYS[i]) selectDay(DAYS[i].key); };
-document.getElementById("prevDay").onclick = () => step(-1);
-document.getElementById("nextDay").onclick = () => step(1);
-document.getElementById("goToday").onclick = () => selectDay(inPlan(TODAY) ? TODAY : DAYS[0].key);
-document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest("button[data-day]"); if (b) selectDay(b.dataset.day); });
-document.getElementById("prevWeek").onclick = () => { if (selWeek > 1) { selWeek--; renderWeek(); syncHash(true); } };
-document.getElementById("nextWeek").onclick = () => { if (selWeek < 34) { selWeek++; renderWeek(); syncHash(true); } };
-document.getElementById("thisWeek").onclick = () => { selWeek = curWk; renderWeek(); syncHash(true); };
-document.getElementById("weekBody").addEventListener("click", e => { const a = e.target.closest("a[data-open]"); if (a) { e.preventDefault(); showTab("today"); selectDay(a.dataset.open); window.scrollTo(0, 0); } });
+function selectDay(k) { if (!inPlan(k)) return; sel = k; selWeek = BYKEY[k].wk; render(); syncHash(true); }
+const goDay = (k, e) => { if (!inPlan(k) || k === sel) return; flow("day", k > sel ? "next" : "prev", () => selectDay(k), e); };
+const step = (n, e) => { const d = DAYS[DAYS.findIndex(x => x.key === sel) + n]; if (d) goDay(d.key, e); };
+document.getElementById("prevDay").onclick = e => step(-1, e);
+document.getElementById("nextDay").onclick = e => step(1, e);
+document.getElementById("goToday").onclick = e => goDay(inPlan(TODAY) ? TODAY : DAYS[0].key, e);
+document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest("button[data-day]"); if (b) goDay(b.dataset.day, e); });
+const goWeek = (n, e) => { if (n < 1 || n > 34 || n === selWeek) return; flow("week", n > selWeek ? "next" : "prev", () => { selWeek = n; renderWeek(); syncHash(true); }, e); };
+document.getElementById("prevWeek").onclick = e => goWeek(selWeek - 1, e);
+document.getElementById("nextWeek").onclick = e => goWeek(selWeek + 1, e);
+document.getElementById("thisWeek").onclick = e => goWeek(curWk, e);
+document.getElementById("weekBody").addEventListener("click", e => { const a = e.target.closest("a[data-open]"); if (a) { e.preventDefault(); flow("tab", "prev", () => { showTab("today"); selectDay(a.dataset.open); window.scrollTo(0, 0); }, e); } });
 document.addEventListener("keydown", e => {
   if (document.getElementById("p-today").hidden || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName) || document.activeElement.closest("nav.tabs")) return;
-  if (e.key === "ArrowLeft") step(-1); if (e.key === "ArrowRight") step(1);
+  const d = DAYS[DAYS.findIndex(x => x.key === sel) + (e.key === "ArrowLeft" ? -1 : e.key === "ArrowRight" ? 1 : 0)];
+  if (d && d.key !== sel && /Arrow(Left|Right)/.test(e.key)) selectDay(d.key);
 });
 document.getElementById("gsync").onclick = () => loadGarmin(true);
 document.getElementById("gpush").onclick = pushWorkouts;
@@ -2306,7 +3000,7 @@ document.addEventListener("click", e => {
 document.addEventListener("click", e => {
   if (e.target.closest("[data-note]")) { const n = document.getElementById("notes"); n.scrollIntoView({ block: "center" }); n.focus({ preventScroll: true }); return; }
   const r = e.target.closest("[data-retry]"); if (!r) return;
-  if (r.dataset.retry === "garmin") loadGarmin(true); else if (r.dataset.retry === "coach") loadCoach(true);
+  if (r.dataset.retry === "garmin") loadGarmin(true); else if (r.dataset.retry === "coach") loadCoach(true); else if (r.dataset.retry === "ask") askCoach();
 });
 // Check-in numbers are replaced, not appended to, when you start typing over Garmin's value.
 document.addEventListener("focusin", e => { const t = e.target; if (t.dataset && t.dataset.slot === "ck" && t.tagName === "INPUT") try { t.select(); } catch (x) {} });
