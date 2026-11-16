@@ -111,6 +111,7 @@ button.st-meta { background: none; border: 0; padding: 0; min-height: var(--tap)
 /* ---------- controls ---------- */
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 0 var(--s4); background: var(--card); border: var(--hair) solid var(--line-strong); border-radius: var(--r-ctl); font-weight: var(--w-semi); cursor: pointer; }
 .btn:hover { border-color: var(--accent); }
+a.btn { text-decoration: none; color: var(--fg); } a.btn.primary { color: var(--accent-ink); }
 .btn:disabled { color: var(--faint); cursor: default; border-color: var(--line); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .daynav .btn { min-width: var(--tap); padding: 0 var(--s3); }
@@ -195,6 +196,35 @@ tr:last-child > td { border-bottom: 0; }
 .spark .ln { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .spark .pt { stroke: var(--fg); stroke-width: 6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .gchip.low .spark .pt { stroke: var(--warn); }
+html[data-profile] .noah-only { display: none !important; }
+/* day summary: the day's sessions in one line, each a link to its card */
+.dsum { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s2); font-size: var(--t-15); }
+.dsum:empty { display: none; }
+.dsum > span { color: var(--muted); }
+.dsum a { display: inline-flex; align-items: center; gap: var(--s1); min-height: var(--tap); padding: 0 var(--s3); border: var(--hair) solid var(--line-strong); border-radius: var(--r-pill); color: var(--fg); text-decoration: none; font-weight: var(--w-med); background: var(--card); }
+.dsum a.done { color: var(--good); border-color: var(--good); background: var(--good-soft); }
+.dsum a:hover { border-color: var(--accent); }
+.prestart h2 { font-size: var(--t-24); } .prestart ul { margin: 0; padding-left: var(--s5); display: flex; flex-direction: column; gap: var(--s1); }
+.acct { display: inline-flex; gap: var(--s3); }
+.acct a { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--accent); font-weight: var(--w-med); text-decoration: none; }
+.glossary > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; min-height: var(--tap); cursor: pointer; }
+.glossary > summary::-webkit-details-marker { display: none; } .glossary > summary::after { content: "Show"; color: var(--accent); font-size: var(--t-13); font-weight: var(--w-med); } .glossary[open] > summary::after { content: "Hide"; }
+.gl-list { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--col-md), 1fr)); gap: var(--s3) var(--s4); }
+.gl-list dt { font: var(--w-semi) var(--t-15)/1.3 var(--display); } .gl-list dd { margin: 0; font-size: var(--t-13); color: var(--muted); }
+/* share dialog */
+#inviteDlg { width: min(560px, calc(100% - var(--s8))); max-height: calc(100dvh - var(--s8)); padding: 0; border: var(--hair) solid var(--line); border-radius: var(--r-sec); background: var(--card); color: var(--fg); overscroll-behavior: contain; }
+#inviteDlg::backdrop { background: rgb(0 0 0 / .45); }
+.dlg { padding: var(--s4); display: flex; flex-direction: column; gap: var(--s3); }
+.dlg h2 { font-size: var(--t-20); } .dlg h3 { margin-top: var(--s2); }
+.dlg .ask-row input { flex: 1 1 auto; min-width: 0; min-height: var(--tap); padding: 0 var(--s3); background: var(--soft); border: var(--hair) solid var(--line-strong); border-radius: var(--r-ctl); }
+.inv-new { display: flex; flex-direction: column; gap: var(--s2); padding: var(--s3); background: var(--good-soft); border-left: var(--bar) solid var(--good); }
+.inv-new textarea { min-height: calc(var(--tap) * 3); font-size: var(--t-13); }
+.inv-err { color: var(--bad); }
+.inv-list { display: flex; flex-direction: column; }
+.inv-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: var(--s2) 0; border-top: var(--hair) solid var(--line); }
+.inv-row .formrow { flex-wrap: nowrap; gap: var(--s2); } @media (max-width: 600px) { .inv-row { flex-wrap: wrap; } }
+.inv-row > div { display: flex; flex-direction: column; min-width: 0; } .inv-row b { font: var(--w-semi) var(--t-17)/1.2 var(--display); }
+.inv-row .st { font-size: var(--t-13); color: var(--muted); } .inv-row .st.ok { color: var(--good); }
 .tlink { display: inline-flex; align-items: center; min-height: var(--tap); }
 /* sessions */
 .sess { border-left: var(--bar) solid var(--sc, var(--line-strong)); }
@@ -366,7 +396,7 @@ tr:last-child > td { border-bottom: 0; }
 .g5-row.lever .lbl::after { content: "Biggest lever"; display: block; width: max-content; font-size: var(--t-12); font-weight: var(--w-semi); color: var(--fg); border-bottom: 2px solid var(--rc); }
 .g5-foot { font-size: var(--t-13); color: var(--muted); max-width: none; }
 /* consistency */
-.cs-weeks { display: grid; grid-template-columns: repeat(34, minmax(0, 1fr)); gap: 2px; height: var(--s8); align-items: end; touch-action: pan-y; cursor: pointer; }
+.cs-weeks { display: grid; grid-template-columns: repeat(var(--nw, 34), minmax(0, 1fr)); gap: 2px; height: var(--s8); align-items: end; touch-action: pan-y; cursor: pointer; }
 .cs-weeks i { display: block; background: var(--soft); box-shadow: inset 0 0 0 var(--hair) var(--line); height: 100%; position: relative; overflow: hidden; }
 .cs-weeks i b { position: absolute; inset: auto 0 0 0; background: var(--cc, var(--accent)); transform-origin: bottom; }
 .cs-weeks i.ok { --cc: var(--good); } .cs-weeks i.mid { --cc: var(--warn); } .cs-weeks i.low { --cc: var(--bad); }
@@ -513,7 +543,24 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
     <button class="btn st-act" id="st-act" type="button" hidden>Retry</button>
     <button class="st-meta" id="st-garmin" type="button" aria-expanded="false" aria-controls="gbar" hidden></button>
     <span class="st-meta" id="st-coach" hidden></span>
+    <button class="st-meta" id="st-invite" type="button" aria-haspopup="dialog" hidden>Invite a friend</button>
   </div>
+  <dialog id="inviteDlg" aria-labelledby="invTitle">
+    <div class="dlg">
+      <div class="cardhead"><h2 id="invTitle">Share your plan builder</h2><button class="btn" type="button" id="invClose">Close</button></div>
+      <p class="small">Each friend gets a private plan built from their own Garmin data, on its own account. They choose their own passcode; you never see it or their training.</p>
+      <form id="invForm" class="ask-row"><label class="vh" for="invName">Friend's first name</label>
+        <input id="invName" name="invName" autocomplete="off" maxlength="30" placeholder="Friend's first name…" required><button class="btn primary" id="invGo">Create invite</button></form>
+      <p class="small inv-err" id="invErr" role="alert" hidden></p>
+      <div class="inv-new" id="invNew" hidden>
+        <label class="field">Message to send<textarea id="invMsg" readonly rows="7"></textarea></label>
+        <div class="formrow"><button class="btn primary" type="button" id="invShare" hidden>Share…</button><button class="btn" type="button" id="invCopy">Copy message</button><span class="small" id="invCopied" aria-live="polite"></span></div>
+        <p class="small" id="invNote">The link works once and expires in 14 days.</p>
+      </div>
+      <h3>Your friends</h3>
+      <div id="invList" class="inv-list"></div>
+    </div>
+  </dialog>
   <div class="gpanel" id="gbar" hidden>
     <p class="small" id="gstat"></p>
     <div id="gfix"></div>
@@ -533,6 +580,10 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
       <button class="btn" id="nextDay" aria-label="Next day">›</button>
     </div>
     <div class="strip" id="strip"></div>
+    <!-- One line answering "what do I do today?", linking to each session card -->
+    <nav class="dsum" id="daySum" aria-label="This day's sessions"></nav>
+    <!-- Before a shared plan starts: when it starts and what comes first, instead of advice for a day not yet in the plan -->
+    <div class="card prestart" id="preStart" hidden></div>
 
     <!-- Doing something different? The coach replans the selected day; nothing changes until you tap Accept -->
     <form class="card ask" id="askForm" hidden>
@@ -611,10 +662,10 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
   <!-- SEASON -->
   <section class="panel" id="p-season" role="tabpanel" aria-labelledby="tab-season" hidden>
     <h2 class="vh">Progress</h2>
-    <div class="goal5" id="goal5" aria-label="Road to a 5-hour finish">
+    <div class="goal5" id="goal5" aria-label="Road to your goal time">
       <div class="g5-head">
-        <div class="g5-target"><span class="g5-eye">The goal</span><span class="g5-big">5:00</span></div>
-        <div class="g5-now"><span class="g5-eye">Projected today</span><span class="g5-big num" id="g5Now">–</span></div>
+        <div class="g5-target"><span class="g5-eye">The goal</span><span class="g5-big" id="g5Goal">5:00</span></div>
+        <div class="g5-now"><span class="g5-eye" id="g5NowL">Projected today</span><span class="g5-big num" id="g5Now">–</span></div>
         <div class="g5-gap" id="g5Gap"></div>
       </div>
       <div class="g5-rows" id="g5Rows"></div>
@@ -627,7 +678,7 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
         <div class="hb-foot"><span class="hb-legend" id="hbWeekLeg"></span><span id="hbWeekNote"></span></div>
       </div>
       <div class="hb-block">
-        <div class="hb-head"><span class="hb-title">Road to Lake George</span><span class="hb-num num" id="hbSeasonNum"></span></div>
+        <div class="hb-head"><span class="hb-title" id="hbRoad">Road to Lake George</span><span class="hb-num num" id="hbSeasonNum"></span></div>
         <svg class="hb-profile" id="hbProfile" viewBox="0 0 680 84" role="img" aria-label="Season course profile: weekly planned hours with completed hours filled in"></svg>
         <div class="hb-foot"><span id="hbSeasonNote"></span></div>
       </div>
@@ -722,7 +773,24 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
   <!-- GUIDE -->
   <section class="panel" id="p-guide" role="tabpanel" aria-labelledby="tab-guide" hidden>
     <h2 class="vh">Guide</h2>
-    <div class="grid3">
+    <details class="card glossary" id="glossary">
+      <summary><h3>What the terms mean</h3></summary>
+      <dl class="gl-list">
+        <div><dt>FTP</dt><dd>Bike threshold power: the watts you could hold for about an hour. Every bike target is a share of it.</dd></div>
+        <div><dt>CSS</dt><dd>Swim threshold pace per 100 m: the steady-hard pace you could hold for 1,500 m. Set by the 400 m + 200 m test.</dd></div>
+        <div><dt>Z2 / Endurance</dt><dd>Easy aerobic effort: you can talk in full sentences. Most of your training lives here.</dd></div>
+        <div><dt>Tempo, sweet spot, threshold</dt><dd>Steady-hard to hard efforts (roughly 77–86%, 88–94% and 95–100% of FTP). Short phrases only.</dd></div>
+        <div><dt>Race power / goal pace</dt><dd>The bike watts and run pace you plan to hold on race day.</dd></div>
+        <div><dt>Easy-run heart-rate cap</dt><dd>80% of your run threshold heart rate. Walk if you go over; slow is the point.</dd></div>
+        <div><dt>Brick</dt><dd>A ride followed straight away by a run, to practice running on tired legs.</dd></div>
+        <div><dt>Strides</dt><dd>20-second fast, relaxed runs with full walking recovery. They keep your stride quick without tiring you.</dd></div>
+        <div><dt>Form</dt><dd>Fitness minus fatigue. Below −25 means tired: an easier day helps. Aim for +5 to +15 on race morning.</dd></div>
+        <div><dt>HRV and resting HR</dt><dd>From your watch overnight. Low HRV or a resting HR well above normal means you need recovery.</dd></div>
+        <div><dt>RPE</dt><dd>How hard a session felt, 1 (very easy) to 10 (all-out).</dd></div>
+        <div><dt>On target / partly / off target</dt><dd>How closely what you did matched the plan: green within 20% of the planned time and the right intensity.</dd></div>
+      </dl>
+    </details>
+    <div class="grid3 noah-only">
       <div class="card"><h3><span class="bk">Bike</span> · strength</h3><ul class="list">
         <li>Garmin FTP 266 W at 77.1 kg ≈ 3.45 W/kg; VO2max 57–58.</li>
         <li>6–9 h/week of gravel since late August; longest ride 2:39.</li>
@@ -749,7 +817,7 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
       <div class="scroll"><table id="liftTable"></table></div>
     </div>
 
-    <div class="card">
+    <div class="card noah-only">
       <h3>Your bike: Trek Checkpoint SLR 7</h3>
       <p>Your 45 mm wheels are already fine for this race. The time comes from your position and tires.</p>
       <div class="scroll"><table>
@@ -778,7 +846,7 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
         <li>From week 21, use only your race-day products.</li></ul></div>
     </div>
 
-    <div class="card">
+    <div class="card noah-only">
       <h3>Race day</h3>
       <div class="grid3">
         <div><p><span class="sw">Swim · 40 min budget.</span> Likely wetsuit-legal in early June. Start steady, sight every 6–8 strokes, find feet.</p></div>
@@ -788,7 +856,7 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
       <p class="small">Goal 5:00: 40 min swim, 6 min of transitions, 2:40 bike, 1:34 run. The Road to 5:00 bars at the top track it live. The 2027 bike course isn't published yet; check the official course and match its climbing in your long rides.</p>
     </div>
 
-    <div class="card">
+    <div class="card noah-only">
       <h3>Race-day timeline and fueling</h3>
       <p class="small">Rehearse all of it in the May 22 simulation. Nothing new on race day.</p>
       <div class="scroll"><table>
@@ -808,7 +876,7 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
       <p class="small">Sources: Thomas, Erdman & Burke, ACSM joint position statement on nutrition and athletic performance (2016); Guest et al., ISSN position stand on caffeine and exercise performance (2021); Jeukendrup, carbohydrate intake during exercise (Sports Med, 2014).</p>
     </div>
 
-    <div class="card">
+    <div class="card noah-only">
       <h3>Climbs near Middlebury</h3>
       <p>For the hilly long rides in Build and Peak (wk 23, 25, 29). The 2027 bike course isn't published yet, so use these to build climbing strength and practice holding steady power uphill. Gap roads can close or get snowy in winter; check conditions first.</p>
       <ul class="list">
@@ -820,7 +888,7 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
       <p class="small">The Today tab suggests routes from your own past rides that match each long ride's length (hilly sessions favor your hilliest ones). For new routes, build them in <a class="tlink" href="https://ridewithgps.com/routes/new" target="_blank" rel="noopener">Ride with GPS</a> or the Strava route builder and send them to your Garmin.</p>
     </div>
 
-    <div class="card">
+    <div class="card noah-only">
       <h3>Beyond the workouts</h3>
       <ul class="list">
         <li><strong>Swim coaching:</strong> masters group or 3–4 lessons with stroke video by December. Biggest return on time.</li>
@@ -838,8 +906,29 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
 // This file is published as a fragment, so its title, meta tags and icon link can land in <body>, where browsers ignore some of them.
 for (const e of document.querySelectorAll("body > title, body > meta, body > link[rel='icon']")) document.head.appendChild(e);
 // ---------- plan data ----------
-const START = new Date(2026, 9, 19), RACE = new Date(2027, 5, 13);
-const DEF = { ftp: 266, css: 150, gp: 525, rhr: 52, tests: [] };
+// Profile mode: a friend's site injects window.LG_PROFILE (from its setup page) and the plan is generated from it.
+// Without a profile everything is Noah's hand-built plan, unchanged.
+const PROFILE = window.LG_PROFILE || null;
+const dateOf = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+const START = PROFILE ? dateOf(PROFILE.start) : new Date(2026, 9, 19), RACE = PROFILE ? dateOf(PROFILE.race.date) : new Date(2027, 5, 13);
+const DEF = PROFILE ? { ftp: PROFILE.ftp, css: PROFILE.css, gp: PROFILE.gp, rhr: PROFILE.rhr, tests: [] } : { ftp: 266, css: 150, gp: 525, rhr: 52, tests: [] };
+// Easy-run cap = 80% of run threshold HR (Noah: 181 → 144); tempo ≈ 91% of it (Noah ~165).
+try { if (PROFILE && !localStorage.getItem("lg-glossary-seen")) { document.getElementById("glossary").open = true; localStorage.setItem("lg-glossary-seen", "1"); } } catch (e) {} // first visit: terms open
+if (PROFILE) { // the friend's site: their race in the header, Noah's personal content hidden
+  document.documentElement.dataset.profile = "1";
+  document.title = `${PROFILE.race.name} plan`;
+  document.querySelector("header.top h1").textContent = PROFILE.race.name;
+  const dist = document.querySelector("header.top .dist");
+  dist.children[0].textContent = RACE.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  dist.lastElementChild.textContent = `Plan from ${START.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
+  document.getElementById("hbRoad").textContent = "Road to race day";
+  document.getElementById("tab-history").remove(); document.getElementById("p-history").remove();
+  document.getElementById("status").insertAdjacentHTML("beforeend", '<span class="acct"><a href="/setup">Plan settings</a><a href="/logout">Sign out</a></span>');
+  if (!PROFILE.ai) for (const id of ["askForm", "coachCard", "st-coach"]) document.getElementById(id).dataset.off = "1"; // AI coach is optional: without a key it isn't shown
+}
+// Is the swim this athlete's weakest sport? (Noah: yes.) Swim-limiter wording only shows when it is.
+const SWIM_LIMITER = !PROFILE || PROFILE.limiter === "swim";
+const EZ = PROFILE ? PROFILE.ez : 144, TEMPO_HR = PROFILE ? Math.round(PROFILE.lthr * .91) : 165;
 const LIFTS = {
   fA: { name: "Lift A · pull + legs", m: 45, items: ["A: RDL ↔ Pull-ups", "B: Reverse lunge ↔ One-arm DB row", "C: Heel-elevated goblet squat ↔ DB rear delt fly", "D: DB curl ↔ Hanging leg raise ↔ Wall angels"] },
   fB: { name: "Lift B · push + legs", m: 45, items: ["A: Front squat ↔ Flat DB bench", "B: Bulgarian split squat ↔ DB shoulder press", "C: Single-leg DB RDL ↔ DB lateral raise", "D: Diamond push-ups ↔ Ab roller ↔ Dead bugs"] },
@@ -949,7 +1038,7 @@ const S = (t, m) => mk("swim", t, m), B = (t, m) => mk("bike", t, m), R = (t, m)
 const OFF = t => ({ s: "rest", t: t || "Off", m: 0 });
 const LF = (k, half) => mk("lift", LIFTS[k].name + (half ? " (half the sets)" : ""), half ? Math.round(LIFTS[k].m / 2) : LIFTS[k].m, { items: LIFTS[k].items });
 const BR = (ride, run) => {
-  const runT = typeof run === "number" ? run + " min easy ≤144 bpm" : run;
+  const runT = typeof run === "number" ? `${run} min easy ≤${EZ} bpm` : run;
   return mk("brick", "Long ride " + ride + " → brick run " + runT, durOf(ride, "bike") + durOf(runT, "run"), { ride, run: runT });
 };
 const runTxt = (r, strides) => typeof r === "number" ? `${r} min easy ≤144 bpm${strides ? " + 6×20 s strides" : ""}` : r;
@@ -1012,7 +1101,7 @@ function weekPlan(r) {
 //  · Run: strides and short hill sprints in base, tempo + hills and 70.3-pace repeats off the bike (Lance Watson).
 // Swim reps are sized for the slot at a 2:30/100 m CSS; as CSS improves the same set simply takes less time.
 const hmT = m => m >= 60 ? `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}` : m + " min"; // durTxt is defined later
-const UPGRADE_FROM = "2026-11-17", BASE_CSS = 150;
+const UPGRADE_FROM = PROFILE ? PROFILE.start : "2026-11-17", BASE_CSS = 150;
 const SWP = { EZ: [20, .62, "Easy, long strokes"], DR: [25, .58, null], AE: [10, .7, "Relaxed; count strokes per length"], PD: [6, .76, "Pull buoy + paddles"],
   ST: [5, .8, null], RP: [4, .85, null], CSS: [0, .9, null], FST: [-5, 1, "Fast but smooth"], SP: [-8, 1.05, "Sprint"] };
 const swT = (m, k, rest = 0) => m / 100 * (BASE_CSS + SWP[k][0]) / 60 + rest / 60; // planning minutes at the baseline CSS
@@ -1125,16 +1214,16 @@ function bkLong(t, M, wk, ph) {
       ...(steps ? [blk("Step up", 1, [BS(20, "Upper endurance", .72, .77), BS(20, "Race power", .76, .81, "aero")])] : stepMin ? [blk("Step up", 1, [BS(stepMin, "Upper endurance", .72, .77)])] : []),
       blk("Cool-down", 1, [B_C(10)])] };
 }
-// Run: easy stays easy (≤144 bpm); quality gets a real warm-up and form drills; bricks practice the first minutes off the bike.
+// Run: easy stays easy (≤EZ bpm); quality gets a real warm-up and form drills; bricks practice the first minutes off the bike.
 const R_DRILLS = () => blk("Form drills", 1, [{ ...RS(5, "A-skip, B-skip, high knees, butt kicks", "jog"), tgt: "2×20 m each, walk back" }]);
 function rnEasy(o, wk, ph) {
   if (/run-walk/.test(o.t) || /time trial|or off if tired/.test(o.t)) return null; // Foundation run-walk and test runs stay as written
   const M = o.m, strides = /strides/.test(o.t), hillW = ph === "Base" && wk >= 13 && wk % 2 === 1, long = /^Long run/.test(o.t) && !/goal pace/.test(o.t);
   if (/goal pace|tempo|\{/.test(o.t)) return null;
   const tail = strides ? (hillW ? 8 : 6) : 0, body = M - 10 - tail - (long ? 0 : 0);
-  return { t: `${long ? "Long run " : ""}${M} min easy ≤144 bpm: first 10 min slower than easy${strides ? hillW ? " + 6×10 s hill sprints" : " + 6×20 s strides" : ""}${long && M >= 75 ? " · gel every 30 min" : ""}${(o.t.match(/ \(optional[^)]*\)/) || [""])[0]}`,
-    why: long ? `Durability: the long run is what holds your pace in the last 5K of the race. Under 144 bpm the whole way; walk 1 minute any time it drifts over.${M >= 75 ? " Practice fueling: a gel at 30 min and every 30 after." : ""}`
-      : `Easy aerobic run under 144 bpm.${strides ? hillW ? " Hill sprints: 10 s up a steep hill at near-max effort, walk down fully. Builds power with almost no fatigue." : " Strides: 20 s fast and relaxed, walk back. Keeps your stride quick without adding fatigue." : ""}`,
+  return { t: `${long ? "Long run " : ""}${M} min easy ≤${EZ} bpm: first 10 min slower than easy${strides ? hillW ? " + 6×10 s hill sprints" : " + 6×20 s strides" : ""}${long && M >= 75 ? " · gel every 30 min" : ""}${(o.t.match(/ \(optional[^)]*\)/) || [""])[0]}`,
+    why: long ? `Durability: the long run is what holds your pace in the last 5K of the race. Under ${EZ} bpm the whole way; walk 1 minute any time it drifts over.${M >= 75 ? " Practice fueling: a gel at 30 min and every 30 after." : ""}`
+      : `Easy aerobic run under ${EZ} bpm.${strides ? hillW ? " Hill sprints: 10 s up a steep hill at near-max effort, walk down fully. Builds power with almost no fatigue." : " Strides: 20 s fast and relaxed, walk back. Keeps your stride quick without adding fatigue." : ""}`,
     build: () => [blk("Easy start", 1, [{ ...RS(10, "Slower than easy", "easy"), tgt: "≤135 bpm" }]), blk(long ? "Long run" : "Easy", 1, [RS(body, "Easy", "easy")]),
       ...(strides ? [hillW ? blk("Hill sprints", 6, [{ ...RS(1 / 6, "Hill sprint", "stride"), tgt: "Near max, steep hill" }, RS(1, "Walk down", "walk")]) : blk("Strides", 6, [RS(1 / 3, "Stride", "stride"), RS(2 / 3, "Walk back", "walk")])] : [])] };
 }
@@ -1142,10 +1231,10 @@ function rnQuality(o, wk, ph) {
   const M = o.m;
   if (wk === 23 && /tempo/.test(o.t)) { // tempo + hills (Lance Watson)
     const cd = M - 12 - 5 - 15 - 3 - 16;
-    return { t: `${M} min tempo + hills: 12 min easy · drills · 15 min tempo (~165 bpm) · 4×2 min uphill at the same heart rate, jog down · ${cd} min easy`,
+    return { t: `${M} min tempo + hills: 12 min easy · drills · 15 min tempo (~${TEMPO_HR} bpm) · 4×2 min uphill at the same heart rate, jog down · ${cd} min easy`,
       why: "Tempo + hills: threshold fitness and leg strength in one session. Uphill reps at your tempo heart rate, not faster pace.",
       build: () => [blk("Warm-up", 1, [RS(12, "Easy", "easy")]), R_DRILLS(), blk("Tempo", 1, [RS(15, "Tempo", "tempo")]), blk("Jog", 1, [RS(3, "Easy jog", "jog")]),
-        blk("Hills", 4, [{ ...RS(2, "Uphill", "tempo"), tgt: "~165 bpm, 4–6% grade" }, RS(2, "Jog down", "jog")]), blk("Cool-down", 1, [RS(cd, "Easy", "easy")])] };
+        blk("Hills", 4, [{ ...RS(2, "Uphill", "tempo"), tgt: `~${TEMPO_HR} bpm, 4–6% grade` }, RS(2, "Jog down", "jog")]), blk("Cool-down", 1, [RS(cd, "Easy", "easy")])] };
   }
   if (!/goal pace|tempo|half-marathon/.test(o.t) || /last \d+ min at/.test(o.t)) return null;
   const phrase = o.t.replace(/^\d+ min(?::| with) /, "");
@@ -1154,8 +1243,8 @@ function rnQuality(o, wk, ph) {
 }
 function brickRun(run, M) {
   const gp = /goal pace/.test(run), mi0 = 525 / 60; // plan-time sizing at the baseline 8:45/mi; the build uses your current goal pace
-  if (!gp) return { t: `${M} min off the bike: first 5 min short quick steps, then easy ≤144 bpm`,
-    build: () => [blk("Off the bike", 1, [{ ...RS(5, "Short, quick steps", "easy"), tgt: "cadence 170+, ≤144 bpm" }, RS(M - 5, "Easy", "easy")])] };
+  if (!gp) return { t: `${M} min off the bike: first 5 min short quick steps, then easy ≤${EZ} bpm`,
+    build: () => [blk("Off the bike", 1, [{ ...RS(5, "Short, quick steps", "easy"), tgt: `cadence 170+, ≤${EZ} bpm` }, RS(M - 5, "Easy", "easy")])] };
   const n = Math.max(2, Math.round((M - 5) / (mi0 + .5))); // 1 mi at goal pace + 30 s walk (Lance Watson's 70.3-pace brick run, ≈ 9.25 min at 8:45/mi)
   return { t: `${M} min off the bike: 5 min settle · ${n}×1 mi at goal pace {GP}, 30 s walk`,
     build: () => { const mi = settings.gp / 60, rest = Math.max(0, M - 5 - n * (mi + .5)); return [blk("Settle", 1, [{ ...RS(5, "Settle in", "easy"), tgt: "short quick steps" }]), blk("70.3 pace", n, [{ ...RS(mi, "1 mi at goal pace", "gp"), dist: "1 mi" }, RS(.5, "Walk", "walk")]), ...(rest >= 1 ? [blk("Easy", 1, [RS(rest, "Easy", "easy")])] : [])]; } };
@@ -1178,6 +1267,92 @@ function upgrade(s, wk, ph) {
   const out = mk(s.s, w.t, s.m, { build: w.build, why: w.why, coach: s.coach });
   return isHard(out.t) === hard ? out : s; // never turn an easy day hard (or the reverse)
 }
+// ---------- generated plan (profile mode) ----------
+// Builds the same row shape as Noah's table from a setup profile: phases sized to the weeks before the race,
+// hours ramping ≤8% a week from current volume to the chosen peak, every 4th week easier (test or recovery),
+// then a taper week and race week. Sessions are written in the plan's notation and become coached workouts
+// through upgrade(), so the library, compliance, weather and watch export all work unchanged.
+function genRows(P) {
+  const r5 = m => Math.max(5, Math.round(m / 5) * 5), clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const hm = m => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+  const NWg = clamp(Math.ceil(((dateOf(P.race.date) - dateOf(P.start)) / 864e5 + 1) / 7), 8, 40), M = NWg - 2;
+  const nBase = Math.round(M * .45), nBuild = Math.round(M * .35), focus = {};
+  const phOf = n => n > NWg - 2 ? (n === NWg ? "Race" : "Taper") : n <= nBase ? "Base" : n <= nBase + nBuild ? "Build" : "Peak";
+  const kindOf = n => n >= NWg - 2 || n % 4 ? "n" : (n / 4) % 2 ? "t" : "r"; // week 4 tests, 8 recovers, 12 tests…; none in the last 3 weeks
+  const span = { Base: [1, nBase], Build: [nBase + 1, nBase + nBuild], Peak: [nBase + nBuild + 1, NWg - 2] };
+  const prog = (ph, n) => { const [a, b] = span[ph] || [n, n]; return b > a ? (n - a) / (b - a) : 0; };
+  // Noah-equivalent week for the library's phase-relative choices (Base 9–19, Build 21–27, Peak 29–32)
+  const EQ = { Base: [9, 19], Build: [21, 27], Peak: [29, 32] }, eq = (ph, n) => EQ[ph] ? Math.round(EQ[ph][0] + prog(ph, n) * (EQ[ph][1] - EQ[ph][0])) : 33;
+  const Hp = clamp(+P.hours || 8, 4, 18), H0 = clamp(+(P.recent && P.recent.hours) || Hp * .6, Hp * .5, Hp * .85);
+  let H = H0, lastN = H0;
+  const pick = (list, p) => list[Math.min(list.length - 1, Math.floor(p * list.length))];
+  const BQ = { Base: [[3, 8, "TEMPO"], [3, 10, "TEMPO"], [2, 15, "TEMPO"], [3, 10, "SS"], [3, 12, "SS"], [2, 20, "SS"], [3, 15, "SS"], [3, 20, "SSH"]],
+    Build: [[2, 15, "RP"], [2, 20, "RP"], [3, 15, "RP"], [2, 25, "RP"], [2, 30, "RP"], [3, 20, "RP"]], Peak: [[2, 30, "RP"], [3, 20, "RP"]] };
+  const RQ = { Build: ["2×10 min at goal pace {GP}", "2×15 min at goal pace {GP}", "3×10 min at goal pace {GP}", "3×1 mi at goal pace {GP}", "4×1 mi at goal pace {GP}"], Peak: ["3×2 mi at goal pace {GP}", "3×1 mi at goal pace {GP}"] };
+  const word = { TEMPO: "tempo {TEMPO}", SS: "sweet spot {SS}", SSH: "@ {SSH}", RP: "@ race power {RP}" };
+  const bq = (min, ph, p) => { let [n, len, tok] = pick(BQ[ph], p); const rest = Math.min(5, Math.max(3, Math.round(len / 3)));
+    while (n * (len + rest) > min - 20 && (n > 2 || len > 8)) n > 2 ? n-- : len -= 5;
+    return B(`${min} min: ${n}×${len} min ${word[tok]}, ${rest} min easy between`, min); };
+  const rows = [];
+  for (let n = 1; n <= NWg; n++) {
+    const ph = phOf(n), k = kindOf(n), p = prog(ph, n), lift = P.lift ? LF(ph === "Base" ? (n % 2 ? "fA" : "fB") : "bu", k !== "n") : null;
+    let week;
+    if (k === "n" && ph !== "Taper" && ph !== "Race") { H = n === 1 ? H0 : Math.min(Hp, lastN * 1.08); lastN = H; }
+    const hrs = k === "r" ? lastN * .65 : k === "t" ? lastN * .75 : ph === "Taper" ? Hp * .6 : H, T = hrs * 60;
+    const sw = r5(clamp(T * .2 / 3, 30, 60)), Bt = T * .5, Rt = T * .3;
+    const lr = r5(clamp(Bt * .42, 60, 270)), bqM = r5(clamp(Bt * .3, 45, 90)), be = r5(clamp(Bt - lr - bqM, 30, 90));
+    const lrun = r5(clamp(Rt * .4, 30, 120)), rq = r5(clamp(Rt * .3, 25, 60)), re = r5(clamp(Rt - lrun - rq, 20, 60));
+    const S0 = S(`${sw} min: 300 easy · 8×100 @ {CSS} · 200 easy`, sw), S1 = S(`${sw} min: easy drills`, sw);
+    const S2 = (ph === "Build" || ph === "Peak") && n % 2 ? S(`${sw} min: 4×400 at race effort`, sw) : S(`${sw} min: 4×300 steady`, sw);
+    const easyRun = m => R(`${m} min easy ≤${EZ} bpm`, m), strides = m => R(`${m} min easy ≤${EZ} bpm + 6×20 s strides`, m);
+    if (ph === "Race") { // race week: race day on its own weekday, shakeout the day before, rest the day before that
+      const ri = (dateOf(P.race.date).getDay() + 6) % 7, list = [[S("30 min: easy · 4×100 at race pace", 30), OFF()], [B("45 min: 3×3 min @ race power {RP}", 45), easyRun(20)],
+        [R("30 min with 4×1 min at goal pace {GP}", 30), S("25 min easy", 25)], [S("20 min easy, practice sighting", 20), B("30 min easy; final bike check (tires, chain lube, batteries)", 30)]];
+      week = Array.from({ length: 7 }, (_, i) => i === ri ? [K(`RACE DAY: ${P.race.name}. Swim steady and sight · bike at race power {RP}, eat on a timer · run the first 3 mi ≤${EZ + 10} bpm, then race the last 5K.`, 330), null]
+        : i === ri - 1 ? [K("Shakeout: 20 min bike with 3×30 s pickups · 10 min run with 3 pickups · 10 min swim. Rack the bike. Bed early.", 40), null]
+        : i === ri - 2 ? [OFF("Off · packet pickup · carb-heavy meals, ~8 g carbs/kg"), OFF("Feet up · pack transition bags")]
+        : i > ri ? [OFF("Recovery · walk, eat, sleep"), null] : list[i] || [OFF(), null]);
+      focus[n] = ["Race week: sleep, carbs, stay off your feet.", "Nothing new on race day."];
+    } else if (ph === "Taper") {
+      week = [[OFF(), null], [S(`40 min: 300 easy · 4×200 @ {CSS} · 200 easy`, 40), B("75 min: 2×10 min @ race power {RP}", 75)], [lift ? LF("bu", true) : OFF(), R("40 min with 3×1 mi at goal pace {GP}", 40)],
+        [S("30 min easy", 30), B("45 min easy {Z2}", 45)], [S("30 min: easy · 4×50 fast", 30), OFF()], [BR("1:30 with 2×10 min @ race power {RP}", 15), null], [easyRun(50), null]];
+      focus[n] = ["Taper: volume down, intensity stays. Feeling flat is normal.", "Visualize the race for 5 minutes a day."];
+    } else if (k === "t") { // test week: CSS Thursday, FTP Saturday, 5K on the second test and later
+      const fiveK = n >= 12;
+      week = [[OFF(), null], [S1, B(`${bqM} min easy {Z2} with 3×1 min openers`, bqM)], [lift || OFF(), strides(rq)],
+        [S(`Test: 400 easy warm-up · 400 m time trial · 5 min easy · 200 m time trial · CSS = (400 time − 200 time) ÷ 2. Log it on the Progress tab.`, 40), B(`${be} min easy {Z2}`, be)],
+        [S2.t.includes("race") ? S1 : S(`${sw} min: easy aerobic · 6×50 smooth`, sw), easyRun(re)],
+        [B("FTP test: 15 min warm-up · 5 min hard · 10 min easy · 20 min all-out · 10 min cool-down. FTP = 95% of 20-min power. Log it on the Progress tab.", 60), null],
+        [fiveK ? R("5K time trial: 15 min warm-up, 5K all-out, 10 min cool-down. Log it on the Progress tab.", 45) : easyRun(lrun), null]];
+      focus[n] = ["Test week. Arrive rested, then go properly hard on the tests.", "Log every test on the Progress tab; all targets update."];
+    } else if (k === "r") {
+      week = [[OFF(), null], [S1, B(`${r5(bqM * .8)} min easy {Z2} with 3×1 min openers`, r5(bqM * .8))], [lift || OFF(), strides(r5(rq * .8))], [S(`${sw} min: easy aerobic · 6×50 smooth`, sw), B(`${r5(be * .8)} min easy {Z2}`, r5(be * .8))],
+        [S(`${sw} min: steady 3×400 relaxed`, sw), easyRun(r5(re * .8))], [B(`Long ride ${hm(r5(lr * .65))} Z2 {Z2}`, r5(lr * .65)), null], [easyRun(r5(lrun * .7)), null]];
+      focus[n] = ["Recovery week. Easy everything; sleep more.", "10 min mobility every day."];
+    } else {
+      const late = p >= .5, brick = ph !== "Base" || late, brN = ph === "Base" ? 10 : ph === "Build" ? 15 + Math.round(p * 10) : 25;
+      const rpMin = ph === "Build" ? 20 + Math.round(p * 40) : 60, gpBrick = ph !== "Base" && n % 2 === 0;
+      const ride = ph === "Base" ? `${hm(lr)} Z2 {Z2}${late && lr >= 120 ? ", last 20 min at {Z2T}" : ""}` : rpMin >= 60 ? `${hm(lr)}, last hour at race power {RP}` : `${hm(lr)} with ${rpMin} min at race power {RP}`;
+      const longRide = brick ? BR(ride, gpBrick ? `${brN} min at goal pace {GP}` : brN) : B("Long ride " + ride, lr);
+      const quality = ph === "Base" ? (late ? R(`${rq} min with 3×8 min at half-marathon effort (~${TEMPO_HR} bpm)`, rq) : strides(rq))
+        : eq(ph, n) === 23 ? R(`${Math.max(rq, 55)} min with 20 min tempo (~${TEMPO_HR} bpm)`, Math.max(rq, 55)) : R(`${Math.max(rq, 40)} min: ${pick(RQ[ph], p)}`, Math.max(rq, 40));
+      const long = ph === "Peak" && n === NWg - 3 && lrun >= 75 ? R(`Long run ${hm(lrun)}, last 20 min at goal pace {GP}`, lrun) : R(`Long run ${lrun} min easy ≤${EZ} bpm`, lrun);
+      const easyBike = ph === "Base" ? B(`${be} min Z2 {Z2}`, be) : B(`${be} min Z2 {Z2}, ${r5(be * .4)} min in aero`, be);
+      week = [[OFF(), null], [S0, bq(bqM, ph, p)], [lift || OFF(), quality], [S1, easyBike], [S2, easyRun(re)], [longRide, null], [long, null]];
+      focus[n] = ph === "Base" ? [`Aerobic base: easy days truly easy (runs ≤${EZ} bpm, rides under the Z2 ceiling).`, "One CSS swim, one quality ride, one long ride and run every week."]
+        : ph === "Build" ? ["Race-specific: race power and goal pace are targets, not minimums.", "Practice race fueling on every long ride and brick."]
+        : ["Peak: the longest race-pace work of the plan. Protect sleep.", "Rehearse race kit, pacing and fueling on the long brick."];
+    }
+    if (P.restDay === "fri") [week[0], week[4]] = [week[4], week[0]];
+    if (P.longDay === "sun" && ph !== "Race") [week[5], week[6]] = [week[6], week[5]];
+    // the Noah-equivalent week number drives the library's phase-relative choices
+    for (const pair of week) for (const s of pair) if (s && !s.eqWk) s.eqWk = eq(ph, n);
+    const row = [n, ph, k]; row[12] = ""; row.plan = week; rows.push(row);
+  }
+  return { rows, focus };
+}
+const GEN = PROFILE ? genRows(PROFILE) : null, ROWS = GEN ? GEN.rows : D, NW = ROWS.length;
+if (GEN) { for (const k in FOCUS) delete FOCUS[k]; Object.assign(FOCUS, GEN.focus); }
 const DAYNAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const pad = v => String(v).padStart(2, "0");
 const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -1200,16 +1375,16 @@ function classLayout(plan) {
   return out.map(([am, pm]) => [am || OFF(), pm]).concat(plan.slice(5));
 }
 const DAYS = [], WEEKS = {};
-for (const r of D) {
-  let plan = weekPlan(r);
-  if (r[0] >= TT_FROM_WK && r[2] !== "c") plan = classLayout(plan);
+for (const r of ROWS) {
+  let plan = r.plan || weekPlan(r);
+  if (!PROFILE && r[0] >= TT_FROM_WK && r[2] !== "c") plan = classLayout(plan);
   WEEKS[r[0]] = { n: r[0], ph: r[1], kind: r[2], note: r[12] || "", days: [] };
   plan.forEach((pair, i) => {
     const d = new Date(START); d.setDate(d.getDate() + 7 * (r[0] - 1) + i);
     const day = { key: keyOf(d), date: d, i, wk: r[0], ph: r[1], am: pair[0], pm: pair[1] };
     // Lifts go in the morning from Nov 4, 2026 on (earlier days keep their logged AM/PM slots).
     if (day.key >= LIFT_AM_FROM && day.pm && day.pm.s === "lift") [day.am, day.pm] = [day.pm, day.am];
-    if (day.key >= UPGRADE_FROM) { day.am = upgrade(day.am, r[0], r[1]); day.pm = upgrade(day.pm, r[0], r[1]); } // coached structured sessions
+    if (day.key >= UPGRADE_FROM) { day.am = upgrade(day.am, (day.am && day.am.eqWk) || r[0], r[1]); day.pm = upgrade(day.pm, (day.pm && day.pm.eqWk) || r[0], r[1]); } // coached structured sessions
     DAYS.push(day); WEEKS[r[0]].days.push(day);
   });
 }
@@ -1219,7 +1394,7 @@ const BYKEY = Object.fromEntries(DAYS.map(d => [d.key, d]));
 let today = new Date(); today.setHours(0, 0, 0, 0);
 let TODAY = keyOf(today);
 const inPlan = k => !!BYKEY[k];
-const wkOf = d => Math.max(1, Math.min(34, Math.floor((d - START) / 864e5 / 7) + 1));
+const wkOf = d => Math.max(1, Math.min(NW, Math.floor((d - START) / 864e5 / 7) + 1));
 let curWk = wkOf(today);
 // The page can stay open, or sit in the app switcher, past midnight: re-check the date whenever it resumes.
 function refreshToday() {
@@ -1381,7 +1556,7 @@ const ready = (async () => {
     setSync(s === "ok" ? "Synced to your Cloudflare site" : s === "locked" ? "Signed out" : s === "down" ? "Couldn't load your log. Retrying." : "Offline. Your log loads when you reconnect.");
     if (s !== "ok") overlayOutbox(); // offline or signed out: still show what's waiting to be sent
     render();
-    if (s === "ok") { loadGarmin(); loadWeather(); pump(); }
+    if (s === "ok") { loadGarmin(); loadWeather(); loadInvites(); pump(); }
     return;
   }
   try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
@@ -1433,6 +1608,7 @@ function flashNote(m, st) { noteMsg = m; noteSt = st || "off"; noteUntil = Date.
 // Garmin's loading, empty and error states, used wherever Garmin data would show.
 function garminState() {
   if (gState === "loading") return stateBox("load", "Loading Garmin data…", "Sleep, HRV, activities and fitness come from your watch through intervals.icu.");
+  if (gState === "nokey" && PROFILE) return stateBox("err", "Garmin isn't connected", "Connect it in Plan settings so your workouts load and reach your watch. The plan and your log still work.", { fix: '<a href="/setup">Open Plan settings</a>', fixLabel: "How to connect" });
   if (gState === "nokey") return stateBox("err", "Garmin isn't connected", "The site has no intervals.icu key, so nothing from your watch can load. The plan and your log still work.", { fix: "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put INTERVALS_API_KEY</code> and paste your intervals.icu API key, then reload this page." });
   if (gState === "error") return stateBox("err", "Garmin sync failed", "The last sync didn't finish, so what you see may be out of date.", { retry: "garmin", fix: esc(gDetail), fixLabel: "Details" });
   if (gState === "offline") return stateBox("err", "Can't reach Garmin data", "You look offline. It loads again when you reconnect.", { retry: "garmin" });
@@ -1459,14 +1635,14 @@ function paintStatus() {
   const btn = document.getElementById("st-act"); btn.hidden = !act; btn.textContent = act === "reload" ? "Reload" : "Retry"; btn.dataset.act = act;
   // Garmin and coach (Cloudflare site only)
   const g = document.getElementById("st-garmin"), c = document.getElementById("st-coach");
-  g.hidden = c.hidden = mode !== "worker";
+  g.hidden = c.hidden = mode !== "worker"; if (c.dataset.off) c.hidden = true;
   if (mode === "worker") {
     const age = gFetchedAt ? Date.now() - gFetchedAt : 0;
     g.textContent = gNote || (gFetchedAt ? `Garmin ${hm(gFetchedAt)}` : "Garmin…");
     g.dataset.state = gNote ? "fail" : age > 60 * 60e3 ? "stale" : "";
     const cc = COACH && COACH.createdAt ? COACH : null;
-    c.textContent = coachBusy ? "Coach reviewing…" : coachErr ? (coachErr.kind === "limit" ? "Coach limit reached" : "Coach unavailable") : cc && cc.forDate === TODAY ? `Coach ${hm(cc.createdAt)}` : "Coach";
-    c.dataset.state = coachErr && coachErr.kind !== "limit" && !coachBusy ? "fail" : "";
+    c.textContent = coachBusy ? "Coach reviewing…" : coachErr ? (coachErr.kind === "limit" ? "Coach limit reached" : coachErr.kind === "nokey" ? "Coach off" : "Coach unavailable") : cc && cc.forDate === TODAY ? `Coach ${hm(cc.createdAt)}` : "Coach";
+    c.dataset.state = coachErr && !["limit", "nokey"].includes(coachErr.kind) && !coachBusy ? "fail" : "";
     setHTML(document.getElementById("gfix"), ["nokey", "error", "offline"].includes(gState) ? garminState() : "");
   } else if (!document.getElementById("gbar").hidden) toggleGarmin(false);
 }
@@ -1571,6 +1747,60 @@ async function loadGarmin(force) {
   } catch (e) { gState = GA ? "ok" : "offline"; gNote = "Garmin offline"; g.textContent = "Garmin sync failed. Check your connection and try again."; render(); }
   finally { if (!coachStarted) { coachStarted = true; loadCoach(); } }
 }
+// ---------- share: invite friends to their own private plan (Noah's site; the friends site is a separate Worker) ----------
+let INV = null, invNew = null;
+async function loadInvites() {
+  if (mode !== "worker" || PROFILE) return;
+  try { const r = await fetch("/api/invites", { credentials: "same-origin" }), j = r.ok ? await r.json() : null; if (!j || !j.invites) return; // sharing off: no button
+    INV = j; document.getElementById("st-invite").hidden = false; renderInvites(); } catch (e) {}
+}
+const invMessage = v => v.kind === "reset" ? `Hi ${v.name}, here's a link to choose a new passcode for your training plan (it works once, for 3 days):
+${v.link}
+
+Your sign-in name is ${v.login}. Your plan and log stay exactly as they are.` : `Hi ${v.name}! I set you up with your own triathlon training plan. It builds a structured plan from your Garmin data and sends the workouts to your watch.
+
+1. Open this link (it works once, for 14 days): ${v.link}
+2. Choose a passcode. Your sign-in name is ${v.login}.
+3. The setup page walks you through connecting Garmin with a free intervals.icu account (about 5 minutes).
+
+After that, sign in any time at ${v.base}`;
+function renderInvites() {
+  if (!INV) return;
+  const fmtD = t => new Date(t).toLocaleDateString([], { month: "short", day: "numeric" }), rows = [
+    ...INV.invites.map(v => `<div class="inv-row"><div><b>${esc(v.name)}</b><span class="st">Invite sent ${fmtD(v.created)} · expires ${fmtD(v.created + 14 * 864e5)} · will sign in as ${esc(v.login)}</span></div><button class="btn" type="button" data-invcancel="${esc(v.code)}">Cancel invite</button></div>`),
+    ...INV.friends.map(f => `<div class="inv-row"><div><b>${esc(f.name)}</b><span class="st ${f.ready && !f.disabled ? "ok" : ""}">${f.disabled ? "Access removed (data kept)" : f.ready ? `Plan ready · signs in as ${esc(f.login)}` : "Joined · finishing setup"}</span></div>` +
+      `<span class="formrow">${f.disabled ? "" : `<button class="btn" type="button" data-invreset="${esc(f.id)}">Reset passcode</button>`}<button class="btn" type="button" data-invfriend="${esc(f.id)}" data-on="${f.disabled ? 1 : 0}">${f.disabled ? "Restore access" : "Remove access"}</button></span></div>`)];
+  setHTML(document.getElementById("invList"), rows.join("") || '<p class="small">No one yet. Create an invite above.</p>');
+  const nw = document.getElementById("invNew"); nw.hidden = !invNew;
+  document.getElementById("invNote").textContent = invNew && invNew.kind === "reset" ? "The reset link works once and expires in 3 days." : "The link works once and expires in 14 days.";
+  if (invNew) { document.getElementById("invMsg").value = invMessage(invNew); document.getElementById("invShare").hidden = !navigator.share; }
+}
+document.getElementById("st-invite").addEventListener("click", () => { const d = document.getElementById("inviteDlg"); renderInvites(); d.showModal(); document.getElementById("invName").focus(); });
+document.getElementById("invClose").addEventListener("click", () => document.getElementById("inviteDlg").close());
+document.getElementById("inviteDlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); }); // tap outside closes
+document.getElementById("invForm").addEventListener("submit", async e => {
+  e.preventDefault(); const name = document.getElementById("invName").value.trim(), go = document.getElementById("invGo"), err = document.getElementById("invErr");
+  err.hidden = true; go.disabled = true; go.textContent = "Creating…";
+  try { const r = await fetch("/api/invites", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify({ name }) }), j = await r.json();
+    if (!r.ok) { err.textContent = j.detail || "Couldn't create the invite. Try again."; err.hidden = false; return; }
+    invNew = j; document.getElementById("invName").value = ""; document.getElementById("invCopied").textContent = ""; await loadInvites(); reveal(document.getElementById("invNew"));
+  } catch (x) { err.textContent = "No connection. Try again."; err.hidden = false; } finally { go.disabled = false; go.textContent = "Create invite"; }
+});
+document.getElementById("invCopy").addEventListener("click", async () => {
+  const m = document.getElementById("invMsg"), done = document.getElementById("invCopied");
+  try { await navigator.clipboard.writeText(m.value); done.textContent = "Copied. Paste it into a text or email."; } catch (e) { m.select(); done.textContent = "Selected. Press Copy on your keyboard."; }
+});
+document.getElementById("invShare").addEventListener("click", () => navigator.share({ title: invNew.kind === "reset" ? "Reset your passcode" : "Your training plan", text: invMessage(invNew) }).catch(() => {}));
+document.getElementById("invList").addEventListener("click", async e => {
+  const rs = e.target.closest("[data-invreset]");
+  if (rs) { rs.disabled = true; try { const r = await fetch(`/api/friends/${rs.dataset.invreset}/reset`, { method: "POST", credentials: "same-origin" }); if (r.ok) { invNew = await r.json(); document.getElementById("invCopied").textContent = ""; renderInvites(); reveal(document.getElementById("invNew")); document.getElementById("invNew").scrollIntoView({ block: "nearest" }); } } finally { rs.disabled = false; } return; }
+  const c = e.target.closest("[data-invcancel]"), f = e.target.closest("[data-invfriend]"); if (!c && !f) return;
+  const b = c || f; b.disabled = true;
+  await fetch(c ? `/api/invites/${c.dataset.invcancel}` : `/api/friends/${f.dataset.invfriend}`, { method: c || f.dataset.on === "0" ? "DELETE" : "POST", credentials: "same-origin" }).catch(() => {});
+  if (c && invNew && invNew.code === c.dataset.invcancel) invNew = null;
+  await loadInvites();
+});
+
 // ---------- weather: should this run or ride go outside? ----------
 // Forecast and official alerts come from the National Weather Service through /api/weather (US only).
 // Each bike or run session is judged over its own time window (slot time + duration) against coaching rules:
@@ -1579,12 +1809,13 @@ async function loadGarmin(force) {
 //   Run indoors: thunderstorms, freezing rain or ice, an NWS warning, feels like -5°F or colder, or 100°F or hotter.
 //   Care (go, but adjust): cold that needs gear, rain likely, strong gusts, heat, icy footing, darkness, advisories.
 // Thresholds follow NWS wind-chill (frostbite) and heat-index guidance, padded for the wind a rider makes.
-const WX_HOME = { lat: 44.0153, lon: -73.1673, name: "Middlebury, VT" };
+const WX_HOME = PROFILE && PROFILE.place ? { lat: PROFILE.place.lat, lon: PROFILE.place.lon, name: PROFILE.place.name || "Home" } : { lat: 44.0153, lon: -73.1673, name: "Middlebury, VT" };
 let WX = null, wxState = "", wxAt = 0;
-const wxLoc = () => { try { return JSON.parse(localStorage.getItem("lg703-wxloc")) || WX_HOME; } catch (e) { return WX_HOME; } };
+// A shared plan has no weather until its athlete shares a location (never the owner's town).
+const wxLoc = () => { try { return JSON.parse(localStorage.getItem("lg703-wxloc")) || (PROFILE && !PROFILE.place ? null : WX_HOME); } catch (e) { return PROFILE && !PROFILE.place ? null : WX_HOME; } };
 async function loadWeather(force) {
   if (mode !== "worker" || (!force && WX && Date.now() - wxAt < 30 * 60e3)) return;
-  const L = wxLoc(); wxState = WX ? wxState : "loading";
+  const L = wxLoc(); if (!L) { wxState = "noloc"; render(); return; } wxState = WX ? wxState : "loading";
   try {
     const r = await fetch(`/api/weather?lat=${L.lat}&lon=${L.lon}`, { credentials: "same-origin" }), j = await r.json();
     if (!r.ok) throw new Error(j.detail || j.error || r.status);
@@ -1644,7 +1875,7 @@ function wxVerdict(dayKey, slot, s) {
       if (fMin <= -5) flag("indoor", `Feels like ${fMin}°F: frostbite risk on exposed skin within 30 minutes.`);
       else if (fMin < 20) flag("caution", `Feels like ${fMin}°F: layer up, cover ears and hands.`);
       if (fMax >= 100) flag("indoor", `Feels like ${fMax}°F: dangerous heat. Treadmill, or before 7 AM.`);
-      else if (fMax >= 85) flag("caution", `Feels like ${fMax}°F: heart rate runs higher in heat. Walk to stay ≤144 bpm, carry water.`);
+      else if (fMax >= 85) flag("caution", `Feels like ${fMax}°F: heart rate runs higher in heat. Walk to stay ≤${EZ} bpm, carry water.`);
       if (!freezing && tMin <= 32 && (rain > .01 || snowing || wetBefore)) flag("caution", `${tMin}°F after precipitation: icy footing. Shorter stride${hard ? "; do the quality on a treadmill" : ""}.`);
       if (rain >= .1) flag("caution", `About ${rain.toFixed(2)} in of rain: fine for an easy run, wear a cap.`);
       if (gust >= 30) flag("caution", `Gusts to ${gust} mph: start into the wind, finish with it at your back.`);
@@ -1673,10 +1904,10 @@ function renderWx() {
   if (show) {
     const dayEnd = +new Date(`${sel}T23:59:59`), dayStart = +new Date(`${sel}T00:00:00`);
     const al = (WX && WX.alerts || []).filter(a => (Date.parse(a.ends) || Infinity) >= dayStart && (Date.parse(a.onset) || 0) <= dayEnd);
-    const L = wxLoc(), custom = L !== WX_HOME && L.lat !== WX_HOME.lat;
+    const L = wxLoc() || {}, custom = L.lat != null && L.lat !== WX_HOME.lat && !(PROFILE && !PROFILE.place);
     setHTML(bar, al.map(a => `<div class="wxalert ${/Warning/.test(a.event) || /Severe|Extreme/.test(a.severity) ? "sev" : "mod"}" role="note"><b>${esc(a.event)}</b>${esc(a.headline || "")}</div>`).join("") +
-      `<div class="wxloc"><span>${wxState === "loading" ? "Loading the forecast…" : wxState === "error" ? "Weather unavailable right now." : wxState === "outside" ? "Weather covers US locations only." : `Weather for ${esc((WX && WX.place && WX.place.name) || L.name || "your location")}, National Weather Service${WX && WX.updated ? ` · updated ${hm2(WX.updated)}` : ""}`}</span>` +
-      `<button class="st-meta" type="button" data-wxloc="${custom ? "home" : "here"}">${custom ? "Use Middlebury" : "Use my location"}</button></div>`);
+      `<div class="wxloc"><span>${wxState === "loading" ? "Loading the forecast…" : wxState === "error" ? "Weather unavailable right now." : wxState === "outside" ? "Weather covers US locations only." : wxState === "noloc" ? "Weather is off until you share a location." : `Weather for ${esc((WX && WX.place && WX.place.name) || L.name || "your location")}, National Weather Service${WX && WX.updated ? ` · updated ${hm2(WX.updated)}` : ""}`}</span>` +
+      `<button class="st-meta" type="button" data-wxloc="${custom ? "home" : "here"}">${custom ? `Use ${esc(WX_HOME.name)}` : "Use my location"}</button></div>`);
   }
   for (const slot of ["am", "pm"]) {
     const el = document.getElementById("wx-" + slot), s = d[slot]; if (!el) continue;
@@ -1694,7 +1925,7 @@ document.addEventListener("click", e => {
   if (b.dataset.wxloc === "here") {
     if (!navigator.geolocation) { flashNote("This browser can't share your location."); return; }
     navigator.geolocation.getCurrentPosition(p => { try { localStorage.setItem("lg703-wxloc", JSON.stringify({ lat: +p.coords.latitude.toFixed(2), lon: +p.coords.longitude.toFixed(2), name: "" })); } catch (x) {} loadWeather(true); },
-      () => flashNote("Location not shared. Still using Middlebury."), { maximumAge: 30 * 60e3, timeout: 10e3 });
+      () => flashNote(`Location not shared. Still using ${WX_HOME.name}.`), { maximumAge: 30 * 60e3, timeout: 10e3 });
     return;
   }
   const slot = b.dataset.wxask, s = BYKEY[sel][slot], v = wxVerdict(sel, slot, s), t = document.getElementById("askText");
@@ -1709,7 +1940,7 @@ document.addEventListener("click", e => {
 const ZNAME = { TH: "Threshold", Z2: "Endurance", Z2T: "Upper endurance", TEMPO: "Tempo", SS: "Sweet spot", SSH: "Sweet spot (low)", RP: "Race power", RP10: "Race power +10 W", FTP: "Threshold" };
 function bzone(tok) { const f = settings.ftp; return tok === "RP10" ? [.76 + 10 / f, .81 + 10 / f] : ({ TH: [.95, 1], Z2: [.56, .75], Z2T: [.72, .77], TEMPO: [.77, .86], SS: [.88, .94], SSH: [.85, .90], RP: [.76, .81], FTP: [.95, 1] })[tok] || [.56, .75]; }
 const BS = (min, lbl, lo, hi, note) => ({ min, lbl, sp: "bike", z: (lo + hi) / 2, tgt: `${Math.round(lo * settings.ftp)}–${Math.round(hi * settings.ftp)} W${note ? " · " + note : ""}`, doc: `${Math.round(lo * 100)}-${Math.round(hi * 100)}%` });
-const RUNK = { easy: [.7, "≤144 bpm", "Z2 HR"], walk: [.45, "Walk", "Z1 HR"], jog: [.6, "Easy jog", "Z1 HR"], gp: [.86, null, "Z3 HR"], tempo: [.9, "~165 bpm", "Z3 HR"], steady: [.78, "≤155 bpm", "Z2 HR"], stride: [1.1, "Fast and relaxed", "Z5 HR"], tt: [1.02, "All-out, even pacing", "Z5 HR"] };
+const RUNK = { easy: [.7, `≤${EZ} bpm`, "Z2 HR"], walk: [.45, "Walk", "Z1 HR"], jog: [.6, "Easy jog", "Z1 HR"], gp: [.86, null, "Z3 HR"], tempo: [.9, `~${TEMPO_HR} bpm`, "Z3 HR"], steady: [.78, `≤${EZ + 11} bpm`, "Z2 HR"], stride: [1.1, "Fast and relaxed", "Z5 HR"], tt: [1.02, "All-out, even pacing", "Z5 HR"] };
 const RS = (min, lbl, k) => ({ min, lbl, sp: "run", z: RUNK[k][0], tgt: RUNK[k][1] || pace(settings.gp) + "/mi", doc: RUNK[k][2] });
 const blk = (lbl, n, steps) => ({ lbl, n, steps });
 function bikeStruct(t, m) {
@@ -1965,7 +2196,7 @@ function coachCtx(reqDate) {
     instructions: "Changes may target only the dates in next. Don't change a slot already done." };
 }
 async function loadCoach(force) {
-  if (mode !== "worker") return;
+  if (mode !== "worker" || (PROFILE && !PROFILE.ai)) return;
   try {
     if (!force) { const r = await fetch("/api/coach", { credentials: "same-origin" }); if (r.ok) COACH = await r.json(); }
     if (force || !COACH || COACH.forDate !== TODAY) {
@@ -1984,7 +2215,7 @@ function coachState(has) {
   if (coachBusy) return stateBox("load", "Coach is reviewing your last 7 days…", "This takes a few seconds. Nothing changes until you accept.");
   const e = coachErr; if (!e) return "";
   const last = has ? " Your last review is below." : "";
-  if (e.kind === "nokey") return stateBox("err", "Coach is off", "The site has no Claude key, so it can't review your week." + last, { fix: "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put ANTHROPIC_API_KEY</code>, then tap Review again." });
+  if (e.kind === "nokey") return stateBox("err", "Coach is off", "The site has no Claude key, so it can't review your week." + last, { fix: PROFILE ? '<a href="/setup">Open Setup</a> and paste an Anthropic API key (optional; billed to your Anthropic account).' : "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put ANTHROPIC_API_KEY</code>, then tap Review again." });
   if (e.kind === "limit") return stateBox("empty", "Coach limit reached for today", "8 reviews a day. It resets tomorrow." + last);
   if (e.kind === "offline") return stateBox("err", "Coach needs a connection", "Try again when you're back online." + last, { retry: "coach" });
   return stateBox("err", "Coach couldn't run", "The review didn't finish. Nothing in your plan changed." + last, { retry: "coach", fix: esc(e.detail), fixLabel: "Details" });
@@ -2001,7 +2232,7 @@ function changeRows(c, src) {
     (pend.length > 1 ? `<div class="formrow"><button type="button" class="btn primary" data-caccall="1" data-src="${src}">Accept all ${pend.length}</button></div>` : "");
 }
 function renderCoach() {
-  const card = document.getElementById("coachCard"); card.hidden = mode !== "worker";
+  const card = document.getElementById("coachCard"); card.hidden = mode !== "worker" || !!card.dataset.off;
   if (card.hidden) return;
   document.getElementById("coachAsk").disabled = coachBusy;
   const c = COACH && COACH.createdAt ? COACH : null;
@@ -2025,14 +2256,14 @@ async function askCoach() {
   askBusy = false; renderAsk();
 }
 function renderAsk() {
-  const f = document.getElementById("askForm"); f.hidden = mode !== "worker" || sel < TODAY;
+  const f = document.getElementById("askForm"); f.hidden = mode !== "worker" || sel < TODAY || !!f.dataset.off;
   if (f.hidden) return;
   const d = BYKEY[sel], go = document.getElementById("askGo"), e = askErr;
   document.getElementById("askFor").textContent = `For ${sel === TODAY ? "today" : `${DAYNAMES[d.i]} ${fmt(d.date)}`}. Nothing changes until you accept.`;
   go.disabled = askBusy; go.innerHTML = askBusy ? "<span>Asking<span class=\"wide-only\"> the coach</span>…</span>" : "<span>Suggest<span class=\"wide-only\"> a workout</span></span>";
   setHTML(document.getElementById("askState"), askBusy ? stateBox("load", "Coach is replanning…", "This takes a few seconds.")
     : !e ? "" : e.kind === "empty" ? `<p class="small" role="alert">Type what you're doing instead first, e.g. “riding 90 min with friends instead of the swim”.</p>`
-    : e.kind === "nokey" ? stateBox("err", "Coach is off", "The site has no Claude key, so it can't suggest a workout.", { fix: "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put ANTHROPIC_API_KEY</code>, then try again." })
+    : e.kind === "nokey" ? stateBox("err", "Coach is off", "The site has no Claude key, so it can't suggest a workout.", { fix: PROFILE ? '<a href="/setup">Open Setup</a> and paste an Anthropic API key.' : "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put ANTHROPIC_API_KEY</code>, then try again." })
     : e.kind === "limit" ? stateBox("empty", "Request limit reached for today", "15 requests a day. It resets tomorrow.")
     : e.kind === "offline" ? stateBox("err", "Coach needs a connection", "Try again when you're back online. Your plan didn't change.", { retry: "ask" })
     : stateBox("err", "Coach couldn't answer", "Nothing in your plan changed.", { retry: "ask", fix: esc(e.detail), fixLabel: "Details" }));
@@ -2062,7 +2293,7 @@ function dayStatus(d) {
   const ss = sessions(d), done = ss.filter(x => isDone(d.key, x.slot)).length;
   return { total: ss.length, done, past: d.key < TODAY };
 }
-// An easy session done hard (bike NP > 80% FTP, ~213 W at 266; run avg HR > 150) is treated as a hard day for tomorrow's call.
+// An easy session done hard (bike NP > 80% FTP, ~213 W at 266; run avg HR > EZ + 6, 150 for Noah) is treated as a hard day for tomorrow's call.
 function hotEasy(k) {
   const d = BYKEY[k]; if (!d || !AUTO[k]) return "";
   for (const o of sessions(d)) {
@@ -2070,7 +2301,7 @@ function hotEasy(k) {
     if (!a || a.sub || isHard(o.s.t)) continue;
     const np = a.np || a.w;
     if ((o.s.s === "bike" || o.s.s === "brick") && np && np > .80 * settings.ftp) return `ride (${Math.round(np)} W normalized)`;
-    if (o.s.s === "run" && a.hr && a.hr > 150) return `run (${Math.round(a.hr)} bpm)`;
+    if (o.s.s === "run" && a.hr && a.hr > EZ + 6) return `run (${Math.round(a.hr)} bpm)`;
   }
   return "";
 }
@@ -2141,7 +2372,7 @@ let builtFor = null;
 function buildToday() {
   const d = BYKEY[sel], wk = WEEKS[d.wk];
   const dl = o => d.date.toLocaleDateString("en-US", o);
-  document.getElementById("dayTitle").innerHTML = `<span class="dl">${dl({ weekday: "long", month: "long", day: "numeric" })}</span><span class="ds">${dl({ weekday: "short", month: "short", day: "numeric" })}</span><span class="sub">${d.wk === curWk ? (d.key === TODAY ? "Today" : d.key === prevKey(TODAY) ? "Yesterday" : prevKey(d.key) === TODAY ? "Tomorrow" : "This week") : `Week ${d.wk} of 34, ${esc(d.ph)}`}</span>`;
+  document.getElementById("dayTitle").innerHTML = `<span class="dl">${dl({ weekday: "long", month: "long", day: "numeric" })}</span><span class="ds">${dl({ weekday: "short", month: "short", day: "numeric" })}</span><span class="sub">${TODAY < DAYS[0].key && d.wk === 1 ? `Plan starts ${fmt(DAYS[0].date)}` : d.wk === curWk ? (d.key === TODAY ? "Today" : d.key === prevKey(TODAY) ? "Yesterday" : prevKey(d.key) === TODAY ? "Tomorrow" : "This week") : `Week ${d.wk} of ${NW}, ${esc(d.ph)}`}</span>`;
   const wn = document.getElementById("weekNote"), fo = FOCUS[d.wk];
   wn.innerHTML = (fo ? `<strong>This week's focus:</strong> ${esc(fo[0])}<br><strong>Habit:</strong> ${esc(fo[1])}` : "") + (wk.note ? `<br><span class="small">${esc(wk.note)}</span>` : "") + `<span id="swimCount" class="swimcount"></span>`;
   wn.hidden = false;
@@ -2168,7 +2399,7 @@ function buildToday() {
       <details class="sbody" id="${slot}-body" open><summary>Session details</summary><div class="sbody-in">
       <p class="prio" id="pr-${slot}" hidden></p>
       ${s.coach ? `<p class="small coachnote"><strong>Coach change${made ? `, suggested ${esc(made)}` : ""}:</strong> ${esc(s.coach.reason)} <span class="stale" id="cs-${slot}" hidden></span> <button class="btn" data-cundo="${sel}|${slot}">Undo</button></p>` : ""}
-      ${exOf(s).length ? liftTable(slot, s) : workoutHTML(s) ? `<p class="small">Plan: ${esc(X(s.t))}</p>${workoutHTML(s)}` : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
+      ${exOf(s).length ? liftTable(slot, s) : workoutHTML(s) ? `<p class="small">Plan: ${esc(X(s.t))}</p>${workoutHTML(s)}` : steps.length === 1 ? `<p>${esc(X(steps[0]))}</p>` : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
       ${feelOf(s) ? `<p class="why"><strong>${esc(feelOf(s))}</strong></p>` : ""}
       <p class="why">${esc(whyOf(s, hard))}</p>${fuel ? `<p class="fuel">${esc(fuel)}</p>` : ""}
       <div class="routes" id="r-${slot}" hidden></div>
@@ -2185,8 +2416,8 @@ function fillPriority() {
     let cls = "", msg = "";
     if (h && s && sel >= TODAY) {
       const hard = stepsOf(s).hard, es = h.easyShareThisWeek;
-      if (s.s === "swim" && h.daysSinceSwim >= 3) { cls = "top"; msg = `<b>Top priority.</b> ${h.lastSwim ? h.daysSinceSwim : h.daysSinceSwim + "+"} days since your last swim, and the swim is your biggest limiter. If the day gets squeezed, cut something else.`; }
-      else if (s.s === "run" && !hard) { cls = "cap"; msg = `<b>Hard cap: 144 bpm.</b>${h.recentRunAvgHR.length ? ` Your last runs averaged ${h.recentRunAvgHR.slice(-3).join(", ")} bpm.` : ""} Walk the moment you pass 144. Slow is the point.`; }
+      if (s.s === "swim" && h.daysSinceSwim >= 3) { cls = "top"; msg = `<b>Top priority.</b> ${h.lastSwim ? h.daysSinceSwim : h.daysSinceSwim + "+"} days since your last swim${!PROFILE || PROFILE.limiter === "swim" ? ", and the swim is your biggest limiter" : ". Swim fitness fades fast without frequency"}. If the day gets squeezed, cut something else.`; }
+      else if (s.s === "run" && !hard) { cls = "cap"; msg = `<b>Hard cap: ${EZ} bpm.</b>${h.recentRunAvgHR.length ? ` Your last runs averaged ${h.recentRunAvgHR.slice(-3).join(", ")} bpm.` : ""} Walk the moment you pass ${EZ}. Slow is the point.`; }
       else if (s.s === "bike" && !hard && es && es.pct < 75) { cls = "cap"; msg = `<b>Ceiling: ${Math.round(.75 * settings.ftp)} W.</b> Easy share is ${es.pct}% this week against a 75% target. Smooth pedaling, no surges on climbs.`; }
     }
     el.hidden = !msg; el.className = "prio " + cls; el.innerHTML = msg;
@@ -2313,9 +2544,22 @@ function fillToday() {
     const sw = WEEKS[d.wk].days.flatMap(x => sessions(x).filter(o => o.s.s === "swim").map(o => ({ k: x.key, slot: o.slot })));
     const done = sw.filter(o => isDone(o.k, o.slot)).length, left = sw.filter(o => o.k >= TODAY && !isDone(o.k, o.slot)).length;
     sc.className = "swimcount " + (done >= Math.min(2, sw.length) ? "ok" : "low");
-    sc.innerHTML = `<b>Swims this week: ${done} of ${sw.length}</b> · ${done >= sw.length ? "all done." : left ? `${left} still on the calendar. Swimming is your biggest limiter, so these come first.` : "none left this week. Make the first one next week non-negotiable."}`;
+    sc.innerHTML = `<b>Swims this week: ${done} of ${sw.length}</b> · ${done >= sw.length ? "all done." : left ? `${left} still on the calendar.${SWIM_LIMITER ? " Swimming is your biggest limiter, so these come first." : " Swim fitness fades fast without frequency."}` : "none left this week. Make the first one next week non-negotiable."}`;
   }
   ad.className = "advice " + a.c; setHTML(ad, `<b>${esc(a.h)}</b>${esc(a.t)}`);
+  // the day's sessions in one line, right under the week strip
+  const ss = sessions(d), dayWord = sel === TODAY ? "Today" : sel === prevKey(TODAY) ? "Yesterday" : prevKey(sel) === TODAY ? "Tomorrow" : DAYNAMES[d.i];
+  setHTML(document.getElementById("daySum"), `<span>${dayWord}:</span>` + (ss.length ? ss.map(o => `<a href="#sess-${o.slot}" data-jump="sess-${o.slot}" class="${isDone(sel, o.slot) ? "done" : ""}">${glyph(o.s.s)}${ST[o.s.s]} ${o.s.s === "lift" ? "" : durTxt(o.s.m)}${isDone(sel, o.slot) ? " ✓" : ""}</a>`).join("") : "<span>Rest day</span>"));
+  // before a shared plan starts: when it starts and what comes first; no readiness call for a day that isn't in the plan yet
+  const notYet = TODAY < DAYS[0].key, ps = document.getElementById("preStart");
+  document.getElementById("ckcard").hidden = notYet; ps.hidden = !notYet || d.wk !== 1;
+  if (!ps.hidden) {
+    const first = DAYS.flatMap(x => ["am", "pm"].map(sl => ({ x, s: x[sl] }))).filter(o => o.s && o.s.s !== "rest").slice(0, 3);
+    setHTML(ps, `<h2>Your plan starts ${DAYS[0].date.toLocaleDateString([], { weekday: "long", month: "short", day: "numeric" })}</h2>
+      <p>Nothing is scheduled before then. Keep your usual easy training; your Garmin data syncs every 20 minutes.</p>
+      <p><strong>First up:</strong></p><ul>${first.map(o => `<li>${DAYNAMES[o.x.i]} ${fmt(o.x.date)}: ${ST[o.s.s]}${o.s.s === "lift" ? "" : " · " + durTxt(o.s.m)}</li>`).join("")}</ul>
+      <div class="formrow"><a class="btn primary" href="#/week/1" data-weekone="1">Preview week 1</a><a class="btn" href="#/guide">How the plan works</a></div>`);
+  }
   // strip
   const wk = WEEKS[d.wk], strip = document.getElementById("strip");
   strip.innerHTML = wk.days.map(x => {
@@ -2326,7 +2570,8 @@ function fillToday() {
   }).join("");
   document.getElementById("prevDay").disabled = sel === DAYS[0].key;
   document.getElementById("nextDay").disabled = sel === DAYS[DAYS.length - 1].key;
-  document.getElementById("goToday").hidden = sel === TODAY;
+  const gt = document.getElementById("goToday"), pre = !inPlan(TODAY) && TODAY < DAYS[0].key;
+  gt.textContent = pre ? "Day 1" : "Today"; gt.hidden = pre ? sel === DAYS[0].key : sel === TODAY;
 }
 
 // ---------- render: Week ----------
@@ -2371,7 +2616,7 @@ function renderWeek() {
   document.getElementById("weekStats").insertAdjacentHTML("beforeend", graded ? `<div class="hb-foot"><span class="cpkey"><b>Compliance ${Math.round(tally.green / graded * 100)}% green</b><span><i class="green"></i>${tally.green} on target</span><span><i class="yellow"></i>${tally.yellow} partly</span><span><i class="red"></i>${tally.red} off or missed</span></span></div>` : "");
   document.getElementById("weekGoals").innerHTML = weekGoals(selWeek).map(g => `<div class="goal ${g.c}"><span class="mk">${g.c === "ok" ? "✓" : g.c === "bad" ? "✗" : "○"}</span><span>${esc(g.t)}</span></div>`).join("");
   document.getElementById("prevWeek").disabled = selWeek === 1;
-  document.getElementById("nextWeek").disabled = selWeek === 34;
+  document.getElementById("nextWeek").disabled = selWeek === NW;
 }
 
 // ---------- render: Season ----------
@@ -2398,7 +2643,7 @@ function renderSeason() {
     return { n: w.n, p: p / 60, d: dd / 60, x: xx / 60 };
   });
   const cv = document.getElementById("chart"), Wd = chartWidth(cv), Hd = 220, l = 34, b = 26, t = 10, top = Math.ceil(Math.max(...wks.map(w => Math.max(w.p, w.d + w.x))) / 5) * 5;
-  const y = v => Hd - b - (v / top) * (Hd - b - t), slotW = (Wd - l - 6) / 34, bw = slotW * .68;
+  const y = v => Hd - b - (v / top) * (Hd - b - t), slotW = (Wd - l - 6) / NW, bw = slotW * .68;
   let svg = "";
   for (let v = 0; v <= top; v += 5) svg += `<line x1="${l}" x2="${Wd - 4}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${l - 6}" y="${y(v) + 4}" text-anchor="end">${v}h</text>`;
   wks.forEach((w, i) => {
@@ -2406,7 +2651,7 @@ function renderSeason() {
     svg += `<rect x="${x}" y="${y(w.p)}" width="${bw}" height="${y(0) - y(w.p)}" fill="var(--line)" rx="2"/>`;
     if (w.d > 0) svg += `<rect x="${x}" y="${y(w.d)}" width="${bw}" height="${y(0) - y(w.d)}" fill="var(--fg)" rx="2"/>`;
     if (w.x > 0) svg += `<rect x="${x}" y="${y(w.d + w.x)}" width="${bw}" height="${y(w.d) - y(w.d + w.x)}" fill="var(--warn)" rx="2"/>`;
-    if (w.n === 1 || w.n % 4 === 0 || w.n === 34) svg += `<text x="${x + bw / 2}" y="${Hd - 8}" text-anchor="middle"${w.n === curWk ? ' class="on"' : ""}>${w.n}</text>`;
+    if (w.n === 1 || w.n % 4 === 0 || w.n === NW) svg += `<text x="${x + bw / 2}" y="${Hd - 8}" text-anchor="middle"${w.n === curWk ? ' class="on"' : ""}>${w.n}</text>`;
     if (w.n === curWk) svg += `<rect x="${x - 2}" y="${t}" width="${bw + 4}" height="${y(0) - t}" fill="none" stroke="var(--accent)" stroke-dasharray="3 3" rx="3"/>`;
   });
   chartDone(cv, Wd, Hd, svg,
@@ -2430,7 +2675,7 @@ function renderGuide() {
     <tr><td>Tempo</td><td class="num">${T.TEMPO}</td><td>Steady blocks</td></tr>
     <tr><td>Sweet spot</td><td class="num">${T.SS}</td><td>Main FTP builder</td></tr>
     <tr><td>Swim CSS</td><td class="num">${T.CSS}</td><td>Main swim sets</td></tr>
-    <tr><td>Run easy</td><td class="num">≤144 bpm</td><td>Most running</td></tr>
+    <tr><td>Run easy</td><td class="num">≤${EZ} bpm</td><td>Most running</td></tr>
     <tr><td>Goal 70.3 run pace</td><td class="num">${T.GP}</td><td>Pace blocks and bricks; settles at 150–160 bpm</td></tr>`;
   document.getElementById("raceRp").textContent = `Hold ${T.RP}, set from your week 28 FTP.`;
   const rows = [["Foundation · wk 1–8", "3×", ["fA", "fB", "fC"]], ["Base · wk 9–20", "2×", ["fA", "fB"]], ["Build · wk 21–28", "1–2×", ["bu"]], ["Peak / Taper", "1×", ["pk"]]];
@@ -2483,8 +2728,8 @@ function grade(s, a) {
   else if (r >= .85) out.push([1, `Duration: ${a.mins} of ${plan} min.`]);
   const sp = s.s === "brick" ? "bike" : s.s;
   if (sp === "run") {
-    if (!hard && a.hr) out.push(a.hr <= 144 ? [1, `Easy run held at ${Math.round(a.hr)} bpm (cap 144).`] : [0, `Avg HR ${Math.round(a.hr)}: ${Math.round(a.hr - 144)} bpm over your easy cap. Slow down 30–60 s/mi and walk hills until it stays under 144.`]);
-    if (hard && a.hr) out.push(a.hr <= 165 ? [1, `Avg HR ${Math.round(a.hr)}: controlled for a quality run.`] : [0, `Avg HR ${Math.round(a.hr)} is high for a whole session; keep the blocks at goal pace, not faster.`]);
+    if (!hard && a.hr) out.push(a.hr <= EZ ? [1, `Easy run held at ${Math.round(a.hr)} bpm (cap ${EZ}).`] : [0, `Avg HR ${Math.round(a.hr)}: ${Math.round(a.hr - EZ)} bpm over your easy cap. Slow down 30–60 s/mi and walk hills until it stays under 144.`]);
+    if (hard && a.hr) out.push(a.hr <= TEMPO_HR ? [1, `Avg HR ${Math.round(a.hr)}: controlled for a quality run.`] : [0, `Avg HR ${Math.round(a.hr)} is high for a whole session; keep the blocks at goal pace, not faster.`]);
   }
   if (sp === "bike" && (a.np || a.w)) {
     const np = a.np || a.w;
@@ -2504,11 +2749,11 @@ function weekGoals(n) {
     tot++; if (isDone(d.key, o.slot)) dn++;
     if (o.s.s === "swim") { sw++; if (isDone(d.key, o.slot)) swd++; }
     const a = AUTO[d.key] && AUTO[d.key][o.slot];
-    if (o.s.s === "run" && !isHard(o.s.t) && a && a.hr) { er++; if (a.hr <= 144) erOk++; }
+    if (o.s.s === "run" && !isHard(o.s.t) && a && a.hr) { er++; if (a.hr <= EZ) erOk++; }
   }
   mark(dn >= tot * .9, `Hit 90% of sessions: ${dn} of ${tot}`, !ended && dn < tot * .9);
-  if (sw) mark(swd >= sw, `All ${sw} swims done: ${swd} so far (swim is your biggest limiter)`, !ended && swd < sw);
-  mark(er ? erOk === er : null, er ? `Easy runs under 144 bpm: ${erOk} of ${er}` : "Easy runs under 144 bpm: no Garmin runs yet this week", !er);
+  if (sw) mark(swd >= sw, `All ${sw} swims done: ${swd} so far${SWIM_LIMITER ? " (swim is your biggest limiter)" : ""}`, !ended && swd < sw);
+  mark(er ? erOk === er : null, er ? `Easy runs under ${EZ} bpm: ${erOk} of ${er}` : `Easy runs under ${EZ} bpm: no Garmin runs yet this week`, !er);
   const sat = wk.days[5], sun = wk.days[6];
   if (sat.am && sat.am.s !== "rest") mark(isDone(sat.key, "am"), `Saturday's key session (${sat.am.s === "brick" || sat.am.s === "bike" ? "long ride" : ST[sat.am.s].toLowerCase()})`, sat.key >= TODAY && !isDone(sat.key, "am"));
   if (sun.am && sun.am.s === "run") mark(isDone(sun.key, "am"), "Sunday long run", sun.key >= TODAY && !isDone(sun.key, "am"));
@@ -2520,10 +2765,10 @@ function weekGoals(n) {
 }
 
 // ---------- render: Progress ----------
-const START_NUMS = { ftp: 266, css: 155, half: 6385, ride: 159, runKm: 11.3, swimM: 1000 }; // Garmin export, Oct 2026
+const START_NUMS = PROFILE ? { ftp: PROFILE.ftp, css: PROFILE.css, gp: PROFILE.gp, kg: PROFILE.weight || 0 } : { ftp: 266, css: 155, gp: 525, kg: 77.1, half: 6385, ride: 159, runKm: 11.3, swimM: 1000 }; // Noah: Garmin export, Oct 2026
 const hms = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${pad(m)}:${pad(x)}` : `${m}:${pad(x)}`; };
 function bikeSecs(watts, aero) {
-  const CdA = aero ? 0.28 : 0.33, m = 86, crr = 0.005;
+  const CdA = aero ? 0.28 : 0.33, m = PROFILE && PROFILE.weight ? PROFILE.weight + 9 : 86, crr = 0.005; // rider + ~9 kg bike
   let v = 8; for (let i = 0; i < 40; i++) { const f = 0.5 * 1.2 * CdA * v ** 3 + crr * m * 9.81 * v - watts; v -= f / (1.5 * 1.2 * CdA * v * v + crr * m * 9.81); }
   return 90123 / (v * 0.86); // 56 mi; 0.86 = hilly-course penalty
 }
@@ -2611,7 +2856,7 @@ const MILES = [
   { id: "tires", t: "Fast road tires on" },
   { id: "wetsuit", t: "Wetsuit bought or rented" },
   { id: "rehearsal", t: "Race rehearsal done (May 22)", log: () => isDone("2027-05-22", "am") }
-];
+].filter(m => !PROFILE || m.id !== "rehearsal");
 function renderProgress() {
   const ms = settings.ms || {};
   // fitness chart
@@ -2640,12 +2885,12 @@ function renderProgress() {
   });
   // benchmarks
   const tests = settings.tests || [], lastOf = ty => tests.filter(x => x.type === ty).slice(-1)[0];
-  document.getElementById("bench").innerHTML = `<tr><th>Measure</th><th>Start (Oct)</th><th>Now</th><th>Next target</th></tr>
-    <tr><td>FTP</td><td class="num">${START_NUMS.ftp} W</td><td class="num">${settings.ftp} W</td><td class="num">${curWk <= 12 ? "275 W (wk 12)" : curWk <= 20 ? "282 W (wk 20)" : "285–295 W (wk 28)"}</td></tr>
-    <tr><td>Swim CSS</td><td class="num">~${pace(START_NUMS.css)}/100 m</td><td class="num">${pace(settings.css)}/100 m</td><td class="num">${curWk <= 12 ? "2:15 (wk 12)" : curWk <= 20 ? "2:08 (wk 20)" : "2:00–2:05 (wk 28)"}</td></tr>
-    <tr><td>Goal 70.3 run pace</td><td class="num">8:45/mi</td><td class="num">${pace(settings.gp)}/mi</td><td class="num">Set by 5K test (wk 20)</td></tr>
-    <tr><td>Watts per kg</td><td class="num">${(START_NUMS.ftp / 77.1).toFixed(2)}</td><td class="num">${(settings.ftp / 77.1).toFixed(2)}</td><td class="num">3.7+</td></tr>
-    <tr><td>Last test logged</td><td colspan="3">${tests.length ? esc(tests[tests.length - 1].date) + " · " + esc(tests[tests.length - 1].label) : "None yet. First tests Nov 13–14."}</td></tr>`;
+  document.getElementById("bench").innerHTML = `<tr><th>Measure</th><th>${PROFILE ? "Start" : "Start (Oct)"}</th><th>Now</th><th>Next target</th></tr>
+    <tr><td>FTP</td><td class="num">${START_NUMS.ftp} W</td><td class="num">${settings.ftp} W</td><td class="num">${PROFILE ? "+2–4% per test" : curWk <= 12 ? "275 W (wk 12)" : curWk <= 20 ? "282 W (wk 20)" : "285–295 W (wk 28)"}</td></tr>
+    <tr><td>Swim CSS</td><td class="num">~${pace(START_NUMS.css)}/100 m</td><td class="num">${pace(settings.css)}/100 m</td><td class="num">${PROFILE ? "−2–4 s per test" : curWk <= 12 ? "2:15 (wk 12)" : curWk <= 20 ? "2:08 (wk 20)" : "2:00–2:05 (wk 28)"}</td></tr>
+    <tr><td>Goal 70.3 run pace</td><td class="num">${pace(START_NUMS.gp)}/mi</td><td class="num">${pace(settings.gp)}/mi</td><td class="num">${PROFILE ? "Set by the 5K test" : "Set by 5K test (wk 20)"}</td></tr>
+    ${START_NUMS.kg ? `<tr><td>Watts per kg</td><td class="num">${(START_NUMS.ftp / START_NUMS.kg).toFixed(2)}</td><td class="num">${(settings.ftp / START_NUMS.kg).toFixed(2)}</td><td class="num">${PROFILE ? "Up with every FTP test" : "3.7+"}</td></tr>` : ""}
+    <tr><td>Last test logged</td><td colspan="3">${tests.length ? esc(tests[tests.length - 1].date) + " · " + esc(tests[tests.length - 1].label) : (PROFILE ? "None yet. First tests in week 4." : "None yet. First tests Nov 13–14.")}</td></tr>`;
   // milestones
   const acts = GA ? Object.values(GA.acts).flat() : [];
   const byDay = GA ? Object.values(GA.acts) : [];
@@ -2709,8 +2954,8 @@ function renderHourbar() {
 }
 
 // ---------- habit scorecard: the four habits the Oct 2026 data showed were missing ----------
-// Hard minutes: bike NP > 80% FTP, run avg HR > 150, any squash. Easy share target 75% (endurance norm is ~80/20).
-const isHardAct = a => a.sport === "squash" || (a.sport === "bike" && (a.np || a.w || 0) > .80 * settings.ftp) || (a.sport === "run" && (a.hr || 0) > 150);
+// Hard minutes: bike NP > 80% FTP, run avg HR > EZ + 6, any squash. Easy share target 75% (endurance norm is ~80/20).
+const isHardAct = a => a.sport === "squash" || (a.sport === "bike" && (a.np || a.w || 0) > .80 * settings.ftp) || (a.sport === "run" && (a.hr || 0) > EZ + 6);
 const keyMinus = (k, n) => { const d = new Date(k + "T12:00:00"); d.setDate(d.getDate() - n); return keyOf(d); };
 function habitStats() {
   if (!GA) return null;
@@ -2722,7 +2967,7 @@ function habitStats() {
   const inWeek = w => { const ks = new Set(WEEKS[w].days.map(d => d.key)); return acts.filter(a => ks.has(a.date) && ["swim", "bike", "run", "squash"].includes(a.sport)); };
   const share = list => { let e = 0, h = 0; for (const a of list) isHardAct(a) ? h += a.mins : e += a.mins; return e + h ? { pct: Math.round(e / (e + h) * 100), easy: e, hard: h } : null; };
   const thisW = share(inWeek(curWk)), lastW = curWk > 1 ? share(inWeek(curWk - 1)) : null;
-  const runs = inWeek(curWk).filter(a => a.sport === "run" && a.hr), runsOk = runs.filter(a => a.hr <= 144).length;
+  const runs = inWeek(curWk).filter(a => a.sport === "run" && a.hr), runsOk = runs.filter(a => a.hr <= EZ).length;
   const lastRuns = acts.filter(a => a.sport === "run" && a.hr).slice(-5);
   const w0 = wellOn(TODAY), w7 = wellOn(keyMinus(TODAY, 7));
   const ramp = w0 && w7 && w0.ctl != null && w7.ctl != null ? +(w0.ctl - w7.ctl).toFixed(1) : null;
@@ -2740,29 +2985,35 @@ function renderHabits() {
   const tile = (cls, label, value, unit, foot, meter) => `<div class="habit ${cls}"><span class="hl">${label}</span><span class="hv">${value}${unit ? `<small>${unit}</small>` : ""}</span>${meter || ""}<span class="hf">${foot}</span></div>`;
   const meter = (pct, target) => `<div class="meter"><b style="width:${Math.max(2, Math.min(100, pct))}%"></b><i style="left:calc(${target}% - 1px)"></i></div>`;
   const sw = h.daysSinceSwim, swCls = sw <= 3 ? "ok" : sw <= 6 ? "warn" : "bad";
-  const swFoot = !h.lastSwim ? `No swim since sync began (${fmt(new Date(h.firstSync + "T12:00:00"))}). Book the next pool slot now.` : sw <= 3 ? "On rhythm. Swim at least every 3 days." : "Swim is your biggest limiter. Next planned swim comes first.";
+  const swFoot = !h.lastSwim ? `No swim since sync began (${fmt(new Date(h.firstSync + "T12:00:00"))}). Book the next pool slot now.` : sw <= 3 ? "On rhythm. Swim at least every 3 days." : (SWIM_LIMITER ? "Swim is your biggest limiter. Next planned swim comes first." : "Swim next: fitness fades fast without frequency.");
   const es = h.easyShareThisWeek, esCls = !es ? "" : es.pct >= 75 ? "ok" : es.pct >= 60 ? "warn" : "bad";
   const esFoot = !es ? "No swim, bike or run yet this week." : es.pct >= 75 ? `${es.hard} hard min. Good balance.` : `${es.hard} of ${es.easy + es.hard} min hard. Easy rides stay under ${Math.round(.75 * settings.ftp)} W.` + (h.easyShareLastWeek ? ` Last week ${h.easyShareLastWeek.pct}%.` : "");
   const rnCls = !h.runsThisWeek ? "" : h.easyRunsUnderCap === h.runsThisWeek ? "ok" : h.easyRunsUnderCap ? "warn" : "bad";
-  const rnFoot = !h.runsThisWeek ? (h.recentRunAvgHR.length ? `Recent runs: ${h.recentRunAvgHR.join(", ")} bpm. Use run-walk to stay ≤144.` : "No runs synced yet.") : h.easyRunsUnderCap === h.runsThisWeek ? "Every run at or under 144. Keep it." : "Walk 1 min every 4, and any time HR passes 144.";
+  const rnFoot = !h.runsThisWeek ? (h.recentRunAvgHR.length ? `Recent runs: ${h.recentRunAvgHR.join(", ")} bpm. Use run-walk to stay ≤${EZ}.` : "No runs synced yet.") : h.easyRunsUnderCap === h.runsThisWeek ? `Every run at or under ${EZ}. Keep it.` : "Walk 1 min every 4, and any time HR passes 144.";
   const rp = h.ctlRamp7d, rpCls = rp == null ? "" : rp <= 5 ? "ok" : rp <= 7 ? "warn" : "bad";
   const rpFoot = rp == null ? "Needs a week of data." : rp <= 5 ? `Fitness ${h.ctl}. Sustainable.` : `Fitness ${h.ctl}. Too fast, ease off.`;
   box.innerHTML = `<div class="hhead">This week's fixes<span>Week ${curWk} · from Garmin</span></div>` +
-    tile(swCls, "Days since swim", h.lastSwim ? sw : sw + "+", sw === 1 ? "day" : "days", sw <= 3 ? "On rhythm. Every 3 days max." : "Biggest limiter. Swim next.") +
+    tile(swCls, "Days since swim", h.lastSwim ? sw : sw + "+", sw === 1 ? "day" : "days", sw <= 3 ? "On rhythm. Every 3 days max." : SWIM_LIMITER ? "Biggest limiter. Swim next." : "Swim next.") +
     tile(esCls, "Easy share", es ? es.pct + "%" : "—", "≥75%", !es ? "Nothing synced yet this week." : es.pct >= 75 ? "Good balance." : `Easy rides under ${Math.round(.75 * settings.ftp)} W.`, es ? meter(es.pct, 75) : "") +
-    tile(rnCls, "Runs ≤144 bpm", h.runsThisWeek ? `${h.easyRunsUnderCap}/${h.runsThisWeek}` : "—", "this week", !h.runsThisWeek ? (h.recentRunAvgHR.length ? `Last runs ${h.recentRunAvgHR.slice(-3).join(", ")}.` : "No runs synced yet.") : h.easyRunsUnderCap === h.runsThisWeek ? "All under the cap." : "Run-walk: walk at 144.") +
+    tile(rnCls, `Runs ≤${EZ} bpm`, h.runsThisWeek ? `${h.easyRunsUnderCap}/${h.runsThisWeek}` : "—", "this week", !h.runsThisWeek ? (h.recentRunAvgHR.length ? `Last runs ${h.recentRunAvgHR.slice(-3).join(", ")}.` : "No runs synced yet.") : h.easyRunsUnderCap === h.runsThisWeek ? "All under the cap." : "Run-walk: walk at 144.") +
     tile(rpCls, "Fitness ramp", rp == null ? "—" : (rp > 0 ? "+" : "") + rp, "≤5 / wk", rpFoot);
 }
 
 // ---------- Road to 5:00: projected splits (same model as Progress) vs a 5-hour budget ----------
-const GOAL = { swim: 40 * 60, tr: 6 * 60, bike: 160 * 60, run: 94 * 60 }; // 5:00:00 total
+const GOAL_N = { swim: 40 * 60, tr: 6 * 60, bike: 160 * 60, run: 94 * 60 }; // Noah: 5:00:00
+let GOAL = GOAL_N, goalSet = !PROFILE; // a profile's goal: their time, or the projection rounded up to 5 min, split like Noah's budget
 const MI = 56, HM = 13.11;
 function projection(st = settings) {
   const aero = !!(st.ms || {}).aero;
   return { swim: 19.31 * (st.css + 5), tr: 7 * 60, bike: bikeSecs(.785 * st.ftp, aero), run: st.gp * HM };
 }
 function renderGoal() {
-  const P = projection(), tot = P.swim + P.tr + P.bike + P.run, gtot = 5 * 3600, gap = tot - gtot;
+  const P = projection(), tot = P.swim + P.tr + P.bike + P.run;
+  if (!goalSet) { const g = PROFILE.goal || Math.ceil(tot / 300) * 300, f = g / 18000; GOAL = Object.fromEntries(Object.entries(GOAL_N).map(([k, v]) => [k, v * f])); goalSet = true; }
+  const gtot = GOAL.swim + GOAL.tr + GOAL.bike + GOAL.run, gap = tot - gtot, gTxt = hms(Math.round(gtot / 60) * 60).replace(/:00$/, "");
+  document.getElementById("g5Goal").textContent = gTxt;
+  const est = PROFILE && !(settings.tests || []).length; // before any test the projection is only as good as the imported numbers
+  document.getElementById("g5NowL").textContent = est ? "Starting estimate" : "Projected today";
   const mph = s => (MI / (s / 3600)).toFixed(1);
   const rows = [
     ["sw", "Swim", "1.2 mi", "swim", `CSS ${pace(settings.css)}/100 m now`, `needs CSS ~${pace(GOAL.swim / 19.31 - 5)}/100 m`],
@@ -2781,8 +3032,8 @@ function renderGoal() {
   const nowEl = document.getElementById("g5Now");
   const show = v => nowEl.textContent = hms(Math.round(v / 60) * 60).replace(/:\d\d$/, ""); // rounded to the minute, so it agrees with "min to find"
   show(tot);
-  document.getElementById("g5Gap").innerHTML = gap > 30 ? `<b>${Math.round(gap / 60)} min to find</b>Solid bar = where you'd finish today. Tick = the 5:00 budget. Striped part = time to cut.` : `<b>On pace for sub-5</b>Every split is at or under budget. Hold it.`;
-  document.getElementById("g5Foot").textContent = "Uses your latest tests (log them below). The bike is a physics estimate for a hilly course, and the 2027 course isn't published yet. The 34-week plan closes most of this gap. The rest comes from showing up every week.";
+  document.getElementById("g5Gap").innerHTML = gap > 30 ? `<b>${Math.round(gap / 60)} min to find</b>Solid bar = where you'd finish today. Tick = the ${gTxt} budget. Striped part = time to cut.` : est ? `<b>Starting estimate under ${gTxt}</b>Based on your imported numbers. The week 4 tests calibrate it.` : `<b>On pace for ${gTxt}</b>Every split is at or under budget. Hold it.`;
+  document.getElementById("g5Foot").textContent = `Uses your latest tests (log them below). The bike is a physics estimate for a hilly course${PROFILE ? "; check your race's course profile" : ", and the 2027 course isn't published yet"}. The ${NW}-week plan closes most of this gap. The rest comes from showing up every week.`;
 }
 function renderConsistency() {
   let plan = 0, done = 0;
@@ -2796,16 +3047,16 @@ function renderConsistency() {
   let streak = 0;
   for (let i = curWk - 2; i >= 0; i--) { if (cells[i].pct != null && cells[i].pct >= .85) streak++; else break; }
   const wHtml = cells.map((c, i) => `<i class="${c.cls}${c.n === curWk && today >= START ? " now" : ""}${c.rec ? " rec" : ""}" title="Week ${c.n}: ${c.p ? `${c.d} of ${c.p} sessions (${Math.round(c.pct * 100)}%)` : c.n < curWk ? "nothing planned" : "ahead"}" style="--n:${i}">${c.pct != null ? `<b style="height:${Math.max(6, c.pct * 100).toFixed(0)}%"></b>` : ""}</i>`).join("");
-  const wEl = document.getElementById("csWeeks"); if (wEl.dataset.sig !== wHtml) { wEl.innerHTML = wHtml; wEl.dataset.sig = wHtml; }
+  const wEl = document.getElementById("csWeeks"); wEl.style.setProperty("--nw", NW); if (wEl.dataset.sig !== wHtml) { wEl.innerHTML = wHtml; wEl.dataset.sig = wHtml; }
   if (!document.getElementById("csRead")) { // tap (or drag across) the strip to read a week; the table is for screen readers
     const rd = document.createElement("p"); rd.id = "csRead"; rd.className = "small readout"; rd.setAttribute("aria-live", "polite"); rd.textContent = "Tap a week to read it."; wEl.after(rd);
     const tb = document.createElement("div"); tb.id = "csTable"; tb.className = "vh"; rd.after(tb);
-    const pick = e => { const r = wEl.getBoundingClientRect(), i = Math.max(0, Math.min(33, Math.floor((e.clientX - r.left) / (r.width / 34)))), c = wEl.children[i]; if (!c) return;
+    const pick = e => { const r = wEl.getBoundingClientRect(), i = Math.max(0, Math.min(NW - 1, Math.floor((e.clientX - r.left) / (r.width / NW)))), c = wEl.children[i]; if (!c) return;
       for (const x of wEl.children) x.classList.toggle("pick", x === c); rd.textContent = c.title; };
     wEl.addEventListener("pointerdown", pick); wEl.addEventListener("pointermove", e => { if (e.pointerType === "mouse" || e.buttons) pick(e); });
   }
   setHTML(document.getElementById("csTable"), `<table><caption>Share of planned sessions done each week</caption><tr><th>Week</th><th>Done</th><th>Planned so far</th></tr>` + cells.map(c => `<tr><td>${c.n}</td><td>${c.d}</td><td>${c.p}</td></tr>`).join("") + `</table>`);
-  document.getElementById("csNum").innerHTML = plan ? `<b>${Math.round(done / plan * 100)}%</b> of planned sessions done · ${done} of ${plan}` : "Starts Oct 19";
+  document.getElementById("csNum").innerHTML = plan ? `<b>${Math.round(done / plan * 100)}%</b> of planned sessions done · ${done} of ${plan}` : `Starts ${fmt(START)}`;
   const cw = cells[curWk - 1];
   document.getElementById("csNote").innerHTML = (streak ? `<span class="streak">${streak} ${streak === 1 ? "week" : "weeks"} in a row at 85%+.</span> ` : `<span class="streak">Build a streak: 85%+ of sessions every week.</span> `) +
     (cw && cw.p ? `This week ${cw.d}/${cw.p} so far.` : "");
@@ -2817,7 +3068,7 @@ function renderHeader() {
   const cEl = document.getElementById("count");
   document.getElementById("countL").textContent = days === 1 ? "day to race day" : days <= 0 ? "Race day has passed" : "days to race day";
   cEl.textContent = days <= 0 ? "✓" : days;
-  document.getElementById("phase").textContent = `Week ${curWk} of 34 · ${WEEKS[curWk].ph}`;
+  document.getElementById("phase").textContent = `Week ${curWk} of ${NW} · ${WEEKS[curWk].ph}`;
 }
 function render() {
   const a = document.activeElement && document.activeElement.id;
@@ -2878,7 +3129,7 @@ function reveal(el) {
   if (!el || !motionOK() || !el.animate) return;
   el.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 220, easing: "cubic-bezier(.2, .8, .2, 1)" });
 }
-const TABS = ["today", "week", "season", "history", "guide"], SLUG = { season: "progress" }, UNSLUG = { progress: "season" };
+const TABS = ["today", "week", "season", "history", "guide"].filter(t => document.getElementById("p-" + t)), SLUG = { season: "progress" }, UNSLUG = { progress: "season" };
 let curTab = "today", progressSeen = false;
 function showTab(name) {
   curTab = name;
@@ -2894,7 +3145,7 @@ function applyHash() {
   const m = location.hash.match(/^#\/([a-z]+)(?:\/([\w-]+))?$/); if (!m) return false;
   const tab = UNSLUG[m[1]] || m[1]; if (!TABS.includes(tab)) return false;
   if (tab === "today") { const k = m[2] && inPlan(m[2]) ? m[2] : inPlan(TODAY) ? TODAY : sel; if (k !== sel) { sel = k; selWeek = BYKEY[k].wk; } }
-  if (tab === "week" && +m[2] >= 1 && +m[2] <= 34) selWeek = Math.floor(+m[2]);
+  if (tab === "week" && +m[2] >= 1 && +m[2] <= NW) selWeek = Math.floor(+m[2]);
   showTab(tab); return true;
 }
 function goTab(name) { showTab(name); syncHash(true); render(); window.scrollTo(0, 0); } // render: charts are drawn at the width they now have
@@ -2914,8 +3165,12 @@ const step = (n, e) => { const d = DAYS[DAYS.findIndex(x => x.key === sel) + n];
 document.getElementById("prevDay").onclick = e => step(-1, e);
 document.getElementById("nextDay").onclick = e => step(1, e);
 document.getElementById("goToday").onclick = e => goDay(inPlan(TODAY) ? TODAY : DAYS[0].key, e);
+document.getElementById("daySum").addEventListener("click", e => { const a = e.target.closest("[data-jump]"); if (!a) return; e.preventDefault();
+  const card = document.getElementById(a.dataset.jump); if (card) { card.scrollIntoView({ behavior: motionOK() ? "smooth" : "auto", block: "start" }); card.setAttribute("tabindex", "-1"); card.focus({ preventScroll: true }); } });
+document.getElementById("preStart").addEventListener("click", e => { const a = e.target.closest("a[href^='#/']"); if (!a) return; e.preventDefault(); const t = a.getAttribute("href");
+  if (t === "#/week/1") flow("tab", "next", () => { selWeek = 1; showTab("week"); render(); syncHash(true); window.scrollTo(0, 0); }, e); else flow("tab", "next", () => goTab("guide"), e); });
 document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest("button[data-day]"); if (b) goDay(b.dataset.day, e); });
-const goWeek = (n, e) => { if (n < 1 || n > 34 || n === selWeek) return; flow("week", n > selWeek ? "next" : "prev", () => { selWeek = n; renderWeek(); syncHash(true); }, e); };
+const goWeek = (n, e) => { if (n < 1 || n > NW || n === selWeek) return; flow("week", n > selWeek ? "next" : "prev", () => { selWeek = n; renderWeek(); syncHash(true); }, e); };
 document.getElementById("prevWeek").onclick = e => goWeek(selWeek - 1, e);
 document.getElementById("nextWeek").onclick = e => goWeek(selWeek + 1, e);
 document.getElementById("thisWeek").onclick = e => goWeek(curWk, e);

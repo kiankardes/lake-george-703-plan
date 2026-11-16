@@ -3,7 +3,22 @@
   "main": "src/index.js",
   "compatibility_date": "2026-10-19",
   "assets": { "directory": "./site", "binding": "ASSETS", "run_worker_first": true },
-  "kv_namespaces": [{ "binding": "KV", "id": "41c9045d67fa4dc2927f1244acf77bb8" }],
+  "kv_namespaces": [
+    { "binding": "KV", "id": "41c9045d67fa4dc2927f1244acf77bb8" },
+    // the friends site's storage: Noah's Invite button writes invites here and reads each friend's status
+    { "binding": "FRIENDS_KV", "id": "ec2ec43e76d0432fb7bd2d30b2c277f5" }
+  ],
   "triggers": { "crons": ["*/20 * * * *"] },
-  "vars": { "ATHLETE_ID": "i761867" }
+  "vars": { "ATHLETE_ID": "i761867", "FRIENDS_URL": "https://tri-plan-friends.noahlazar.workers.dev" },
+  "env": {
+    // The friends site: same code in profile mode, one private account per invited friend (keys prefixed u:<id>:).
+    // Deploy: ./build.sh && npx wrangler deploy --env friends   ·   Secret: DATA_KEY (README: "Sharing with friends").
+    "friends": {
+      "name": "tri-plan-friends",
+      "assets": { "directory": "./site", "binding": "ASSETS", "run_worker_first": true },
+      "kv_namespaces": [{ "binding": "KV", "id": "ec2ec43e76d0432fb7bd2d30b2c277f5" }],
+      "triggers": { "crons": ["*/20 * * * *"] },
+      "vars": { "PROFILE_MODE": "1" }
+    }
+  }
 }

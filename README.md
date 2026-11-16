@@ -59,3 +59,48 @@ The motion follows two skills from the open skills ecosystem:
 - **What may move:** only transform and opacity; the small data bars are the exception. All easing uses the custom curves in `--ease-out` and `--ease-in`.
 
 `dev/tools/motion-test.mjs` checks every navigation. For each one it lists the animations that actually ran, with their duration and the properties they change, and saves paused frames at 0, 40 and 75% of the motion. It also checks that reduced motion runs nothing and that no infinite animation exists.
+
+## Sharing with friends
+
+**How it works:** one friends site (`tri-plan-friends`, `env.friends` in `wrangler.jsonc`, var `PROFILE_MODE=1`) gives every invited friend a private account. It runs the same code as Noah's site.
+
+**Invite (Noah):** the **Invite a friend** button in the status bar of Noah's dashboard.
+- Type a first name. The button creates a one-time link (expires in 14 days) and a ready-to-send message, with **Share…** (the phone's share sheet) and **Copy**.
+- The sign-in name (kian, kian2, …) is reserved when the invite is made, so the message is always right.
+- The same dialog lists every friend: invite sent, joined, or plan ready. From there Noah can **Cancel invite**, **Reset passcode**, **Remove access** (their data is kept) or **Restore access**.
+- **Reset passcode** makes a one-time link that lasts 3 days. The friend chooses a new passcode; their plan and log are unchanged, and every old sign-in ends.
+- Noah's site writes invites into the friends site's storage through the `FRIENDS_KV` binding, and links to it with `FRIENDS_URL`.
+
+**Join (friend):** the link opens a page where they choose a passcode. Their sign-in name is their first name in lowercase.
+- Passcodes are stored as PBKDF2 hashes. The sign-in cookie is an HMAC of the account with its passcode hash, so a new passcode or removed access ends the session.
+- Setup comes next, in three steps:
+  1. **Connect Garmin:** create an intervals.icu account, connect Garmin, and paste the Athlete ID and API key. The AI coach is an optional extra (their own Anthropic key).
+  2. **Race and week:** race, date, optional goal, hours, rest and long-ride days, weakest sport, strength.
+  3. **Numbers:** filled in from intervals.icu and folded into one line, opening only if something is missing. Every field has a plain-language label.
+  - Answers are kept in the browser, so leaving to make the intervals.icu account loses nothing.
+  - The finished account has **Plan settings** and **Sign out** in the status bar.
+- The keys are encrypted with `DATA_KEY` and never sent back to the browser.
+
+**For friends, without an AI key:** the coach review and the “Doing something different?” box are hidden rather than shown as broken. Weather stays off until they share a location; it never uses Noah's town.
+
+**Before a plan starts:** Today shows when it starts and the first sessions, instead of a readiness call for a day that isn't in the plan.
+
+**Privacy:** each friend's data lives under its own KV prefix (`u:<id>:`): logs, settings, profile, keys, Garmin cache, coach. One friend can't see another's. Shared records are only `users`, `login:<name>` and `invite:<code>`. The 20-minute cron refreshes every active friend's Garmin data.
+
+**Their plan:** `genRows()` builds it from their profile.
+- Phases are about 45% Base, 35% Build and 20% Peak, then a taper week and race week.
+- Hours ramp up to 8% a week from recent volume. Every 4th week is easier (test, then recovery).
+- Sessions use the same coached library.
+- The easy cap is 80% of threshold HR. Noah's personal Guide cards and History are hidden.
+
+**Deploy:**
+
+```sh
+openssl rand -base64 32 | npx wrangler secret put DATA_KEY --env friends   # once; never displayed
+./build.sh && npx wrangler deploy --env friends                            # the friends site
+./deploy.sh                                                                # Noah's site (Invite button)
+```
+
+**Tests:**
+- `dev/tools/worker-server.mjs 8803 pair` runs the real Worker as both sites: Noah on 8803 (passcode `test-pass`), friends on 8804. It uses in-memory storage and stand-ins for intervals.icu, Anthropic and NWS.
+- `share-test.mjs` covers invite → join → setup → plan, plus isolation between friends, sign-in, remove/restore, and cancelled and reused links.

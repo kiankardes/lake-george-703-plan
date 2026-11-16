@@ -1,5 +1,8 @@
 // Lake George 70.3 dashboard: passcode gate, log storage (KV), and intervals.icu bridge to Garmin.
 // Secrets (set with `npx wrangler secret put NAME`): PASSCODE, INTERVALS_API_KEY.
+// Profile mode (var PROFILE_MODE = "1", e.g. a friend's site): a setup page takes the athlete's intervals.icu key
+// (and optional Anthropic key), stores them encrypted with the DATA_KEY secret, reads their numbers, and saves a
+// profile the dashboard builds its plan from. Without PROFILE_MODE nothing below changes.
 const enc = new TextEncoder();
 const sha = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(s)))].map(b => b.toString(16).padStart(2, "0")).join("");
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
@@ -28,7 +31,7 @@ button{font:inherit;font-weight:600;min-height:44px;border:1px solid var(--accen
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}.err{color:var(--bad);font-weight:600}
 details{font-size:13px}summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--accent);font-weight:500}code{overflow-wrap:anywhere}
 </style></head><body>${body}</body></html>`;
-const LOGIN = err => PAGE("Lake George 70.3 Plan", `<form class="box" method="post" action="/login"><h1>Lake George 70.3</h1><p>Enter your passcode to open the training plan.</p>
+const LOGIN = (err, title = "Lake George 70.3") => PAGE(title + " Plan", `<form class="box" method="post" action="/login"><h1>${title}</h1><p>Enter your passcode to open the training plan.</p>
 <label>Passcode<input type="password" name="pass" id="pass" autocomplete="current-password" required autofocus></label>
 ${err ? `<p class="err" role="alert">${err} Check it and try again.</p>` : ""}<button type="submit">Open training plan</button></form>`);
 const NOTICE = (title, text, fix) => PAGE(title, `<div class="box warn"><h1>${title}</h1><p>${text}</p>${fix ? `<details><summary>How to fix</summary><p>${fix}</p></details>` : ""}</div>`);
@@ -48,6 +51,165 @@ function dedupe(acts) {
   return list.filter(a => !isStrava(a) || !have.has(a.start_date_local.slice(0, 10) + kind(a.type)));
 }
 
+// ---------- profile mode: encrypted keys, profile, setup page ----------
+const b64 = u8 => btoa(String.fromCharCode(...u8)), unb64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
+const dataKey = env => { if (!env.DATA_KEY) throw new Error("This site has no DATA_KEY secret."); return crypto.subtle.importKey("raw", unb64(env.DATA_KEY), "AES-GCM", false, ["encrypt", "decrypt"]); };
+async function seal(env, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); return JSON.stringify({ iv: b64(iv), ct: b64(new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await dataKey(env), enc.encode(JSON.stringify(obj))))) }); }
+async function unseal(env, t) { const { iv, ct } = JSON.parse(t); return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(iv) }, await dataKey(env), unb64(ct)))); }
+// The request's env, with the site's stored keys filled in (env vars win, so Noah's site is untouched).
+async function withKeys(env) {
+  if (env.PROFILE_MODE !== "1") return env;
+  const [sealed, profile] = await Promise.all([env.KV.get("keys"), env.KV.get("profile", "json")]);
+  const k = sealed ? await unseal(env, sealed) : {};
+  return Object.assign({}, env, { INTERVALS_API_KEY: env.INTERVALS_API_KEY || k.icu, ATHLETE_ID: env.ATHLETE_ID || k.athlete, ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY || k.ai, PROFILE: profile });
+}
+const icuGet = async (athlete, key, path) => {
+  const r = await fetch(`https://intervals.icu/api/v1/athlete/${athlete}${path}`, { headers: { authorization: "Basic " + btoa("API_KEY:" + key) } });
+  if (!r.ok) throw Object.assign(new Error(`intervals.icu ${r.status}`), { status: r.status });
+  return r.json();
+};
+const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+// Reads what intervals.icu knows (sport settings, recent training) into setup suggestions.
+async function readAthlete(athlete, key) {
+  const a = await icuGet(athlete, key, "");
+  const ss = a.sportSettings || [], of = t => ss.find(x => (x.types || []).includes(t)) || {};
+  const ride = of("Ride"), run = of("Run"), swim = of("Swim"), now = new Date(), d = n => new Date(now - n * 864e5).toISOString().slice(0, 10);
+  const [acts, well] = await Promise.all([icuGet(athlete, key, `/activities?oldest=${d(42)}&newest=${d(-1)}`).catch(() => []), icuGet(athlete, key, `/wellness?oldest=${d(10)}&newest=${d(-1)}`).catch(() => [])]);
+  const hrs = { swim: 0, bike: 0, run: 0, other: 0 };
+  for (const x of acts || []) hrs[{ swim: "swim", bike: "bike", run: "run" }[kind(x.type || "")] || "other"] += (x.moving_time || 0) / 3600 / 6;
+  const lthr = run.lthr || (ride.lthr ? ride.lthr + 5 : null), ctl = (well || []).filter(w => w.ctl != null).slice(-1)[0];
+  return {
+    name: a.firstname || a.name || "", city: a.city || "", weight: a.icu_weight || a.weight || null, rhr: a.icu_resting_hr || null,
+    ftp: ride.ftp || null, lthr, maxhr: run.max_hr || ride.max_hr || null,
+    css: swim.threshold_pace ? Math.round(100 / swim.threshold_pace) : null,             // m/s → s per 100 m
+    gp: run.threshold_pace ? Math.round(1609.344 / (run.threshold_pace * .89)) : null,   // 70.3 run ≈ 89% of threshold speed, s per mile
+    recent: { hours: +(hrs.swim + hrs.bike + hrs.run).toFixed(1), swim: +hrs.swim.toFixed(1), bike: +hrs.bike.toFixed(1), run: +hrs.run.toFixed(1) }, ctl: ctl ? Math.round(ctl.ctl) : null
+  };
+}
+// Setup: 1 connect Garmin (via intervals.icu) → 2 race and week → 3 numbers (pre-filled; folded when complete).
+// Non-secret answers are kept in this browser (localStorage) so leaving to create the intervals.icu account loses nothing.
+const SETUP = (configured) => PAGE("Set up your plan", `<style>
+[hidden]{display:none!important}body{display:block;padding:16px 16px 96px}.box{max-width:560px;margin:0 auto;border-left-width:1px}
+.steps{display:flex;gap:4px;list-style:none;margin:0;padding:0;font-size:12px;color:var(--muted)}.steps li{flex:1;border-top:3px solid var(--line);padding-top:6px}
+.steps li[aria-current]{border-top-color:var(--accent);color:var(--fg);font-weight:600}.steps li.done{border-top-color:var(--good);color:var(--good)}
+h2{margin:8px 0 0;font:600 20px/1.2 var(--display)}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.help{font-size:12px;color:var(--faint)}
+ol.how{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--fg)}ol.how li::marker{font-weight:600}
+select,input[type=date]{font:inherit;min-height:44px;padding:0 12px;border:1px solid var(--line-strong);border-radius:6px;background:var(--soft);color:var(--fg)}
+.chk{flex-direction:row;align-items:center;gap:8px;min-height:44px;color:var(--fg)}.chk input{min-height:auto;width:20px;height:20px}
+.done-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-left:4px solid var(--good);background:var(--soft);border-radius:6px}
+.done-card b{color:var(--good)}.btn2{background:var(--card);color:var(--fg);border-color:var(--line-strong);padding:0 14px}
+details.nums{border:1px solid var(--line);border-radius:6px;padding:0 12px}details.nums[open]{padding-bottom:12px}details.nums>summary{font-weight:600;color:var(--fg)}
+.foot{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}.foot>div{max-width:560px;margin:0 auto;display:flex;gap:12px;align-items:center}
+.foot button{flex:1}.top{display:flex;justify-content:space-between;align-items:center;max-width:560px;margin:0 auto 12px;font-size:13px}a{color:var(--accent)}
+@media(max-width:480px){.row{grid-template-columns:1fr}}</style>
+<nav class="top" aria-label="Account">${configured ? '<a href="/">← Back to my plan</a>' : "<span></span>"}<a href="/logout">Sign out</a></nav>
+<div class="box"><h1>${configured ? "Plan settings" : "Set up your plan"}</h1>
+<ol class="steps" aria-label="Setup progress"><li id="s1" aria-current="step">1 · Connect Garmin</li><li id="s2">2 · Race and week</li><li id="s3">3 · Your numbers</li></ol>
+
+<form id="connect" novalidate><h2>Connect your Garmin</h2>
+<p>Your plan reads your training from Garmin and sends workouts to your watch through <b>intervals.icu</b>, a free site that links to Garmin. One-time setup, about 5 minutes:</p>
+<ol class="how"><li><a href="https://intervals.icu/signup" target="_blank" rel="noopener">Create a free intervals.icu account</a> (opens a new tab; this page keeps your place).</li>
+<li>In intervals.icu, open <b>Settings → Connections</b>, connect <b>Garmin</b>, and switch on <b>Upload planned workouts</b>.</li>
+<li>Still in Settings, scroll to <b>Developer Settings</b>. Copy your <b>Athlete ID</b> (starts with “i”), then click <b>Generate</b> next to API key and copy it.</li></ol>
+<label>Athlete ID<input name="athlete" required pattern="i?[0-9]+" autocomplete="off" spellcheck="false" inputmode="text" placeholder="e.g. i123456…"></label>
+<label>API key<input name="key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste the key you generated…"></label>
+<details><summary>Optional: turn on the AI coach</summary><label>Anthropic API key<input name="ai" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…"></label>
+<p class="help">The coach reviews your week and rewrites a day when plans change. It needs your own key from console.anthropic.com (billed to you, roughly 10 short requests a day). Everything else works without it.</p></details>
+<p class="err" id="cErr" role="alert" hidden></p><button id="cGo">Check my connection</button></form>
+
+<div class="done-card" id="connected" hidden><div><b>✓ Garmin connected</b><div class="help" id="who"></div></div><button type="button" class="btn2" id="reconnect">Change</button></div>
+
+<form id="plan" hidden novalidate>
+<h2 id="h2race">Your race and week</h2>
+<label>Race name<input name="race" required maxlength="80" value="IRONMAN 70.3" autocomplete="off"></label>
+<div class="row"><label>Race date<input name="date" type="date" required></label><label>Goal time (optional)<input name="goal" pattern="[0-9]{1,2}:[0-5][0-9]" placeholder="h:mm, e.g. 5:30…" autocomplete="off" inputmode="numeric"><span class="help">Leave blank to aim for your projected time.</span></label></div>
+<label>Hours a week at your busiest<input name="hours" type="number" min="4" max="18" step="0.5" required inputmode="decimal"><span class="help" id="hoursHelp">Most 70.3 plans peak at 7–11 hours. The plan starts near what you do now and builds up gradually.</span></label>
+<div class="row"><label>Rest day<select name="restDay"><option value="mon">Monday</option><option value="fri">Friday</option></select></label><label>Long ride day<select name="longDay"><option value="sat">Saturday</option><option value="sun">Sunday</option></select></label></div>
+<div class="row"><label>Weakest sport<select name="limiter"><option value="swim">Swim</option><option value="bike">Bike</option><option value="run">Run</option></select><span class="help">It gets protected first when a week gets busy.</span></label>
+<label class="chk"><input type="checkbox" name="lift" checked> Weekly strength session (free weights)</label></div>
+
+<h2 id="h2nums">Your numbers</h2>
+<details class="nums" id="nums"><summary id="numsSum">Training numbers</summary>
+<p class="help">These set every target in your plan. Best guesses are fine: week 4 has a swim test and a bike test, and every target updates from them.</p>
+<div class="row"><label>Bike threshold power (FTP), watts<input name="ftp" type="number" min="80" max="500" required inputmode="numeric"><span class="help">Power you could hold for about an hour.</span></label>
+<label>Swim threshold pace (CSS), per 100 m<input name="css" required pattern="[0-9]:[0-5][0-9]" placeholder="m:ss, e.g. 2:05…" inputmode="numeric"><span class="help">Steady-hard pace you could hold for 1,500 m.</span></label></div>
+<div class="row"><label>Race run pace, per mile<input name="gp" required pattern="[0-9]{1,2}:[0-5][0-9]" placeholder="m:ss, e.g. 8:45…" inputmode="numeric"><span class="help">The pace you hope to hold for the half marathon.</span></label>
+<label>Run threshold heart rate<input name="lthr" type="number" min="120" max="215" required inputmode="numeric"><span class="help">Average of a hard 30-min run. Easy runs stay under 80% of it.</span></label></div>
+<div class="row"><label>Resting heart rate<input name="rhr" type="number" min="30" max="100" required inputmode="numeric"></label><label>Weight, kg (optional)<input name="weight" type="number" min="35" max="160" step="0.1" inputmode="decimal"></label></div>
+</details>
+<h2>Weather (optional)</h2>
+<p class="help" id="locTxt">Share your location to get a ride-or-run-outside call for each session (US only). Weather stays off until you do.</p>
+<button type="button" class="btn2" id="loc">Use my current location</button>
+<p class="err" id="pErr" role="alert" hidden></p></form></div>
+<div class="foot" id="foot" hidden><div><button form="plan" id="pGo">${configured ? "Save and update my plan" : "Create my plan"}</button></div></div>
+<script>
+const $ = s => document.querySelector(s), mmss = s => s ? Math.floor(s / 60) + ":" + String(Math.round(s % 60)).padStart(2, "0") : "", secs = t => { const [m, s] = t.split(":").map(Number); return m * 60 + s; };
+const NUM = ["ftp", "css", "gp", "lthr", "rhr"], LBL = { ftp: "FTP", css: "swim pace", gp: "run pace", lthr: "threshold HR", rhr: "resting HR", weight: "weight" };
+let place = null; const fail = (el, m) => { el.textContent = m; el.hidden = false; el.focus && el.focus(); };
+const draft = () => { try { return Object.fromEntries(Object.entries(JSON.parse(localStorage.getItem("setup-draft")) || {}).filter(([, v]) => v !== "" && v != null)); } catch (e) { return {}; } }; // only answers actually given
+const keep = () => { const f = $("#plan"), d = { athlete: $("#connect").athlete.value };
+  for (const el of f.elements) if (el.name) d[el.name] = el.type === "checkbox" ? el.checked : el.value; try { localStorage.setItem("setup-draft", JSON.stringify(d)); } catch (e) {} };
+function step(n) { for (const i of [1, 2, 3]) { const li = $("#s" + i); li.toggleAttribute("aria-current", i === n); li.classList.toggle("done", i < n); } }
+function showConnected(j) {
+  $("#connect").hidden = true; $("#connected").hidden = false; $("#plan").hidden = false; $("#foot").hidden = false; step(2);
+  $("#who").textContent = (j.name ? j.name + " · " : "") + (j.recent ? "recent training " + j.recent.hours + " h a week" : "") + (j.ai ? " · AI coach on" : "");
+  if (j.recent && j.recent.hours) $("#hoursHelp").textContent = "You've averaged " + j.recent.hours + " h a week lately. Most 70.3 plans peak at 7–11 h; yours starts near your current volume and builds up gradually.";
+}
+function fill(p, imported) {
+  const f = $("#plan");
+  for (const k of ["ftp", "lthr", "rhr", "weight", "hours"]) if (p[k] != null && p[k] !== "") f[k].value = p[k];
+  for (const k of ["css", "gp"]) if (p[k]) f[k].value = typeof p[k] === "number" ? mmss(p[k]) : p[k];
+  if (p.race) { if (typeof p.race === "string") f.race.value = p.race; else { f.race.value = p.race.name; f.date.value = p.race.date; } }
+  if (p.date) f.date.value = p.date; if (p.goal) f.goal.value = typeof p.goal === "number" ? Math.floor(p.goal / 3600) + ":" + String(Math.round(p.goal % 3600 / 60)).padStart(2, "0") : p.goal;
+  for (const k of ["limiter", "restDay", "longDay"]) if (p[k]) f[k].value = p[k]; if (p.lift != null) f.lift.checked = !!p.lift;
+  if (p.place) { place = p.place; $("#locTxt").textContent = "Weather on for your saved location."; }
+  numsSummary(imported);
+}
+// Numbers fold into one line when complete; the section opens on its own when something is missing.
+function numsSummary(imported) {
+  const f = $("#plan"), missing = NUM.filter(k => !f[k].value);
+  const parts = [f.ftp.value && "FTP " + f.ftp.value + " W", f.css.value && "swim " + f.css.value + "/100 m", f.gp.value && "run " + f.gp.value + "/mi", f.lthr.value && "threshold HR " + f.lthr.value];
+  $("#numsSum").textContent = missing.length ? "Add " + missing.length + " number" + (missing.length > 1 ? "s" : "") + ": " + missing.map(k => LBL[k]).join(", ") : (imported ? "From Garmin: " : "") + parts.filter(Boolean).join(" · ") + " — review";
+  $("#nums").open = missing.length > 0;
+}
+fetch("/api/setup").then(r => r.json()).then(j => {
+  const d = draft(); if (d.athlete) $("#connect").athlete.value = d.athlete; if (j.athlete) $("#connect").athlete.value = j.athlete;
+  if (j.hasKey) { showConnected(Object.assign({ ai: j.hasAi }, j.connect || {})); fill(Object.assign({}, j.connect || {}, d, j.profile || {}), !j.profile && !!j.connect); if (j.profile) step(3); }
+});
+$("#plan").addEventListener("input", () => { keep(); numsSummary(false); });
+$("#reconnect").addEventListener("click", () => { $("#connect").hidden = false; $("#connected").hidden = true; step(1); $("#connect").athlete.focus(); });
+$("#connect").addEventListener("submit", async e => {
+  e.preventDefault(); const f = e.target, b = $("#cGo"); $("#cErr").hidden = true;
+  if (!/^i?[0-9]+$/.test(f.athlete.value.trim())) return fail($("#cErr"), "Enter your Athlete ID from intervals.icu Settings → Developer Settings (it looks like i123456).");
+  b.disabled = true; b.textContent = "Checking…"; keep();
+  try {
+    const r = await fetch("/api/setup/connect", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ athlete: f.athlete.value.trim(), key: f.key.value.trim(), ai: f.ai.value.trim() }) }), j = await r.json();
+    if (!r.ok) return fail($("#cErr"), { bad_key: "intervals.icu didn't accept that Athlete ID and API key. Copy both again from Settings → Developer Settings.", bad_ai_key: "Anthropic didn't accept that key. Check it at console.anthropic.com, or leave it blank.", no_key: "Paste the API key you generated in intervals.icu." }[j.error] || "Couldn't connect: " + (j.detail || j.error));
+    f.key.value = ""; f.ai.value = "";
+    showConnected(j);
+    const got = Object.fromEntries(Object.entries(j).filter(([k, v]) => v != null && NUM.concat("weight").includes(k)));
+    fill(Object.assign({ hours: Math.min(18, Math.max(6, Math.round(j.recent.hours * 1.6 * 2) / 2)) }, got, draft()), true);
+    $("#h2race").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); $("#plan").race.focus({ preventScroll: true });
+  } catch (x) { fail($("#cErr"), "No connection. Check your internet and try again."); } finally { b.disabled = false; b.textContent = "Check my connection"; }
+});
+$("#loc").addEventListener("click", () => { if (!navigator.geolocation) return $("#locTxt").textContent = "This browser can't share a location.";
+  navigator.geolocation.getCurrentPosition(p => { place = { lat: +p.coords.latitude.toFixed(2), lon: +p.coords.longitude.toFixed(2), name: "Home" }; $("#locTxt").textContent = "Weather on for your current location."; },
+    () => $("#locTxt").textContent = "Location not shared. Weather stays off; you can turn it on later in Plan settings."); });
+$("#plan").addEventListener("submit", async e => {
+  e.preventDefault(); const f = e.target, b = $("#pGo"); $("#pErr").hidden = true;
+  const bad = [...f.elements].find(el => el.willValidate && !el.checkValidity());
+  if (bad) { if (bad.closest("#nums")) $("#nums").open = true; bad.focus(); return fail($("#pErr"), (bad.labels[0] ? bad.labels[0].firstChild.textContent.trim() : "A field") + ": " + (bad.validity.valueMissing ? "fill this in." : "check the format (" + (bad.placeholder || "see the hint") + ").")); }
+  b.disabled = true; b.textContent = "Building your plan…";
+  const t = new Date(), today = t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
+  const goal = f.goal.value ? (([h, m]) => h * 3600 + m * 60)(f.goal.value.split(":").map(Number)) : null;
+  const body = { today, race: { name: f.race.value.trim(), date: f.date.value }, goal, hours: +f.hours.value, limiter: f.limiter.value, restDay: f.restDay.value, longDay: f.longDay.value, lift: f.lift.checked,
+    ftp: +f.ftp.value, css: secs(f.css.value), gp: secs(f.gp.value), lthr: +f.lthr.value, rhr: +f.rhr.value, weight: f.weight.value ? +f.weight.value : null, place };
+  try { const r = await fetch("/api/setup/profile", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }), j = await r.json();
+    if (!r.ok) return fail($("#pErr"), j.detail || "Couldn't save: " + j.error); try { localStorage.removeItem("setup-draft"); } catch (x) {} location.href = "/";
+  } catch (x) { fail($("#pErr"), "No connection. Check your internet and try again."); } finally { b.disabled = false; b.textContent = ${JSON.stringify(configured ? "Save and update my plan" : "Create my plan")}; }
+});
+</script>`);
+
 async function intervals(env, path, init = {}) {
   const r = await fetch(`https://intervals.icu/api/v1/athlete/${env.ATHLETE_ID}${path}`, {
     ...init, headers: { authorization: "Basic " + btoa("API_KEY:" + env.INTERVALS_API_KEY), "content-type": "application/json", ...(init.headers || {}) }
@@ -63,10 +225,11 @@ const pick = (o, f) => Object.fromEntries(f.filter(k => o[k] != null).map(k => [
 const ymd = d => d.toISOString().slice(0, 10);
 async function refresh(env) {
   const prev = (await env.KV.get("garmin", "json")) || {};
-  const now = new Date(), oldest = "2026-10-12", newest = ymd(new Date(now.getTime() + 864e5));
+  const now = new Date(), P = env.PROFILE, back = n => ymd(new Date(new Date((P ? P.start : "2026-10-12") + "T12:00:00Z").getTime() - n * 864e5));
+  const oldest = P ? back(42) : "2026-10-12", wOldest = P ? back(120) : "2026-07-01", newest = ymd(new Date(now.getTime() + 864e5));
   try {
     const [well, acts, lib] = await Promise.all([
-      intervals(env, `/wellness?oldest=2026-07-01&newest=${newest}`),
+      intervals(env, `/wellness?oldest=${wOldest}&newest=${newest}`),
       intervals(env, `/activities?oldest=${oldest}&newest=${newest}T23:59:59`),
       prev.libAt && now - prev.libAt < 7 * 864e5 ? Promise.resolve(null) : intervals(env, `/activities?oldest=${ymd(new Date(now - 400 * 864e5))}&newest=${newest}T23:59:59`)
     ]);
@@ -140,6 +303,12 @@ This time the athlete sent a request in "request": { text, date }. In their own 
 - All rules above still apply. If what they describe is unsafe (pain, illness, a second hard day in a row), say so in summary and suggest the safer version instead.
 - summary: answer the athlete directly about their request in 1-3 sentences. lifts: empty.`;
 
+// A profile's coach: same rules and notation, their race and easy cap, none of Noah's personal history.
+const coachSystem = P => !P ? COACH_SYSTEM : COACH_SYSTEM
+  .replace(/^You are the endurance coach behind[^\n]*\n/, `You are the endurance coach behind a structured plan for ${P.race.name} (race ${P.race.date}). The athlete is ${P.name || "an age-group triathlete"}.\n`)
+  .replace(/This athlete's known pattern[\s\S]*?Mention the most important habit gap in the summary, with its number\.\n/,
+    `Apply these rules (the context's "habits" object scores them):\n- Never remove a swim to fix fatigue; cut bike or run instead.\n- An easy session done hard (bike normalized power above 80% of FTP, run average HR above ${P.ez + 6}) counts as a hard day. Follow it with an easy day.\n- If easyShareThisWeek.pct is under 75, do not add intensity.\n- If ctlRamp7d is above 7, hold or trim volume for the next 3 days.\nThe athlete's weakest sport is the ${P.limiter || "swim"}: protect those sessions first.\n`)
+  .replace(/easy runs are "≤144 bpm"/, `easy runs are "≤${P.ez} bpm"`);
 async function anthropic(env, model, body) {
   return fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -148,7 +317,7 @@ async function anthropic(env, model, body) {
   });
 }
 async function coach(env, ctx) {
-  const body = { max_tokens: 4000, system: COACH_SYSTEM + (ctx.request ? ASK_RULES : ""), tools: [COACH_TOOL], tool_choice: { type: "auto" },
+  const body = { max_tokens: 4000, system: coachSystem(env.PROFILE) + (ctx.request ? ASK_RULES : ""), tools: [COACH_TOOL], tool_choice: { type: "auto" },
     messages: [{ role: "user", content: JSON.stringify(ctx) }] };
   // A failure of the Claude request itself (network error or a non-2xx answer) is marked refundable: it gives the daily count back.
   // Anything that goes wrong after a successful Claude response still counts.
@@ -229,14 +398,265 @@ async function weather(env, lat, lon) {
   return out;
 }
 
+// Setup API (profile mode). Keys are never returned to the browser.
+async function setupApi(req, env, p) {
+  if (p === "/api/setup" && req.method === "GET") {
+    const k = env.INTERVALS_API_KEY ? { athlete: env.ATHLETE_ID } : {};
+    return json({ profile: env.PROFILE || null, athlete: k.athlete || null, hasKey: !!env.INTERVALS_API_KEY, hasAi: !!env.ANTHROPIC_API_KEY, connect: await env.KV.get("connect", "json") });
+  }
+  const body = await req.json().catch(() => null);
+  if (!body || typeof body !== "object" || JSON.stringify(body).length > 4000) return json({ error: "bad_body" }, 400);
+  if (p === "/api/setup/connect" && req.method === "POST") {
+    const athlete = String(body.athlete || "").trim(), key = String(body.key || "").trim() || (athlete === env.ATHLETE_ID ? env.INTERVALS_API_KEY : ""), ai = String(body.ai || "").trim() || env.ANTHROPIC_API_KEY || "";
+    if (!/^i?\d{1,10}$/.test(athlete)) return json({ error: "bad_key" }, 400);
+    if (!key) return json({ error: "no_key" }, 400);
+    let info;
+    try { info = await readAthlete(athlete, key); } catch (e) { return json({ error: e.status === 401 || e.status === 403 || e.status === 404 ? "bad_key" : "upstream", detail: String(e.message || e).slice(0, 200) }, e.status && e.status < 500 ? 400 : 502); }
+    if (ai && ai !== env.ANTHROPIC_API_KEY) { // checked with the free models list; costs nothing
+      const r = await fetch("https://api.anthropic.com/v1/models?limit=1", { headers: { "x-api-key": ai, "anthropic-version": "2023-06-01" } });
+      if (r.status === 401 || r.status === 403) return json({ error: "bad_ai_key" }, 400);
+    }
+    await Promise.all([env.KV.put("keys", await seal(env, { icu: key, athlete, ai: ai || undefined })), env.KV.put("connect", JSON.stringify(info))]);
+    return json(Object.assign(info, { ai: !!ai }));
+  }
+  if (p === "/api/setup/profile" && req.method === "POST") {
+    if (!env.INTERVALS_API_KEY) return json({ error: "no_key", detail: "Connect intervals.icu first." }, 400);
+    const b = body, n = (v, lo, hi) => typeof v === "number" && v >= lo && v <= hi, D = /^\d{4}-\d{2}-\d{2}$/;
+    const bad = !b.race || typeof b.race.name !== "string" || !b.race.name.trim() || b.race.name.length > 80 ? "Give the race a name." : !D.test(b.race.date || "") || !D.test(b.today || "") ? "Pick a race date."
+      : !n(b.hours, 4, 18) ? "Hours per week: 4 to 18." : !n(b.ftp, 80, 500) ? "FTP: 80 to 500 W." : !n(b.css, 60, 240) ? "CSS: 1:00 to 4:00 per 100 m." : !n(b.gp, 300, 900) ? "Run pace: 5:00 to 15:00 per mile."
+      : !n(b.lthr, 120, 215) ? "Threshold HR: 120 to 215." : !n(b.rhr, 30, 100) ? "Resting HR: 30 to 100." : b.goal != null && !n(b.goal, 3 * 3600, 9 * 3600) ? "Goal time: 3:00 to 9:00." : null;
+    if (bad) return json({ error: "bad_body", detail: bad }, 400);
+    // the plan starts on the coming Monday (today, if it is one); it needs 8–40 weeks to race day
+    const t = new Date(b.today + "T12:00:00Z"), dow = (t.getUTCDay() + 6) % 7, start = ymd(new Date(t.getTime() + (dow ? 7 - dow : 0) * 864e5));
+    const keepStart = env.PROFILE && env.PROFILE.start <= b.today ? env.PROFILE.start : start; // an edit keeps the original start, so logged days stay put
+    const weeks = (Date.parse(b.race.date) - Date.parse(keepStart)) / 864e5 / 7;
+    if (weeks < 7 || weeks > 40) return json({ error: "bad_body", detail: `Race date must be 8 to 40 weeks after ${keepStart}.` }, 400);
+    const place = b.place && n(b.place.lat, -90, 90) && n(b.place.lon, -180, 180) ? { lat: b.place.lat, lon: b.place.lon, name: String(b.place.name || "Home").slice(0, 40) } : null;
+    const info = (env.PROFILE && env.PROFILE.recent) ? { name: env.PROFILE.name, recent: env.PROFILE.recent } : await readAthlete(env.ATHLETE_ID, env.INTERVALS_API_KEY).catch(() => ({ name: "", recent: null }));
+    const profile = { name: info.name || "", start: keepStart, race: { name: b.race.name.trim(), date: b.race.date }, goal: b.goal || null, hours: b.hours, recent: info.recent, limiter: ["swim", "bike", "run"].includes(b.limiter) ? b.limiter : "swim",
+      restDay: b.restDay === "fri" ? "fri" : "mon", longDay: b.longDay === "sun" ? "sun" : "sat", lift: !!b.lift, ftp: Math.round(b.ftp), css: Math.round(b.css), gp: Math.round(b.gp),
+      lthr: Math.round(b.lthr), ez: Math.round(b.lthr * .8), rhr: Math.round(b.rhr), weight: b.weight && n(b.weight, 35, 160) ? b.weight : null, place };
+    const settings = (await env.KV.get("settings", "json")) || { tests: [] };
+    Object.assign(settings, { ftp: profile.ftp, css: profile.css, gp: profile.gp, rhr: profile.rhr }); // tests, milestones and coach changes are kept
+    await Promise.all([env.KV.put("profile", JSON.stringify(profile)), env.KV.put("settings", JSON.stringify(settings))]);
+    return json({ ok: true, start: profile.start });
+  }
+  return json({ error: "not_found" }, 404);
+}
+
+// ---------- friends site: one site, a private account per friend ----------
+// Noah invites a friend from his dashboard (inviteApi on his site writes to this site's KV through the FRIENDS_KV
+// binding). The friend opens the one-time link, picks a passcode, and gets their own storage: every KV key is
+// prefixed "u:<id>:" (logs, settings, profile, encrypted keys, Garmin cache, coach), so friends never see each other.
+// KV layout: users = { id: { name, login, created, disabled } } · login:<name> = id · invite:<code> = { name, created } (14-day TTL).
+const scopedKV = (kv, pre) => ({ get: (k, t) => kv.get(pre + k, t), put: (k, v, o) => kv.put(pre + k, v, o), delete: k => kv.delete(pre + k) });
+const userEnv = (env, id) => Object.assign({}, env, { KV: scopedKV(env.KV, `u:${id}:`), USER_ID: id });
+const loginOf = name => String(name || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "").slice(0, 24);
+const rand = n => b64(crypto.getRandomValues(new Uint8Array(n))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+async function passHash(pass, salt) { // PBKDF2-SHA256, 100k rounds (the Workers maximum)
+  const key = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveBits"]);
+  return b64(new Uint8Array(await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: unb64(salt), iterations: 100000 }, key, 256)));
+}
+async function sessionSig(env, id, hash) { const k = await crypto.subtle.importKey("raw", unb64(env.DATA_KEY), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return b64(new Uint8Array(await crypto.subtle.sign("HMAC", k, enc.encode(id + ":" + hash)))).replace(/[+/=]/g, c => ({ "+": "-", "/": "_", "=": "" }[c])); }
+const COOKIE = v => `fs=${v}; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax`;
+const FRIEND_LOGIN = (err, name = "") => PAGE("Training plan", `<form class="box" method="post" action="/login"><h1>Training plan</h1><p>Sign in with the name from your invite and the passcode you chose.</p>
+<label>Name<input name="name" autocomplete="username" required value="${String(name).replace(/[<>"&]/g, "")}" autocapitalize="none" spellcheck="false"></label>
+<label>Passcode<input type="password" name="pass" autocomplete="current-password" required></label>
+${err ? `<p class="err" role="alert">${err}</p>` : ""}<button type="submit">Sign in</button><p style="font-size:13px">New here? Open the invite link you were sent. Forgot your passcode? Ask the person who invited you for a reset link; your plan and log stay as they are.</p></form>`);
+const JOIN = (code, name, err, login = loginOf(name)) => PAGE("Join", `<form class="box" method="post" action="/join"><h1>Hi ${String(name).replace(/[<>"&]/g, "")}</h1>
+<p>You've been invited to a personal triathlon training plan. It builds a structured plan from your Garmin data and sends workouts to your watch. Your data is private to you.</p>
+<input type="hidden" name="code" value="${code}"><label>Your sign-in name (you'll use it with your passcode)<input value="${login}" readonly autocomplete="username"></label>
+<label>Choose a passcode (8+ characters)<input type="password" name="pass" minlength="8" autocomplete="new-password" required></label>
+<label>Type it again<input type="password" name="pass2" minlength="8" autocomplete="new-password" required></label>
+${err ? `<p class="err" role="alert">${err}</p>` : ""}<button type="submit">Create my account</button></form>`);
+async function friendsFetch(req, env, url, p) {
+  if (!env.DATA_KEY) return html(NOTICE("The site isn't set up yet", "It has no DATA_KEY secret.", "Run <code>openssl rand -base64 32 | npx wrangler secret put DATA_KEY --env friends</code>."), 503);
+  if (p === "/join") {
+    const code = req.method === "POST" ? null : url.searchParams.get("code") || "", f = req.method === "POST" ? await req.formData() : null, c = f ? String(f.get("code") || "") : code;
+    const inv = /^[\w-]{16,64}$/.test(c) ? await env.KV.get("invite:" + c, "json") : null;
+    if (!inv) return html(NOTICE("This invite link has expired", "Invite links work once and expire after 14 days. Ask for a new one."), 410);
+    const login = inv.login || loginOf(inv.name) || "friend"; // reserved when the invite was made, so the invite message is right
+    if (!f) return html(JOIN(c, inv.name, "", login));
+    const pass = String(f.get("pass") || "");
+    if (pass.length < 8) return html(JOIN(c, inv.name, "Use at least 8 characters.", login), 400);
+    if (pass !== f.get("pass2")) return html(JOIN(c, inv.name, "The two passcodes don't match.", login), 400);
+    if (await env.KV.get("login:" + login)) return html(NOTICE("This invite needs replacing", `The sign-in name “${login}” was just taken. Ask for a new invite.`), 409);
+    const users = (await env.KV.get("users", "json")) || {};
+    const id = rand(12), salt = rand(16), hash = await passHash(pass, salt.replace(/-/g, "+").replace(/_/g, "/") + "==".slice(0, (4 - salt.length % 4) % 4));
+    users[id] = { name: inv.name, login, created: Date.now() };
+    await Promise.all([env.KV.put("users", JSON.stringify(users)), env.KV.put("login:" + login, id), env.KV.put(`u:${id}:auth`, JSON.stringify({ salt, hash })), env.KV.delete("invite:" + c)]);
+    return new Response(null, { status: 303, headers: { location: "/setup", "set-cookie": COOKIE(`${id}.${await sessionSig(env, id, hash)}`) } });
+  }
+  if (p === "/reset") { // one-time passcode reset made by the owner; the account, plan and log are unchanged
+    const f = req.method === "POST" ? await req.formData() : null, c = String(f ? f.get("code") || "" : url.searchParams.get("code") || "");
+    const rs = /^[\w-]{16,64}$/.test(c) ? await env.KV.get("reset:" + c, "json") : null, users = (await env.KV.get("users", "json")) || {}, u = rs && users[rs.id];
+    if (!u) return html(NOTICE("This reset link has expired", "Reset links work once and expire after 3 days. Ask for a new one."), 410);
+    const page = err => PAGE("New passcode", `<form class="box" method="post" action="/reset"><h1>New passcode</h1><p>Choose a new passcode for <b>${u.login}</b>. Your plan and log stay as they are.</p>
+<input type="hidden" name="code" value="${c}"><input type="hidden" autocomplete="username" value="${u.login}"><label>New passcode (8+ characters)<input type="password" name="pass" minlength="8" autocomplete="new-password" required></label>
+<label>Type it again<input type="password" name="pass2" minlength="8" autocomplete="new-password" required></label>${err ? `<p class="err" role="alert">${err}</p>` : ""}<button type="submit">Save and sign in</button></form>`);
+    if (!f) return html(page());
+    const pass = String(f.get("pass") || "");
+    if (pass.length < 8) return html(page("Use at least 8 characters."), 400);
+    if (pass !== f.get("pass2")) return html(page("The two passcodes don't match."), 400);
+    const salt = rand(16), b64std = t => t.replace(/-/g, "+").replace(/_/g, "/") + "==".slice(0, (4 - t.length % 4) % 4), hash = await passHash(pass, b64std(salt));
+    await Promise.all([env.KV.put(`u:${rs.id}:auth`, JSON.stringify({ salt, hash })), env.KV.delete("reset:" + c)]); // a new hash also ends every old sign-in
+    return new Response(null, { status: 303, headers: { location: "/", "set-cookie": COOKIE(`${rs.id}.${await sessionSig(env, rs.id, hash)}`) } });
+  }
+  if (p === "/login" && req.method === "POST") {
+    const f = await req.formData(), login = loginOf(f.get("name")), id = login && await env.KV.get("login:" + login), users = (await env.KV.get("users", "json")) || {};
+    const auth = id && !(users[id] || {}).disabled ? await env.KV.get(`u:${id}:auth`, "json") : null;
+    const b64std = t => t.replace(/-/g, "+").replace(/_/g, "/") + "==".slice(0, (4 - t.length % 4) % 4);
+    if (auth && await passHash(String(f.get("pass") || ""), b64std(auth.salt)) === auth.hash)
+      return new Response(null, { status: 303, headers: { location: "/", "set-cookie": COOKIE(`${id}.${await sessionSig(env, id, auth.hash)}`) } });
+    await new Promise(r => setTimeout(r, 800));
+    return html(FRIEND_LOGIN("That name and passcode don't match. Check both and try again.", f.get("name") || ""), 401);
+  }
+  if (p === "/logout") return new Response(null, { status: 303, headers: { location: "/", "set-cookie": "fs=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax" } });
+  // session: "<id>.<HMAC(id:passcode hash)>"; a removed friend or a changed passcode ends it
+  const [id, sig] = String(getCookie(req, "fs") || "").split("."), users = id ? (await env.KV.get("users", "json")) || {} : {};
+  const auth = id && users[id] && !users[id].disabled ? await env.KV.get(`u:${id}:auth`, "json") : null;
+  if (!auth || sig !== await sessionSig(env, id, auth.hash)) return p.startsWith("/api/") ? json({ error: "locked" }, 401) : html(FRIEND_LOGIN(""), 401);
+  return app(req, await withKeys(userEnv(env, id)), url, p, true);
+}
+// Noah's site: create, list and cancel invites; remove a friend's access (their data is kept).
+async function inviteApi(req, env, p) {
+  const F = env.FRIENDS_KV, base = (env.FRIENDS_URL || "").replace(/\/$/, "");
+  if (p === "/api/invites" && req.method === "GET") {
+    const users = (await F.get("users", "json")) || {}, list = await F.list({ prefix: "invite:" }), invites = [];
+    for (const k of list.keys) { const v = await F.get(k.name, "json"); if (v) invites.push({ code: k.name.slice(7), name: v.name, login: v.login || loginOf(v.name), created: v.created, link: `${base}/join?code=${k.name.slice(7)}` }); }
+    const friends = await Promise.all(Object.entries(users).map(async ([id, u]) => ({ id, name: u.name, login: u.login, created: u.created, disabled: !!u.disabled, ready: !!(await F.get(`u:${id}:profile`)) })));
+    return json({ base, invites: invites.sort((a, b) => b.created - a.created), friends: friends.sort((a, b) => b.created - a.created) });
+  }
+  if (p === "/api/invites" && req.method === "POST") {
+    const b = await req.json().catch(() => ({})), name = String(b.name || "").trim().replace(/\s+/g, " ");
+    if (!/^[\p{L}][\p{L} '.-]{0,29}$/u.test(name)) return json({ error: "bad_name", detail: "Use their first name (letters only, up to 30)." }, 400);
+    // reserve a sign-in name no one else has or has been promised (kian, kian2, …), so the message is exactly right
+    const taken = new Set(), pend = await F.list({ prefix: "invite:" });
+    for (const k of pend.keys) { const v = await F.get(k.name, "json"); if (v) taken.add(v.login || loginOf(v.name)); }
+    const root = loginOf(name) || "friend"; let login = root, i = 2;
+    while (taken.has(login) || await F.get("login:" + login)) login = root + i++;
+    const code = rand(18), created = Date.now();
+    await F.put("invite:" + code, JSON.stringify({ name, login, created }), { expirationTtl: 14 * 864e2 });
+    return json({ kind: "invite", code, name, login, link: `${base}/join?code=${code}`, base });
+  }
+  const inv = p.match(/^\/api\/invites\/([\w-]{16,64})$/), fr = p.match(/^\/api\/friends\/([\w-]{8,32})$/), rst = p.match(/^\/api\/friends\/([\w-]{8,32})\/reset$/);
+  if (rst && req.method === "POST") {
+    const u = ((await F.get("users", "json")) || {})[rst[1]]; if (!u) return json({ error: "not_found" }, 404);
+    const code = rand(18); await F.put("reset:" + code, JSON.stringify({ id: rst[1], created: Date.now() }), { expirationTtl: 3 * 864e2 });
+    return json({ kind: "reset", name: u.name, login: u.login, link: `${base}/reset?code=${code}`, base });
+  }
+  if (inv && req.method === "DELETE") { await F.delete("invite:" + inv[1]); return json({ ok: true }); }
+  if (fr && (req.method === "DELETE" || req.method === "POST")) {
+    const users = (await F.get("users", "json")) || {}; if (!users[fr[1]]) return json({ error: "not_found" }, 404);
+    users[fr[1]].disabled = req.method === "DELETE"; await F.put("users", JSON.stringify(users)); return json({ ok: true });
+  }
+  return json({ error: "not_found" }, 404);
+}
+
+// Everything after sign-in, shared by Noah's site and the friends site (PM = profile mode, env.KV already scoped to the user).
+async function app(req, env, url, p, PM) {
+  if (PM && p === "/setup") return html(SETUP(!!env.PROFILE));
+  if (PM && (p === "/" || p === "/index.html") && req.method === "GET") {
+    if (!env.PROFILE) return new Response(null, { status: 302, headers: { location: "/setup" } });
+    const page = await (await env.ASSETS.fetch(req)).text(); // the dashboard builds its plan from this profile
+    return html(page.replace("<body>", `<body>\n<script>window.LG_PROFILE = ${JSON.stringify(Object.assign({}, env.PROFILE, { ai: !!env.ANTHROPIC_API_KEY })).replace(/</g, "\\u003c")};</script>`));
+  }
+  if (p === "/history.html" && !PM) {
+    const h = await env.KV.get("history");
+    return h ? html(h.replace("</head>", HISTORY_THEME + "</head>")) : html(NOTICE("No history uploaded yet", "Your Garmin history page hasn't been sent to the site.", "On your Mac, run <code>./deploy.sh</code> in <code>~/Desktop/Training</code>. It uploads <code>training-dashboard.html</code> along with the site."), 404);
+  }
+  if (!p.startsWith("/api/")) return env.ASSETS.fetch(req);
+
+  try {
+    if (PM && p.startsWith("/api/setup")) return await setupApi(req, env, p);
+    if (!PM && /^\/api\/(invites|friends)/.test(p)) return env.FRIENDS_KV ? await inviteApi(req, env, p) : json({ enabled: false }); // no friends site bound: sharing is off
+    if (p === "/api/state" && req.method === "GET")
+      return json({ logs: (await env.KV.get("logs", "json")) || {}, settings: await env.KV.get("settings", "json") });
+
+    const day = p.match(/^\/api\/day\/(\d{4}-\d{2}-\d{2})$/);
+    if (day && req.method === "PUT") {
+      const body = await req.json();
+      if (typeof body !== "object" || Array.isArray(body) || JSON.stringify(body).length > 20000) return json({ error: "bad_body" }, 400);
+      const logs = (await env.KV.get("logs", "json")) || {};
+      logs[day[1]] = body;
+      await env.KV.put("logs", JSON.stringify(logs));
+      return json({ ok: true });
+    }
+    if (p === "/api/settings" && req.method === "PUT") {
+      const body = await req.json();
+      if (typeof body !== "object" || JSON.stringify(body).length > 20000) return json({ error: "bad_body" }, 400);
+      await env.KV.put("settings", JSON.stringify(body));
+      return json({ ok: true });
+    }
+
+    // Coach and weather routes come before the Garmin key check: they need the Claude key or nothing, not the intervals.icu one.
+    if (p === "/api/weather" && req.method === "GET") {
+      const lat = +url.searchParams.get("lat"), lon = +url.searchParams.get("lon");
+      if (!(Math.abs(lat) <= 90 && Math.abs(lon) <= 180) || !url.searchParams.get("lat") || !url.searchParams.get("lon")) return json({ error: "bad_location" }, 400);
+      return json(await weather(env, Math.round(lat * 100) / 100, Math.round(lon * 100) / 100));
+    }
+    if (p === "/api/coach" && req.method === "GET") return json((await env.KV.get("coach", "json")) || {});
+    if (p === "/api/coach" && req.method === "POST") {
+      if (!env.ANTHROPIC_API_KEY) return json({ error: "no_ai_key" }, 503);
+      const raw = await req.text();
+      if (raw.length > 80000) return json({ error: "bad_body" }, 400);
+      const ctx = JSON.parse(raw);
+      if (!ctx || !/^\d{4}-\d{2}-\d{2}$/.test(ctx.today) || !Array.isArray(ctx.next)) return json({ error: "bad_body" }, 400);
+      // A typed request ("Doing something different?") has its own daily cap and doesn't replace the stored daily review.
+      const rq = ctx.request;
+      if (rq != null && (typeof rq.text !== "string" || !rq.text.trim() || rq.text.length > 500 || !ctx.next.some(d => d && d.date === rq.date))) return json({ error: "bad_body" }, 400);
+      const countKey = rq ? "askCount" : "coachCount", cap = rq ? 15 : 8;
+      const n = (await env.KV.get(countKey, "json")) || {};
+      const used = n.date === ctx.today ? n.count : 0;
+      if (used >= cap) return json({ error: "daily_limit" }, 429);
+      await env.KV.put(countKey, JSON.stringify({ date: ctx.today, count: used + 1 }));
+      let c;
+      try { c = await coach(env, ctx); }
+      catch (e) { // the cap stays put; only a failed Claude request gives its count back
+        if (e && e.refund) await env.KV.put(countKey, JSON.stringify({ date: ctx.today, count: used }));
+        throw e;
+      }
+      if (!rq) await env.KV.put("coach", JSON.stringify(c));
+      return json(c);
+    }
+
+    if (!env.INTERVALS_API_KEY) return json({ error: "no_key" }, 503);
+
+    if (p === "/api/garmin" && req.method === "GET") {
+      let g = await env.KV.get("garmin", "json");
+      if (!g || url.searchParams.get("refresh") === "1" || Date.now() - (g.fetchedAt || 0) > 15 * 60e3) g = await refresh(env);
+      return json(g);
+    }
+
+    if (p === "/api/push" && req.method === "POST") {
+      const { events } = await req.json();
+      if (!Array.isArray(events) || !events.length || events.length > 100) return json({ error: "bad_events" }, 400);
+      const clean = events.filter(e => typeof e.external_id === "string" && e.external_id.startsWith("lg703-") && e.category === "WORKOUT")
+        .map(e => ({ category: "WORKOUT", start_date_local: String(e.start_date_local), type: String(e.type), name: String(e.name).slice(0, 120),
+          description: String(e.description).slice(0, 4000), moving_time: +e.moving_time || 0, external_id: e.external_id }));
+      const res = await intervals(env, "/events/bulk?upsert=true", { method: "POST", body: JSON.stringify(clean) });
+      return json({ ok: true, count: Array.isArray(res) ? res.length : clean.length });
+    }
+    return json({ error: "not_found" }, 404);
+  } catch (e) {
+    return json({ error: "upstream", detail: String(e.message || e).slice(0, 240) }, 502);
+  }
+}
+
 export default {
-  async scheduled(event, env, ctx) { if (env.INTERVALS_API_KEY) ctx.waitUntil(refresh(env)); },
+  async scheduled(event, env, ctx) {
+    if (env.PROFILE_MODE !== "1") { ctx.waitUntil(env.INTERVALS_API_KEY ? refresh(env) : Promise.resolve()); return; }
+    // friends site: every active friend's Garmin data refreshes on the same 20-minute cycle
+    ctx.waitUntil((async () => { const users = (await env.KV.get("users", "json")) || {};
+      for (const [id, u] of Object.entries(users)) if (!u.disabled) { const e = await withKeys(userEnv(env, id)); if (e.INTERVALS_API_KEY) await refresh(e).catch(() => null); } })());
+  },
 
   async fetch(req, env) {
     const url = new URL(req.url), p = url.pathname;
+    if (env.PROFILE_MODE === "1") return friendsFetch(req, env, url, p);
     if (!env.PASSCODE) return html(NOTICE("The site isn't set up yet", "It has no passcode, so it can't open.", "In <code>~/Desktop/Training</code> run <code>npx wrangler secret put PASSCODE</code>, choose a passcode, then reload."), 503);
     const token = await sha("lg703:" + env.PASSCODE);
-
     if (p === "/login" && req.method === "POST") {
       const f = await req.formData();
       if (f.get("pass") === env.PASSCODE)
@@ -246,83 +666,6 @@ export default {
     }
     if (p === "/logout") return new Response(null, { status: 303, headers: { location: "/", "set-cookie": "lg703=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax" } });
     if (getCookie(req, "lg703") !== token) return p.startsWith("/api/") ? json({ error: "locked" }, 401) : html(LOGIN(""), 401);
-    if (p === "/history.html") {
-      const h = await env.KV.get("history");
-      return h ? html(h.replace("</head>", HISTORY_THEME + "</head>")) : html(NOTICE("No history uploaded yet", "Your Garmin history page hasn't been sent to the site.", "On your Mac, run <code>./deploy.sh</code> in <code>~/Desktop/Training</code>. It uploads <code>training-dashboard.html</code> along with the site."), 404);
-    }
-    if (!p.startsWith("/api/")) return env.ASSETS.fetch(req);
-
-    try {
-      if (p === "/api/state" && req.method === "GET")
-        return json({ logs: (await env.KV.get("logs", "json")) || {}, settings: await env.KV.get("settings", "json") });
-
-      const day = p.match(/^\/api\/day\/(\d{4}-\d{2}-\d{2})$/);
-      if (day && req.method === "PUT") {
-        const body = await req.json();
-        if (typeof body !== "object" || Array.isArray(body) || JSON.stringify(body).length > 20000) return json({ error: "bad_body" }, 400);
-        const logs = (await env.KV.get("logs", "json")) || {};
-        logs[day[1]] = body;
-        await env.KV.put("logs", JSON.stringify(logs));
-        return json({ ok: true });
-      }
-      if (p === "/api/settings" && req.method === "PUT") {
-        const body = await req.json();
-        if (typeof body !== "object" || JSON.stringify(body).length > 20000) return json({ error: "bad_body" }, 400);
-        await env.KV.put("settings", JSON.stringify(body));
-        return json({ ok: true });
-      }
-
-      // Coach and weather routes come before the Garmin key check: they need the Claude key or nothing, not the intervals.icu one.
-      if (p === "/api/weather" && req.method === "GET") {
-        const lat = +url.searchParams.get("lat"), lon = +url.searchParams.get("lon");
-        if (!(Math.abs(lat) <= 90 && Math.abs(lon) <= 180) || !url.searchParams.get("lat") || !url.searchParams.get("lon")) return json({ error: "bad_location" }, 400);
-        return json(await weather(env, Math.round(lat * 100) / 100, Math.round(lon * 100) / 100));
-      }
-      if (p === "/api/coach" && req.method === "GET") return json((await env.KV.get("coach", "json")) || {});
-      if (p === "/api/coach" && req.method === "POST") {
-        if (!env.ANTHROPIC_API_KEY) return json({ error: "no_ai_key" }, 503);
-        const raw = await req.text();
-        if (raw.length > 80000) return json({ error: "bad_body" }, 400);
-        const ctx = JSON.parse(raw);
-        if (!ctx || !/^\d{4}-\d{2}-\d{2}$/.test(ctx.today) || !Array.isArray(ctx.next)) return json({ error: "bad_body" }, 400);
-        // A typed request ("Doing something different?") has its own daily cap and doesn't replace the stored daily review.
-        const rq = ctx.request;
-        if (rq != null && (typeof rq.text !== "string" || !rq.text.trim() || rq.text.length > 500 || !ctx.next.some(d => d && d.date === rq.date))) return json({ error: "bad_body" }, 400);
-        const countKey = rq ? "askCount" : "coachCount", cap = rq ? 15 : 8;
-        const n = (await env.KV.get(countKey, "json")) || {};
-        const used = n.date === ctx.today ? n.count : 0;
-        if (used >= cap) return json({ error: "daily_limit" }, 429);
-        await env.KV.put(countKey, JSON.stringify({ date: ctx.today, count: used + 1 }));
-        let c;
-        try { c = await coach(env, ctx); }
-        catch (e) { // the cap stays put; only a failed Claude request gives its count back
-          if (e && e.refund) await env.KV.put(countKey, JSON.stringify({ date: ctx.today, count: used }));
-          throw e;
-        }
-        if (!rq) await env.KV.put("coach", JSON.stringify(c));
-        return json(c);
-      }
-
-      if (!env.INTERVALS_API_KEY) return json({ error: "no_key" }, 503);
-
-      if (p === "/api/garmin" && req.method === "GET") {
-        let g = await env.KV.get("garmin", "json");
-        if (!g || url.searchParams.get("refresh") === "1" || Date.now() - (g.fetchedAt || 0) > 15 * 60e3) g = await refresh(env);
-        return json(g);
-      }
-
-      if (p === "/api/push" && req.method === "POST") {
-        const { events } = await req.json();
-        if (!Array.isArray(events) || !events.length || events.length > 100) return json({ error: "bad_events" }, 400);
-        const clean = events.filter(e => typeof e.external_id === "string" && e.external_id.startsWith("lg703-") && e.category === "WORKOUT")
-          .map(e => ({ category: "WORKOUT", start_date_local: String(e.start_date_local), type: String(e.type), name: String(e.name).slice(0, 120),
-            description: String(e.description).slice(0, 4000), moving_time: +e.moving_time || 0, external_id: e.external_id }));
-        const res = await intervals(env, "/events/bulk?upsert=true", { method: "POST", body: JSON.stringify(clean) });
-        return json({ ok: true, count: Array.isArray(res) ? res.length : clean.length });
-      }
-      return json({ error: "not_found" }, 404);
-    } catch (e) {
-      return json({ error: "upstream", detail: String(e.message || e).slice(0, 240) }, 502);
-    }
+    return app(req, env, url, p, false);
   }
 };
