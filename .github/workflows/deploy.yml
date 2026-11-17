@@ -1,15 +1,14 @@
-name: Deploy to Cloudflare
+name: Deploy Kian Training Site to Cloudflare
+# Intentional manual-only deploy until own Cloudflare KV and secrets are configured.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - run: ./build.sh
-      - uses: cloudflare/wrangler-action@v4
+      - uses: cloudflare/wrangler-action@v3
         with:
           wranglerVersion: "4"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

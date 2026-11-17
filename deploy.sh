@@ -1,10 +1,6 @@
-#!/bin/zsh
-# Local deploy: build, upload the Garmin history page to KV (it stays out of git), deploy the Worker.
-set -e
+#!/bin/sh
+# This script deploys to YOUR Cloudflare worker and YOUR KV namespace only.
+set -eu
 cd "$(dirname "$0")"
 ./build.sh
-rm -f site/history.html
-if [ -f ./training-dashboard.html ]; then
-  npx --yes wrangler kv key put history --path ./training-dashboard.html --namespace-id 41c9045d67fa4dc2927f1244acf77bb8 --remote
-fi
 npx --yes wrangler deploy
