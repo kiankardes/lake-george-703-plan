@@ -1508,10 +1508,10 @@ function kianGenRows(P) {
         [OFF("Easy morning / recovery"), make("bike",
           `${longBike} min long Zwift/road Z2 {Z2} · gentle first 15 min · build duration, practise 60–90 g carbohydrate per hour when tolerated`,
           longBike, "The highest-priority bike workout: aerobic durability and comfortable fueling. If your back dislikes the position, stop.")],
-        [lift("fA", recovery || ph === "Peak"), tech],
+        [lift("fA", recovery || ph === "Peak"), racePace],
         [mainWed, squashSlot],
         [lift("fB", recovery || ph === "Peak"), endurance],
-        [racePace, mainBike],
+        [tech, mainBike],
         [lift("fC", recovery || ph === "Peak"), brick],
         [mainLongRun, null]
       ];
@@ -3091,9 +3091,14 @@ function renderProgress() {
 // ---------- hours bar ----------
 function weekHours(w) {
   const by = { swim: 0, bike: 0, run: 0, lift: 0, squash: 0, extra: 0 }; let plan = 0, planTo = 0;
+  const kianEndurance = PROFILE && PROFILE.program === "kian703";
   for (const d of w.days) {
     for (const o of sessions(d)) {
-      plan += o.s.m; if (d.key <= TODAY) planTo += o.s.m;
+      // Kian's 12-hour target counts swim, bike, run, brick and squash only.
+      // His established three lifts remain visible and logged, but outside this total.
+      if (!(kianEndurance && o.s.s === "lift")) {
+        plan += o.s.m; if (d.key <= TODAY) planTo += o.s.m;
+      }
       const k = o.s.s === "brick" || o.s.s === "key" ? "bike" : o.s.s;
       const actualSport = doneSport(d.key, o.slot, k);
       const bucket = Object.prototype.hasOwnProperty.call(by, actualSport) ? actualSport : "extra";
@@ -3103,18 +3108,21 @@ function weekHours(w) {
     const unplanned = Number(extraMin(d.key));
     if (Number.isFinite(unplanned) && unplanned >= 0) by.extra += unplanned;
   }
-  return { by, plan, planTo, done: Object.values(by).reduce((a, b) => a + b, 0) };
+  return { by, plan, planTo, done: Object.entries(by).filter(([k]) => !(kianEndurance && k === "lift")).reduce((a, [, v]) => a + v, 0) };
 }
 const hh = m => (m / 60).toFixed(1);
 function renderHourbar() {
   const wk = WEEKS[curWk], H = weekHours(wk), cap = Math.max(H.plan, H.done) || 1;
-  document.getElementById("hbWeekNum").innerHTML = `<b>${hh(H.done)}</b> of ${hh(H.plan)} h · week ${curWk}`;
-  const order = ["swim", "bike", "run", "lift", "squash", "extra"], names = { swim: "Swim", bike: "Bike", run: "Run", lift: "Strength", squash: "Squash", extra: "Extra" };
+  const kianEndurance = PROFILE && PROFILE.program === "kian703";
+  document.getElementById("hbWeekNum").innerHTML = `<b>${hh(H.done)}</b> of ${hh(H.plan)} h · week ${curWk}${kianEndurance ? " · swim/bike/run/squash (lifts extra)" : ""}`;
+  const order = kianEndurance ? ["swim", "bike", "run", "squash", "extra"] : ["swim", "bike", "run", "lift", "squash", "extra"];
+  const names = { swim: "Swim", bike: "Bike", run: "Run", lift: "Strength", squash: "Squash", extra: "Extra" };
   document.getElementById("hbWeekTrack").innerHTML = order.filter(k => H.by[k] > 0).map(k => `<div class="seg ${k}" style="flex:0 0 ${(H.by[k] / cap * 100).toFixed(2)}%" title="${names[k]} ${hh(H.by[k])} h"></div>`).join("") +
     (today >= START ? `<div class="mark" style="left:calc(${Math.min(100, H.planTo / cap * 100).toFixed(2)}% - 1px)" title="Planned by end of today: ${hh(H.planTo)} h"></div>` : "");
   document.getElementById("hbWeekLeg").innerHTML = order.filter(k => H.by[k] > 0).map(k => `<span><i class="${k}"></i>${names[k]} ${hh(H.by[k])}</span>`).join("") || "Nothing logged yet this week";
   const gapW = H.done - H.planTo;
-  document.getElementById("hbWeekNote").innerHTML = `Line = plan through today (${hh(H.planTo)} h). ` + (Math.abs(gapW) < 15 ? '<span class="ahead">On plan</span>' : gapW > 0 ? `<span class="ahead">${hh(gapW)} h ahead</span>` : `<span class="behind">${hh(-gapW)} h behind</span>`);
+  document.getElementById("hbWeekNote").innerHTML = `Line = plan through today (${hh(H.planTo)} h). ` + (Math.abs(gapW) < 15 ? '<span class="ahead">On plan</span>' : gapW > 0 ? `<span class="ahead">${hh(gapW)} h ahead</span>` : `<span class="behind">${hh(-gapW)} h behind</span>`) +
+    (kianEndurance ? ` · Strength logged: ${hh(H.by.lift)} h separately` : "");
   // season profile
   const all = Object.values(WEEKS).map(w => Object.assign({ n: w.n, ph: w.ph }, weekHours(w)));
   const tot = all.reduce((a, w) => a + w.plan, 0), doneAll = all.reduce((a, w) => a + w.done, 0), planToAll = all.reduce((a, w) => a + w.planTo, 0);
