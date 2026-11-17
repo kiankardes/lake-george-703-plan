@@ -1,6 +1,6 @@
 {
   // Independent Cloudflare deployment. Never reuse Noah's KV IDs or tokens.
-  "name": "kian-lake-george-703",
+  "name": "lake-george-703-plan",
   "main": "src/index.js",
   "compatibility_date": "2026-10-19",
   "assets": { "directory": "./site", "binding": "ASSETS", "run_worker_first": true },
