@@ -363,7 +363,7 @@ html[data-profile] .noah-only { display: none !important; }
 .hb-track { position: relative; height: var(--s4); background: var(--soft); box-shadow: inset 0 0 0 var(--hair) var(--line); display: flex; overflow: hidden; }
 .hb-track .seg { height: 100%; }
 .hb-track .seg.swim, .hb-legend i.swim, .legend i.swim { background: var(--swim); } .hb-track .seg.bike, .hb-legend i.bike, .legend i.bike { background: var(--bike); } .hb-track .seg.run, .hb-legend i.run { background: var(--run); } .hb-track .seg.lift, .hb-legend i.lift { background: var(--lift); }
-.hb-track .seg.extra { background: repeating-linear-gradient(135deg, var(--warn) 0 4px, var(--warn-soft) 4px 8px); } .hb-legend i.extra, .legend i.warn { background: var(--warn); }
+.hb-track .seg.squash, .hb-legend i.squash { background: var(--key); } .hb-track .seg.extra { background: repeating-linear-gradient(135deg, var(--warn) 0 4px, var(--warn-soft) 4px 8px); } .hb-legend i.extra, .legend i.warn { background: var(--warn); }
 .legend i.fg { background: var(--fg); } .legend i.line { background: var(--line-strong); }
 .hb-track .mark { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--fg); }
 .hb-foot { display: flex; justify-content: space-between; gap: var(--s1) var(--s4); flex-wrap: wrap; font-size: var(--t-13); color: var(--muted); }
@@ -2860,6 +2860,14 @@ function weekGoals(n) {
     const a = AUTO[d.key] && AUTO[d.key][o.slot];
     if (o.s.s === "run" && !isHard(o.s.t) && a && a.hr) { er++; if (a.hr <= EZ) erOk++; }
   }
+  const rehabWeek = PROFILE && PROFILE.program === "kian703" && wk.ph === "Foundation";
+  if (rehabWeek) {
+    G.push({ c: "wait", t: "Recovery block: completion percentage is not a goal. Follow symptoms and clinician/PT guidance." });
+    if (sw) G.push({ c: swd >= sw ? "ok" : "wait", t: "Optional gentle swim trial: " + swd + " of " + sw + " done; only if well tolerated." });
+    G.push({ c: "wait", t: "Avoid FTP testing, squash and heavy loaded leg exercises during this initial phase." });
+    G.push({ c: "wait", t: "Check back comfort during sessions and again the following morning; reduce activity if symptoms increase." });
+    return G;
+  }
   mark(dn >= tot * .9, `Hit 90% of sessions: ${dn} of ${tot}`, !ended && dn < tot * .9);
   if (sw) mark(swd >= sw, `All ${sw} swims done: ${swd} so far${SWIM_LIMITER ? " (swim is your biggest limiter)" : ""}`, !ended && swd < sw);
   mark(er ? erOk === er : null, er ? `Easy runs under ${EZ} bpm: ${erOk} of ${er}` : `Easy runs under ${EZ} bpm: no Garmin runs yet this week`, !er);
@@ -3013,14 +3021,18 @@ function renderProgress() {
 
 // ---------- hours bar ----------
 function weekHours(w) {
-  const by = { swim: 0, bike: 0, run: 0, lift: 0, extra: 0 }; let plan = 0, planTo = 0;
+  const by = { swim: 0, bike: 0, run: 0, lift: 0, squash: 0, extra: 0 }; let plan = 0, planTo = 0;
   for (const d of w.days) {
     for (const o of sessions(d)) {
       plan += o.s.m; if (d.key <= TODAY) planTo += o.s.m;
       const k = o.s.s === "brick" || o.s.s === "key" ? "bike" : o.s.s;
-      by[doneSport(d.key, o.slot, k)] += doneMin(d.key, o.slot, o.s);
+      const actualSport = doneSport(d.key, o.slot, k);
+      const bucket = Object.prototype.hasOwnProperty.call(by, actualSport) ? actualSport : "extra";
+      const minutesDone = Number(doneMin(d.key, o.slot, o.s));
+      if (Number.isFinite(minutesDone) && minutesDone >= 0) by[bucket] += minutesDone;
     }
-    by.extra += extraMin(d.key);
+    const unplanned = Number(extraMin(d.key));
+    if (Number.isFinite(unplanned) && unplanned >= 0) by.extra += unplanned;
   }
   return { by, plan, planTo, done: Object.values(by).reduce((a, b) => a + b, 0) };
 }
@@ -3028,7 +3040,7 @@ const hh = m => (m / 60).toFixed(1);
 function renderHourbar() {
   const wk = WEEKS[curWk], H = weekHours(wk), cap = Math.max(H.plan, H.done) || 1;
   document.getElementById("hbWeekNum").innerHTML = `<b>${hh(H.done)}</b> of ${hh(H.plan)} h · week ${curWk}`;
-  const order = ["swim", "bike", "run", "lift", "extra"], names = { swim: "Swim", bike: "Bike", run: "Run", lift: "Strength", extra: "Extra" };
+  const order = ["swim", "bike", "run", "lift", "squash", "extra"], names = { swim: "Swim", bike: "Bike", run: "Run", lift: "Strength", squash: "Squash", extra: "Extra" };
   document.getElementById("hbWeekTrack").innerHTML = order.filter(k => H.by[k] > 0).map(k => `<div class="seg ${k}" style="flex:0 0 ${(H.by[k] / cap * 100).toFixed(2)}%" title="${names[k]} ${hh(H.by[k])} h"></div>`).join("") +
     (today >= START ? `<div class="mark" style="left:calc(${Math.min(100, H.planTo / cap * 100).toFixed(2)}% - 1px)" title="Planned by end of today: ${hh(H.planTo)} h"></div>` : "");
   document.getElementById("hbWeekLeg").innerHTML = order.filter(k => H.by[k] > 0).map(k => `<span><i class="${k}"></i>${names[k]} ${hh(H.by[k])}</span>`).join("") || "Nothing logged yet this week";
@@ -3038,8 +3050,8 @@ function renderHourbar() {
   const all = Object.values(WEEKS).map(w => Object.assign({ n: w.n, ph: w.ph }, weekHours(w)));
   const tot = all.reduce((a, w) => a + w.plan, 0), doneAll = all.reduce((a, w) => a + w.done, 0), planToAll = all.reduce((a, w) => a + w.planTo, 0);
   const days = Math.max(0, Math.ceil((RACE - today) / 864e5));
-  document.getElementById("hbSeasonNum").innerHTML = `<b>${Math.round(doneAll / 60)}</b> of ${Math.round(tot / 60)} h planned`;
-  const prof = document.getElementById("hbProfile"), Wd = chartWidth(prof), Hp = Wd > 600 ? 120 : 84, base = Hp - 20, top = 20, maxH = Math.max(...all.map(w => Math.max(w.plan, w.done))), sw = Wd / 34, bw = sw - 3;
+  document.getElementById("hbSeasonNum").innerHTML = `<b>${hh(doneAll)}</b> of ${Math.round(tot / 60)} h planned`;
+  const prof = document.getElementById("hbProfile"), Wd = chartWidth(prof), Hp = Wd > 600 ? 120 : 84, base = Hp - 20, top = 20, maxH = Math.max(1, ...all.map(w => Math.max(w.plan, w.done))), sw = Wd / NW, bw = Math.max(2, sw - 3);
   const y = m => base - m / maxH * (base - top);
   let svg = `<line x1="0" x2="${Wd}" y1="${base + .5}" y2="${base + .5}" stroke="var(--line)"/>`;
   let lastPh = "";
@@ -3058,7 +3070,7 @@ function renderHourbar() {
     all.map((w, i) => ({ x: i * sw + 1.5 + bw / 2, w: sw, y0: 0, y1: base, now: w.n === curWk, text: `Week ${w.n} (${w.ph}): ${hh(w.plan)} h planned, ${hh(w.done)} h done` })),
     `<table><caption>Season hours by week</caption><tr><th>Week</th><th>Phase</th><th>Planned hours</th><th>Done hours</th></tr>` + all.map(w => `<tr><td>${w.n}</td><td>${w.ph}</td><td>${hh(w.plan)}</td><td>${hh(w.done)}</td></tr>`).join("") + `</table>`);
   const gapS = doneAll - planToAll;
-  document.getElementById("hbSeasonNote").innerHTML = today < START ? "Plan starts Oct 19." :
+  document.getElementById("hbSeasonNote").innerHTML = today < START ? `Plan starts ${fmt(START)}.` :
     `${Math.round(doneAll / tot * 100)}% of season hours done · plan to date ${hh(planToAll)} h · ` + (Math.abs(gapS) < 30 ? '<span class="ahead">on track for June</span>' : gapS > 0 ? `<span class="ahead">${hh(gapS)} h ahead</span>` : `<span class="behind">${hh(-gapS)} h behind plan</span>`);
 }
 
