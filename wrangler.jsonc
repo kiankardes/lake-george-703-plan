@@ -8,5 +8,7 @@
     { "binding": "KV", "id": "4ff1ca37eda74b478e6141e33b9d43c4" }
   ],
   "triggers": { "crons": ["*/20 * * * *"] },
-  "vars": { "SINGLE_PROFILE": "1" }
+  "vars": { "SINGLE_PROFILE": "1" },
+  // Stop deploying if the secret bindings are missing; values are stored only in Cloudflare.
+  "secrets": { "required": ["PASSCODE", "DATA_KEY"] }
 }
