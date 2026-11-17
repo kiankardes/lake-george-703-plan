@@ -1369,6 +1369,69 @@ function genRows(P) {
   }
   return { rows, focus };
 }
+
+function kianSwim(kind, phase, idx, recovery, minutes) {
+  // Kian's three 25-yard pool swims; targets are yards, not metres.
+  const level = phase === 'Peak' ? 3 : phase === 'Build' ? 2 : 1;
+  const base = kind === 'tue' ? 2000 : kind === 'thu' ? 2200 : 1900;
+  const target = Math.round((base + Math.min(4, idx) * 100 + (level - 1) * 150) * (recovery ? .8 : 1) / 50) * 50;
+  const focus = [
+    ['Two tracks / crossover', '25 with optional snorkel: enter each hand in front of its own shoulder. 25 normal freestyle with same entry.', 'Snorkel optional; no crossing centerline.'],
+    ['Catch and pull', '25 front scull or fists closed, then 25 regular freestyle. Feel forearm press water backwards, not down.', 'Snorkel optional; buoy only if comfortable.'],
+    ['Breathing and kick', '25 side balance or gentle 6-1-6, then 25 normal freestyle. Keep legs narrow when breathing.', 'Short fins optional; avoid exaggerated trunk rotation.']
+  ];
+  const f = focus[(idx + (kind === 'thu' ? 1 : kind === 'fri' ? 2 : 0)) % 3];
+  const sets = []; let yards = 0;
+  function add(name, n, yd, effort, cue, rest) {
+    sets.push({name,n,yd,effort,cue,rest:rest||0}); yards += n*yd;
+  }
+  const drill = (name,n) => add(name,n,50,'drill',f[1]+' '+f[2],20);
+  if (kind === 'tue') {
+    add('Warm-up',1,300,'easy','Easy freestyle; comfortable push-offs and breathing.');
+    drill('Technique: '+f[0],8);
+    add('Aerobic 100s',recovery?4:level===1?6:8,100,'steady','RPE 4–5, 20 sec rest; even splits, shoulder-width entry, compact flutter kick.',20);
+    let remainder=target-yards-200;
+    const n200=Math.floor(Math.max(0,remainder)/200); if(n200)add('Steady 200s',n200,200,'steady','RPE 4–5, maintain technique; 25 sec rest.',25);
+    remainder=target-yards-200; if(remainder>0)add('Easy 50s',remainder/50,50,'easy','Keep the best technical cue; 15 sec rest.',15);
+    add('Cool-down',1,200,'easy','Very easy swimming.');
+  } else if(kind==='thu') {
+    add('Warm-up',1,300,'easy','Easy freestyle; low-effort breathing.');
+    drill('Drill into swim: '+f[0],4);
+    const rep=level===1?300:level===2?400:500;
+    add('Long aerobic repeats',recovery?2:4,rep,'steady','RPE 4–5, 30 sec rest. Same stroke at start and finish.',30);
+    let remainder=target-yards-200;const n100=Math.floor(Math.max(0,remainder)/100);
+    if(n100)add('Easy aerobic 100s',n100,100,'easy','Gentle endurance; keep stroke count and rhythm even.',20);
+    remainder=target-yards-200;if(remainder>0)add('Technique 50',remainder/50,50,'easy','Quiet, narrow kick.',15);
+    add('Cool-down',1,200,'easy','Relaxed freestyle.');
+  } else {
+    add('Warm-up',1,250,'easy','Easy relaxed freestyle.');
+    for (const d of focus) add('25 drill + 25 swim: '+d[0],4,50,'drill',d[1]+' '+d[2],20);
+    add('Technique-preserving 150s',recovery?3:level===3?8:6,150,'easy','RPE 3–4. Keep body line and catch under control as you breathe.',20);
+    let remainder=target-yards-200;const n100=Math.floor(Math.max(0,remainder)/100);
+    if(n100)add('Easy aerobic 100s',n100,100,'easy','One technique cue per repeat.',20);
+    remainder=target-yards-200;if(remainder>0)add('Technique 50',remainder/50,50,'easy','Relaxed mechanics.',15);
+    add('Cool-down',1,200,'easy','Easy finish.');
+  }
+  const label=kind==='tue'?'Alignment + aerobic':kind==='thu'?'Long aerobic endurance':'Technique + balance';
+  const gear='Tools: snorkel for arm entry and catch without the breathing distraction; short fins only for gentle balance drills; optional pull buoy for catch awareness if comfortable. Avoid large paddles and ankle band during back rehab.';
+  const why='Priority: correct crossover, catch backwards rather than press down, and breathe without scissor kicking. '+gear+' If the back hurts or your form fails, stop early; yards are not a pass/fail target. Use RPE until a healthy CSS test.';
+  const t=yards.toLocaleString()+' yd · '+label+' · '+sets.map(b=>b.n+'×'+b.yd+' '+b.name.toLowerCase()).join(' · ');
+  return mk('swim',t,minutes,{why,build:()=>sets.map(b=>blk(b.name,b.n,[
+    {min:b.yd*.9144/100*(settings.css+(b.effort==='steady'?7:20))/60,lbl:b.yd+' yd '+b.effort,sp:'swim',z:b.effort==='steady'?.72:.55,dist:b.yd+' yd',tgt:b.cue},
+    ...(b.rest?[{min:b.rest/60,lbl:'Rest',sp:'swim',z:0,dist:'',tgt:b.rest+' sec'}]:[])
+  ]))});
+}
+function kianRehabSwim(minutes) {
+  const y=minutes<=15?300:minutes<=20?450:minutes<=25?600:minutes<=30?750:900;
+  const n=(y-200)/50;
+  return mk('swim',y+' yd optional back-recovery swim · 100 easy · '+n+'×50 gentle freestyle, 20 sec rest · 100 easy',minutes,{
+    why:'Only swim with PT approval and comfortable symptoms. No paddles, forceful wall push-offs or exaggerated body rotation. Stop for increasing pain; reassess next morning.',
+    build:()=>[blk('Warm-up',1,[{min:3,lbl:'100 yd easy',sp:'swim',z:.45,dist:'100 yd',tgt:'Comfortable back and breathing.'}]),
+      blk('Form',n,[{min:1.5,lbl:'50 yd easy',sp:'swim',z:.5,dist:'50 yd',tgt:'Gentle entry and quiet kick.'},{min:20/60,lbl:'Rest',sp:'swim',z:0,dist:'',tgt:'20 sec'}]),
+      blk('Cool-down',1,[{min:3,lbl:'100 yd easy',sp:'swim',z:.45,dist:'100 yd',tgt:'Check back comfort.'}])]
+  });
+}
+
 // A dedicated block-periodized program for the standalone Kian 70.3 site.
 // Profile, fitness and credentials remain in private Worker KV; the source only defines the schedule.
 function kianGenRows(P) {
@@ -1414,15 +1477,14 @@ function kianGenRows(P) {
       const rideM = [15, 20, 25, 35, 45, 55][ix];
       const swimM = [10, 15, 20, 25, 30, 35][ix];
       const gentle = () => OFF("Walk or comfortable mobility only. No forced progression; follow PT guidance.");
-      const swim = () => make("swim", `${swimM} min very easy freestyle: relaxed breathing and long strokes · stop if trunk rotation worsens symptoms`, swimM,
-        "Optional easy-water trial only if comfortable. Swimming is not a mandatory recovery test.");
+      const swim = () => kianRehabSwim(swimM);
       const firstRun = make("run", "20 min cautious walk-jog only if walking, daily life and PT exam permit: 5 min walk · 3×(1 min jog / 2 min walk) · easy walk", 20,
         "A symptom-guided return test, not a required session. Stop for increasing back or leg symptoms.");
       sessions = [
         [gentle(), make("bike", `${rideM} min optional gentle upright bike trial, no surges · stop if back discomfort increases`, rideM, "Do only if symptoms allow; an easy walk is a valid substitute.")],
-        [rehabPull(), ix === 0 ? gentle() : swim()],
+        [ix === 0 ? gentle() : swim(), rehabPull()],
         [ix >= 4 ? firstRun : gentle(), OFF("No squash yet: high-speed rotation and lunging require a comfortable, assessed return.")],
-        [rehabPush(), ix >= 3 ? swim() : gentle()],
+        [ix >= 3 ? swim() : gentle(), rehabPush()],
         [swim(), ix >= 2 ? make("bike", `${rideM} min optional easy spin · no intervals`, rideM, "Only if the earlier session and next morning were comfortable.") : gentle()],
         [rehabUpper(), null],
         [ix >= 5 ? firstRun : gentle(), null]
@@ -1498,16 +1560,9 @@ function kianGenRows(P) {
         ? make("run", `${longRun} min long easy run with last 15 min steady (NOT goal pace), fuel once if needed`, longRun,
           "Build the ability to finish a long run with good mechanics; no pace chasing after your back injury.")
         : easyRun(longRun, "long aerobic run; practice fueling when over 75 min");
-      const tech = make("swim", `${swimA} min technique: 200 easy · 8×50 drill then freestyle, 20 s rest · 6×100 relaxed, 15 s rest · 100 easy`, swimA,
-        "Improve body position, exhalation and sighting; efficiency before speed.");
-      const swimN = ph === "Base" ? (idx % 3 === 0 ? 5 : idx % 3 === 1 ? 6 : 4) : (idx % 3 === 0 ? 5 : 4);
-      const swimRep = ph === "Base" ? (idx % 3 === 2 ? 300 : 200) : (idx % 3 === 0 ? 250 : 300);
-      const endurance = make("swim", `${swimB} min aerobic swim: 300 easy · ${swimN}×${swimRep} steady near {CSS5}, 20 s rest · 100 easy`, swimB,
-        "Extend repeatable continuous swimming; rests stay short while stroke quality stays consistent.");
-      const racePace = make("swim", recovery
-        ? `${swimC} min easy technique: 200 easy · 6×100 relaxed, 20 s rest · 100 easy`
-        : `${swimC} min controlled pace: 300 easy · ${ph === "Base" ? "6" : ph === "Build" ? "8" : "10"}×100 at {CSS}, 20 s rest · 4×50 smooth fast, 25 s rest · 100 easy`,
-        swimC, "Use your MEASURED CSS, not the 1:45/100 m race aspiration. Update CSS after a suitable test.");
+      const tech = kianSwim("fri", ph, idx, recovery, swimA);
+      const endurance = kianSwim("thu", ph, idx, recovery, swimB);
+      const racePace = kianSwim("tue", ph, idx, recovery, swimC);
       const sprint = !recovery && ph === "Peak" && idx % 2 === 0;
       const brick = make("brick",
         `${easyBike + brickRun} min easy bike-run brick: ${easyBike} min Z2 {Z2} → ${brickRun} min easy treadmill/run`,
@@ -1525,9 +1580,9 @@ function kianGenRows(P) {
         [OFF("Easy morning / recovery"), make("bike",
           `${longBike} min long Zwift/road Z2 {Z2} · gentle first 15 min · build duration, practise 60–90 g carbohydrate per hour when tolerated`,
           longBike, "The highest-priority bike workout: aerobic durability and comfortable fueling. If your back dislikes the position, stop.")],
-        [lift("fA", recovery || ph === "Peak"), racePace],
+        [racePace, lift("fA", recovery || ph === "Peak")],
         [mainWed, squashSlot],
-        [lift("fB", recovery || ph === "Peak"), endurance],
+        [endurance, lift("fB", recovery || ph === "Peak")],
         [tech, mainBike],
         [lift("fC", recovery || ph === "Peak"), brick],
         [mainLongRun, null]
@@ -1585,7 +1640,7 @@ for (const r of ROWS) {
   });
 }
 // Session start times (watch push + calendar): weekday AM 6:30, PM 4:00 after classes; weekend AM 9:00, PM 4:00.
-const slotTime = (d, slot) => slot === "pm" ? "18:00" : d.i >= 5 ? "09:00" : "06:30";
+const slotTime = (d, slot) => slot === "pm" ? "18:00" : d.i >= 5 ? "09:00" : PROFILE && PROFILE.program === "kian703" && [1,3].includes(d.i) && d.am && d.am.s === "swim" ? "07:00" : "06:30";
 const BYKEY = Object.fromEntries(DAYS.map(d => [d.key, d]));
 let today = new Date(); today.setHours(0, 0, 0, 0);
 let TODAY = keyOf(today);
