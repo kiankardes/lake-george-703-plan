@@ -58,7 +58,7 @@ async function seal(env, obj) { const iv = crypto.getRandomValues(new Uint8Array
 async function unseal(env, t) { const { iv, ct } = JSON.parse(t); return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(iv) }, await dataKey(env), unb64(ct)))); }
 // The request's env, with the site's stored keys filled in (env vars win, so Noah's site is untouched).
 async function withKeys(env) {
-  if (env.PROFILE_MODE !== "1") return env;
+  if (env.PROFILE_MODE !== "1" && env.SINGLE_PROFILE !== "1") return env;
   const [sealed, profile] = await Promise.all([env.KV.get("keys"), env.KV.get("profile", "json")]);
   const k = sealed ? await unseal(env, sealed) : {};
   return Object.assign({}, env, { INTERVALS_API_KEY: env.INTERVALS_API_KEY || k.icu, ATHLETE_ID: env.ATHLETE_ID || k.athlete, ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY || k.ai, PROFILE: profile });
@@ -120,18 +120,18 @@ details.nums{border:1px solid var(--line);border-radius:6px;padding:0 12px}detai
 <div class="done-card" id="connected" hidden><div><b>✓ Garmin connected</b><div class="help" id="who"></div></div><button type="button" class="btn2" id="reconnect">Change</button></div>
 
 <form id="plan" hidden novalidate>
-<h2 id="h2race">Your race and week</h2>
-<label>Race name<input name="race" required maxlength="80" value="IRONMAN 70.3" autocomplete="off"></label>
-<div class="row"><label>Race date<input name="date" type="date" required></label><label>Goal time (optional)<input name="goal" pattern="[0-9]{1,2}:[0-5][0-9]" placeholder="h:mm, e.g. 5:30…" autocomplete="off" inputmode="numeric"><span class="help">Leave blank to aim for your projected time.</span></label></div>
-<label>Hours a week at your busiest<input name="hours" type="number" min="4" max="18" step="0.5" required inputmode="decimal"><span class="help" id="hoursHelp">Most 70.3 plans peak at 7–11 hours. The plan starts near what you do now and builds up gradually.</span></label>
+<h2 id="h2race">Your race and week</h2><p class="help">The Kian schedule uses Monday long bike, Tue/Thu lifting + swimming, Wednesday run + squash, Friday swim + intervals, and a flexible weekend. This site is a private standalone copy.</p>
+<label>Race name<input name="race" required maxlength="80" value="IRONMAN 70.3 Lake George" autocomplete="off"></label>
+<div class="row"><label>Race date<input name="date" type="date" value="2027-06-13" required></label><label>Goal time (optional)<input name="goal" pattern="[0-9]{1,2}:[0-5][0-9]" placeholder="h:mm, e.g. 5:30…" autocomplete="off" inputmode="numeric"><span class="help">Leave blank to aim for your projected time.</span></label></div>
+<label>Hours a week at your busiest<input name="hours" type="number" min="4" max="18" step="0.5" value="12" required inputmode="decimal"><span class="help" id="hoursHelp">Most 70.3 plans peak at 7–11 hours. The plan starts near what you do now and builds up gradually.</span></label>
 <div class="row"><label>Rest day<select name="restDay"><option value="mon">Monday</option><option value="fri">Friday</option></select></label><label>Long ride day<select name="longDay"><option value="sat">Saturday</option><option value="sun">Sunday</option></select></label></div>
 <div class="row"><label>Weakest sport<select name="limiter"><option value="swim">Swim</option><option value="bike">Bike</option><option value="run">Run</option></select><span class="help">It gets protected first when a week gets busy.</span></label>
 <label class="chk"><input type="checkbox" name="lift" checked> Weekly strength session (free weights)</label></div>
 
 <h2 id="h2nums">Your numbers</h2>
 <details class="nums" id="nums"><summary id="numsSum">Training numbers</summary>
-<p class="help">These set every target in your plan. Best guesses are fine: week 4 has a swim test and a bike test, and every target updates from them.</p>
-<div class="row"><label>Bike threshold power (FTP), watts<input name="ftp" type="number" min="80" max="500" required inputmode="numeric"><span class="help">Power you could hold for about an hour.</span></label>
+<p class="help">These numbers control your targets. FTP 300 W is an untested estimate until you can safely complete an FTP test. Review the imported Garmin values; do not test while recovering.</p>
+<div class="row"><label>Bike threshold power (FTP), watts<input name="ftp" type="number" min="80" max="500" value="300" required inputmode="numeric"><span class="help">Power you could hold for about an hour.</span></label>
 <label>Swim threshold pace (CSS), per 100 m<input name="css" required pattern="[0-9]:[0-5][0-9]" placeholder="m:ss, e.g. 2:05…" inputmode="numeric"><span class="help">Steady-hard pace you could hold for 1,500 m.</span></label></div>
 <div class="row"><label>Race run pace, per mile<input name="gp" required pattern="[0-9]{1,2}:[0-5][0-9]" placeholder="m:ss, e.g. 8:45…" inputmode="numeric"><span class="help">The pace you hope to hold for the half marathon.</span></label>
 <label>Run threshold heart rate<input name="lthr" type="number" min="120" max="215" required inputmode="numeric"><span class="help">Average of a hard 30-min run. Easy runs stay under 80% of it.</span></label></div>
@@ -434,7 +434,7 @@ async function setupApi(req, env, p) {
     const place = b.place && n(b.place.lat, -90, 90) && n(b.place.lon, -180, 180) ? { lat: b.place.lat, lon: b.place.lon, name: String(b.place.name || "Home").slice(0, 40) } : null;
     const info = (env.PROFILE && env.PROFILE.recent) ? { name: env.PROFILE.name, recent: env.PROFILE.recent } : await readAthlete(env.ATHLETE_ID, env.INTERVALS_API_KEY).catch(() => ({ name: "", recent: null }));
     const profile = { name: info.name || "", start: keepStart, race: { name: b.race.name.trim(), date: b.race.date }, goal: b.goal || null, hours: b.hours, recent: info.recent, limiter: ["swim", "bike", "run"].includes(b.limiter) ? b.limiter : "swim",
-      restDay: b.restDay === "fri" ? "fri" : "mon", longDay: b.longDay === "sun" ? "sun" : "sat", lift: !!b.lift, ftp: Math.round(b.ftp), css: Math.round(b.css), gp: Math.round(b.gp),
+      restDay: b.restDay === "fri" ? "fri" : "mon", longDay: b.longDay === "sun" ? "sun" : "sat", lift: !!b.lift, program: env.SINGLE_PROFILE === "1" ? "kian703" : undefined, ftp: Math.round(b.ftp), css: Math.round(b.css), gp: Math.round(b.gp),
       lthr: Math.round(b.lthr), ez: Math.round(b.lthr * .8), rhr: Math.round(b.rhr), weight: b.weight && n(b.weight, 35, 160) ? b.weight : null, place };
     const settings = (await env.KV.get("settings", "json")) || { tests: [] };
     Object.assign(settings, { ftp: profile.ftp, css: profile.css, gp: profile.gp, rhr: profile.rhr }); // tests, milestones and coach changes are kept
@@ -646,6 +646,13 @@ async function app(req, env, url, p, PM) {
 
 export default {
   async scheduled(event, env, ctx) {
+    if (env.SINGLE_PROFILE === "1") {
+      ctx.waitUntil((async () => {
+        const e = await withKeys(env);
+        if (e.INTERVALS_API_KEY) await refresh(e);
+      })().catch(() => null));
+      return;
+    }
     if (env.PROFILE_MODE !== "1") { ctx.waitUntil(env.INTERVALS_API_KEY ? refresh(env) : Promise.resolve()); return; }
     // friends site: every active friend's Garmin data refreshes on the same 20-minute cycle
     ctx.waitUntil((async () => { const users = (await env.KV.get("users", "json")) || {};
@@ -666,6 +673,6 @@ export default {
     }
     if (p === "/logout") return new Response(null, { status: 303, headers: { location: "/", "set-cookie": "lg703=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax" } });
     if (getCookie(req, "lg703") !== token) return p.startsWith("/api/") ? json({ error: "locked" }, 401) : html(LOGIN(""), 401);
-    return app(req, env, url, p, false);
+    return env.SINGLE_PROFILE === "1" ? app(req, await withKeys(env), url, p, true) : app(req, env, url, p, false);
   }
 };
