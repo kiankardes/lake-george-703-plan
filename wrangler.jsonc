@@ -8,5 +8,10 @@
     { "binding": "KV", "id": "4ff1ca37eda74b478e6141e33b9d43c4" }
   ],
   "triggers": { "crons": ["*/20 * * * *"] },
-  "vars": { "SINGLE_PROFILE": "1" }
+  "vars": { "SINGLE_PROFILE": "1" },
+  // Keep dashboard-set non-secret variables during GitHub deployments.
+  "keep_vars": true,
+  // Fail deploy if either of these secure Cloudflare bindings is missing.
+  // The VALUES remain stored only in Cloudflare and are never committed.
+  "secrets": { "required": ["PASSCODE", "DATA_KEY"] }
 }
