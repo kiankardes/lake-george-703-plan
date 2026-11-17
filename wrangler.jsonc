@@ -5,7 +5,7 @@
   "compatibility_date": "2026-10-19",
   "assets": { "directory": "./site", "binding": "ASSETS", "run_worker_first": true },
   "kv_namespaces": [
-    { "binding": "KV", "id": "REPLACE_WITH_YOUR_OWN_KV_NAMESPACE_ID" }
+    { "binding": "KV", "id": "4ff1ca37eda74b478e6141e33b9d43c4" }
   ],
   "triggers": { "crons": ["*/20 * * * *"] },
   "vars": { "SINGLE_PROFILE": "1" }
