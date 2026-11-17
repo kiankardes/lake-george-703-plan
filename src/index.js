@@ -60,8 +60,20 @@ async function unseal(env, t) { const { iv, ct } = JSON.parse(t); return JSON.pa
 async function withKeys(env) {
   if (env.PROFILE_MODE !== "1" && env.SINGLE_PROFILE !== "1") return env;
   const [sealed, profile] = await Promise.all([env.KV.get("keys"), env.KV.get("profile", "json")]);
-  const k = sealed ? await unseal(env, sealed) : {};
-  return Object.assign({}, env, { INTERVALS_API_KEY: env.INTERVALS_API_KEY || k.icu, ATHLETE_ID: env.ATHLETE_ID || k.athlete, ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY || k.ai, PROFILE: profile });
+  // If DATA_KEY was replaced, old encrypted Garmin credentials cannot be decrypted.
+  // Keep the profile, logs, settings and activity cache intact; offer reconnection instead of crashing with Cloudflare 1101.
+  let k = {}, keyRecoveryRequired = false;
+  if (sealed) {
+    try { k = await unseal(env, sealed); }
+    catch (e) { keyRecoveryRequired = true; }
+  }
+  return Object.assign({}, env, {
+    INTERVALS_API_KEY: env.INTERVALS_API_KEY || k.icu,
+    ATHLETE_ID: env.ATHLETE_ID || k.athlete,
+    ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY || k.ai,
+    PROFILE: profile,
+    KEY_RECOVERY_REQUIRED: keyRecoveryRequired
+  });
 }
 const icuGet = async (athlete, key, path) => {
   const r = await fetch(`https://intervals.icu/api/v1/athlete/${athlete}${path}`, { headers: { authorization: "Basic " + btoa("API_KEY:" + key) } });
@@ -174,6 +186,9 @@ function numsSummary(imported) {
 }
 fetch("/api/setup").then(r => r.json()).then(j => {
   const d = draft(); if (d.athlete) $("#connect").athlete.value = d.athlete; if (j.athlete) $("#connect").athlete.value = j.athlete;
+  if (j.keyRecoveryRequired) {
+    fail($("#cErr"), "The site's encryption key changed. Reconnect intervals.icu below. Your training plan and logs are still saved.");
+  }
   if (j.hasKey) { showConnected(Object.assign({ ai: j.hasAi }, j.connect || {})); fill(Object.assign({}, j.connect || {}, d, j.profile || {}), !j.profile && !!j.connect); if (j.profile) step(3); }
 });
 $("#plan").addEventListener("input", () => { keep(); numsSummary(false); });
@@ -402,7 +417,7 @@ async function weather(env, lat, lon) {
 async function setupApi(req, env, p) {
   if (p === "/api/setup" && req.method === "GET") {
     const k = env.INTERVALS_API_KEY ? { athlete: env.ATHLETE_ID } : {};
-    return json({ profile: env.PROFILE || null, athlete: k.athlete || null, hasKey: !!env.INTERVALS_API_KEY, hasAi: !!env.ANTHROPIC_API_KEY, connect: await env.KV.get("connect", "json") });
+    return json({ profile: env.PROFILE || null, athlete: k.athlete || null, hasKey: !!env.INTERVALS_API_KEY, hasAi: !!env.ANTHROPIC_API_KEY, keyRecoveryRequired: !!env.KEY_RECOVERY_REQUIRED, connect: await env.KV.get("connect", "json") });
   }
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== "object" || JSON.stringify(body).length > 4000) return json({ error: "bad_body" }, 400);
@@ -416,7 +431,15 @@ async function setupApi(req, env, p) {
       const r = await fetch("https://api.anthropic.com/v1/models?limit=1", { headers: { "x-api-key": ai, "anthropic-version": "2023-06-01" } });
       if (r.status === 401 || r.status === 403) return json({ error: "bad_ai_key" }, 400);
     }
-    await Promise.all([env.KV.put("keys", await seal(env, { icu: key, athlete, ai: ai || undefined })), env.KV.put("connect", JSON.stringify(info))]);
+    // Retain a copy of the old encrypted blob before rekeying; do not erase other KV entries.
+    const newSealed = await seal(env, { icu: key, athlete, ai: ai || undefined });
+    if (env.KEY_RECOVERY_REQUIRED) {
+      const prior = await env.KV.get("keys");
+      if (prior && !(await env.KV.get("keys-before-rekey"))) {
+        await env.KV.put("keys-before-rekey", prior);
+      }
+    }
+    await Promise.all([env.KV.put("keys", newSealed), env.KV.put("connect", JSON.stringify(info))]);
     return json(Object.assign(info, { ai: !!ai }));
   }
   if (p === "/api/setup/profile" && req.method === "POST") {
