@@ -1439,9 +1439,9 @@ function kianGenRows(P) {
       // Three build weeks then one lighter week. Targets are not commitments if the back or schedule disagrees.
       let longBike, bikeQuality, easyBike, runWed, longRun, brickRun, swimA, swimB, swimC, squash;
       if (ph === "Base") {
-        longBike = 100 + 8 * idx; bikeQuality = 55 + 2 * idx; easyBike = 35 + 2 * idx;
-        runWed = 30 + 3 * idx; longRun = 55 + 4 * idx; brickRun = 10 + Math.min(5, idx);
-        swimA = 35 + 2 * idx; swimB = 35 + 2 * idx; swimC = 35 + 2 * idx; squash = 60;
+        longBike = 85 + 8 * idx; bikeQuality = 40 + 3 * idx; easyBike = 25 + 3 * idx;
+        runWed = 25 + 3 * idx; longRun = 45 + 4 * idx; brickRun = 8 + Math.min(8, idx);
+        swimA = 30 + 2 * idx; swimB = 30 + 2 * idx; swimC = 30 + 2 * idx; squash = idx < 2 ? 45 : 60;
       } else if (ph === "Build") {
         longBike = 150 + 5 * idx; bikeQuality = 70 + 2 * idx; easyBike = 45 + 2 * idx;
         runWed = 45 + 2 * idx; longRun = 80 + 2 * idx; brickRun = 15 + Math.min(5, idx);
@@ -1468,8 +1468,8 @@ function kianGenRows(P) {
       const build = [[3, 10, "SS"], [3, 8, "TH"], [2, 15, "TH"]];
       const race = [[2, 20, "RP"], [2, 25, "RP"], [2, 30, "RP"]];
       const [reps, repM, zone] = (ph === "Base" ? sweet : ph === "Build" ? build : race)[idx % 3];
-      const mainBike = recovery
-        ? bikeZ2(bikeQuality, "Recovery Zwift ride · no hard intervals")
+      const mainBike = recovery || (ph === "Base" && idx < 3)
+        ? bikeZ2(bikeQuality, "Easy Zwift ride · no hard intervals")
         : make("bike", `${bikeQuality} min Zwift quality: ${reps}×${repM} min @ {${zone}}, 4 min easy between · 15 min warm-up · 10 min easy cooldown`, bikeQuality,
             ph === "Peak" ? "Build sustainable 70.3 race power, not maximal speed. Practise fueling and comfortable race position."
               : "Progress time at controlled power; hold targets rather than sprinting or chasing a higher FTP.");
@@ -1498,8 +1498,8 @@ function kianGenRows(P) {
         "Keep the transition relaxed; this is the third weekly run and not another hard workout.");
       brick.ride = `${easyBike} min easy bike {Z2} · conversational with 5 min warmup`;
       brick.run = `${brickRun} min easy run, conversational HR · no fast transition required`;
-      const squashSlot = recovery
-        ? OFF("Recovery week: optional 45 min very easy squash hitting; no matches, lunging demands or forced volume.")
+      const squashSlot = recovery || (ph === "Base" && idx < 2)
+        ? OFF("Recovery/rebuild: squash is optional only with PT clearance; no matches or aggressive lunges.")
         : ph === "Peak" && sprint
           ? OFF("Optional squash technique only; Wednesday tempo run takes priority. Don't stack two hard sessions.")
           : make("squash", `${squash} min squash match/play · count as a hard workout; leave Friday quality bike easier if fatigued`, squash,
@@ -1515,7 +1515,8 @@ function kianGenRows(P) {
         [lift("fC", recovery || ph === "Peak"), brick],
         [mainLongRun, null]
       ];
-      note = `${ph} · ${Math.round(totalMin() / 60 * 10) / 10} h planned endurance + squash, plus three lifts (not in that total). ${recovery ? "Recovery week: lower volume and no hard intervals. " : ""}Increase only after a symptom-free, PT/clinician-approved return; if back discomfort persists, repeat easier Foundation workouts. Squash is high-intensity, so do not stack hard run efforts with matches.`;
+      const scheduledEnduranceMin = sessions.flat().filter(s => s && s.s !== "lift" && s.s !== "rest").reduce((total, s) => total + s.m, 0);
+      note = `${ph} · ${Math.round(scheduledEnduranceMin / 60 * 10) / 10} h scheduled endurance + squash, plus three lifts (not in that total). ${recovery ? "Recovery week: lower volume and no hard intervals. " : ""}Increase only after a symptom-free, PT/clinician-approved return; if back discomfort persists, repeat easier Foundation workouts. Squash is high-intensity, so do not stack hard run efforts with matches.`;
       if (ph === "Peak") note += " In late spring, consider open-water practice in place of one pool swim when safe and supervised.";
     }
     const row = [n, ph, recovery ? "r" : "n"]; row[12] = note; row.plan = sessions; rows.push(row);
