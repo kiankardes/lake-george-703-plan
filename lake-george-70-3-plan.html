@@ -2634,7 +2634,7 @@ function buildToday() {
     if (!s) { el.className = "card sess rest"; el.innerHTML = `<div class="sesshead"><span class="slot">${slot.toUpperCase()}</span><span class="chip">Free</span></div><p class="why">Nothing scheduled. Recover, study, sleep.</p>`; box.appendChild(el); return; }
     const { steps, hard } = stepsOf(s), fuel = fuelOf(s);
     el.className = "card sess " + s.s; el.id = "sess-" + slot;
-    const title = s.s === "lift" ? esc(s.t) : s.s === "rest" ? "Rest" : `${ST[s.s]} · ${durTxt(s.m)}`;
+    const title = s.s === "lift" ? `${esc(s.t)} · ${durTxt(s.m)}` : s.s === "rest" ? "Rest" : `${ST[s.s]} · ${durTxt(s.m)}`;
     const made = s.coach && s.coach.createdAt ? new Date(s.coach.createdAt).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
     // Order: what it is, the Mark done control, then (once done) the log row and Garmin's review, then the session itself.
     el.innerHTML = `<div class="sesshead"><span class="slot">${slot.toUpperCase()}</span><span class="chip">${glyph(s.s)}${ST[s.s]}</span><h3>${title}</h3>${hard ? '<span class="hard">Hard</span>' : ""}</div>
@@ -2650,7 +2650,7 @@ function buildToday() {
       <details class="sbody" id="${slot}-body" open><summary>Session details</summary><div class="sbody-in">
       <p class="prio" id="pr-${slot}" hidden></p>
       ${s.coach ? `<p class="small coachnote"><strong>Coach change${made ? `, suggested ${esc(made)}` : ""}:</strong> ${esc(s.coach.reason)} <span class="stale" id="cs-${slot}" hidden></span> <button class="btn" data-cundo="${sel}|${slot}">Undo</button></p>` : ""}
-      ${exOf(s).length ? liftTable(slot, s) : workoutHTML(s) ? `<p class="small">Plan: ${esc(X(s.t))}</p>${workoutHTML(s)}` : steps.length === 1 ? `<p>${esc(X(steps[0]))}</p>` : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
+      ${exOf(s).length ? `<p class="small"><strong>Log your sets below:</strong> enter the weight in lb and reps for each set (for example, 10,10,9). Entries save automatically.</p>${liftTable(slot, s)}` : workoutHTML(s) ? `<p class="small">Plan: ${esc(X(s.t))}</p>${workoutHTML(s)}` : steps.length === 1 ? `<p>${esc(X(steps[0]))}</p>` : `<ol class="steps">${steps.map(x => `<li>${esc(X(x))}</li>`).join("")}</ol>`}
       ${feelOf(s) ? `<p class="why"><strong>${esc(feelOf(s))}</strong></p>` : ""}
       <p class="why">${esc(whyOf(s, hard))}</p>${fuel ? `<p class="fuel">${esc(fuel)}</p>` : ""}
       <div class="routes" id="r-${slot}" hidden></div>
