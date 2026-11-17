@@ -1406,7 +1406,7 @@ function kianSwim(kind, phase, idx, recovery, minutes) {
   } else {
     add('Warm-up',1,250,'easy','Easy relaxed freestyle.');
     for (const d of focus) add('25 drill + 25 swim: '+d[0],4,50,'drill',d[1]+' '+d[2],20);
-    add('Technique-preserving 150s',recovery?4:level===3?8:6,150,'easy','RPE 3–4. Keep body line and catch under control as you breathe.',20);
+    add('Technique-preserving 150s',recovery?3:level===3?8:6,150,'easy','RPE 3–4. Keep body line and catch under control as you breathe.',20);
     let remainder=target-yards-200;const n100=Math.floor(Math.max(0,remainder)/100);
     if(n100)add('Easy aerobic 100s',n100,100,'easy','One technique cue per repeat.',20);
     remainder=target-yards-200;if(remainder>0)add('Technique 50',remainder/50,50,'easy','Relaxed mechanics.',15);
