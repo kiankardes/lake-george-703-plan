@@ -507,6 +507,12 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
   .goal5.enter .g5-over { animation: appear 200ms var(--ease-out) both 520ms; }
 }
 @media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }
+
+.workouts-title { font-size: var(--t-20); margin-top: var(--s2); }
+.today-more { border: 1px solid var(--line); border-radius: var(--r-sec); background: var(--card); }
+.today-more > summary { cursor: pointer; padding: var(--s4); font-weight: var(--w-semi); color: var(--muted); }
+.today-more-body { display: flex; flex-direction: column; gap: var(--s4); padding: 0 var(--s4) var(--s4); }
+.estimate-fold > summary .small { font-weight: var(--w-reg); }
 </style>
 
 <a class="skip" href="#main">Skip to the training plan</a>
@@ -620,8 +626,11 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
     </div>
 
     <div class="wxbar" id="wxBar" hidden></div>
+    <h2 class="workouts-title">Your workouts</h2>
     <div class="grid2" id="sessions"></div>
 
+    <details class="today-more"><summary>Notes and training details</summary>
+    <div class="today-more-body">
     <div class="card" id="notesCard">
       <label class="field notes-l" for="notes"><b>Notes</b>How it felt, splits, what to change</label>
       <textarea id="notes" name="notes" data-slot="notes"></textarea>
@@ -642,6 +651,8 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
       <div class="scroll" id="actsScroll" tabindex="0" role="region" aria-label="Activities this day"><table id="actsList"></table></div>
       <div id="actsEmpty"></div>
     </div>
+    </div>
+    </details>
   </section>
 
   <!-- WEEK -->
@@ -662,7 +673,10 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
   <!-- SEASON -->
   <section class="panel" id="p-season" role="tabpanel" aria-labelledby="tab-season" hidden>
     <h2 class="vh">Progress</h2>
-    <div class="goal5" id="goal5" aria-label="Road to your goal time">
+    <details class="sec estimate-fold" id="race-estimates">
+      <summary><h3>Race-time scenarios</h3><span class="small">Illustrative, not a prediction</span></summary>
+      <div class="sec-in">
+    <div class="goal5" id="goal5" aria-label="Illustrative race time scenario">
       <div class="g5-head">
         <div class="g5-target"><span class="g5-eye">The goal</span><span class="g5-big" id="g5Goal">5:00</span></div>
         <div class="g5-now"><span class="g5-eye" id="g5NowL">Projected today</span><span class="g5-big num" id="g5Now">–</span></div>
@@ -671,6 +685,8 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
       <div class="g5-rows" id="g5Rows"></div>
       <p class="g5-foot" id="g5Foot"></p>
     </div>
+      </div>
+    </details>
     <div class="hourbar">
       <div class="hb-block">
         <div class="hb-head"><span class="hb-title">This week</span><span class="hb-num num" id="hbWeekNum"></span></div>
@@ -704,6 +720,7 @@ html[data-vt="swap"] #sess-am { view-transition-name: sess-am; } html[data-vt="s
     <details class="sec" id="sec-tests">
       <summary><h3>Tests and numbers</h3><span class="hb-num" id="sum-tests"></span></summary>
       <div class="sec-in">
+        <p class="small">FTP and pace are saved training inputs, not proof of current race fitness. Re-test when healthy and ready.</p>
         <div class="card" id="testCard">
           <h3>Log a test</h3>
           <div class="field">Test
@@ -3212,7 +3229,7 @@ function renderGoal() {
   const gtot = GOAL.swim + GOAL.tr + GOAL.bike + GOAL.run, gap = tot - gtot, gTxt = hms(Math.round(gtot / 60) * 60).replace(/:00$/, "");
   document.getElementById("g5Goal").textContent = gTxt;
   const est = PROFILE && !(settings.tests || []).length; // before any test the projection is only as good as the imported numbers
-  document.getElementById("g5NowL").textContent = est ? "Starting estimate" : "Projected today";
+  document.getElementById("g5NowL").textContent = "Illustrative scenario";
   const mph = s => (MI / (s / 3600)).toFixed(1);
   const rows = [
     ["sw", "Swim", "1.2 mi", "swim", `CSS ${pace(settings.css)}/100 m now`, `needs CSS ~${pace(GOAL.swim / 19.31 - 5)}/100 m`],
@@ -3231,8 +3248,8 @@ function renderGoal() {
   const nowEl = document.getElementById("g5Now");
   const show = v => nowEl.textContent = hms(Math.round(v / 60) * 60).replace(/:\d\d$/, ""); // rounded to the minute, so it agrees with "min to find"
   show(tot);
-  document.getElementById("g5Gap").innerHTML = gap > 30 ? `<b>${Math.round(gap / 60)} min to find</b>Solid bar = where you'd finish today. Tick = the ${gTxt} budget. Striped part = time to cut.` : est ? `<b>Starting estimate under ${gTxt}</b>Based on your imported numbers. The week 4 tests calibrate it.` : `<b>On pace for ${gTxt}</b>Every split is at or under budget. Hold it.`;
-  document.getElementById("g5Foot").textContent = `Uses your latest tests (log them below). The bike is a physics estimate for a hilly course${PROFILE ? "; check your race's course profile" : ", and the 2027 course isn't published yet"}. The ${NW}-week plan closes most of this gap. The rest comes from showing up every week.`;
+   document.getElementById("g5Gap").innerHTML = `<b>Not a race-readiness assessment</b>These are calculated scenarios, not proven swim, bike, and run splits.`;
+   document.getElementById("g5Foot").textContent = `Based on saved inputs including FTP ${settings.ftp} W, a simplified bike model, assumed transitions, and sustained run/swim paces. Actual course climbing, aerodynamics, fatigue and injury recovery may change your result substantially.`;
 }
 function renderConsistency() {
   let plan = 0, done = 0;
