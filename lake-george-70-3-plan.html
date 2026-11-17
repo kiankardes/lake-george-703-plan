@@ -1385,10 +1385,10 @@ function kianGenRows(P) {
       const runTry = ix >= 2 ? R("15–20 min walk-jog trial: 5 min walk · 3×(1 min jog/2 min walk) · finish walking; only if daily function and walking are comfortable", 20) : OFF("Brisk walk 40–45 min as comfortable");
       sessions = [
         [OFF("Gentle walking / mobility"), B(rideMin + " min very easy bike trial · upright comfortable posture · stop for increasing back ache", rideMin)],
-        [rehabPull(), S(swimMin + " min very easy freestyle, open turns, no hard push-offs; stop for back symptoms", swimMin)],
+        [rehabPull(), ix === 0 ? OFF("No swim yet: build confidence with brisk walking") : S(swimMin + " min very easy freestyle, open turns, no hard push-offs; stop for increasing discomfort", swimMin)],
         [runTry, OFF("No squash yet: return to lunging and rotation gradually")],
-        [rehabPush(), S(swimMin + " min easy technique swim; controlled breathing and trunk rotation", swimMin)],
-        [S(swimMin + " min relaxed swim only if the previous swim was well tolerated", swimMin), B((rideMin + 5) + " min very easy cycling; skip if back is still irritated", rideMin + 5)],
+        [rehabPush(), ix < 2 ? OFF("Recovery: optional comfortable walking and mobility") : S(swimMin + " min easy technique swim; controlled breathing and trunk rotation", swimMin)],
+        [S(swimMin + " min first/easy swim trial; only increase if fully tolerated", swimMin), ix === 0 ? OFF("No second bike this first week") : B((rideMin + 5) + " min very easy cycling; skip if still irritated", rideMin + 5)],
         [rehabUpper(), null],
         [ix >= 2 ? runTry : OFF("Comfortable brisk walk 45 min"), null]
       ];
